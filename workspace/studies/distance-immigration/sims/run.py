@@ -30,6 +30,7 @@ from viva_island_biogeography.composites._common import island_specs
 from viva_island_biogeography.processes import MigrationProcess
 from viva_island_biogeography import viz
 from vivarium_workbench.lib.run_log import append_run_event
+from vivarium_workbench.lib.run_viz import mirror_viz_dir
 
 SPEC_ID = "viva_island_biogeography.composites.archipelago.island_archipelago"
 STUDY_SLUG = "distance-immigration"
@@ -96,6 +97,10 @@ def main() -> int:
                 ytitle="immigration received per ensemble",
                 title="Isolation reduces colonization", logx=False, trend=True),
             viz_dir / "immigration_vs_distance.html")
+        viz_paths = [
+            viz_dir / "migration_network.html",
+            viz_dir / "immigration_vs_distance.html",
+        ]
 
         t1 = immigration_distance_corr < CORR_MAX
         t2 = abs(total_net) < NET_TOL
@@ -116,6 +121,8 @@ def main() -> int:
             "n_steps": 0, "status": "failed"})
         raise
 
+    # Carry the figures into the Runs-tab "📊 Viz" action (.pbg/runs/<id>/viz.json).
+    mirror_viz_dir(WORKSPACE_ROOT, run_id, viz_paths)
     append_run_event(WORKSPACE_ROOT, {
         "run_id": run_id, "event": "completed", "completed_at": time.time(),
         "n_steps": TICKS, "status": "completed", "outcomes": outcomes})

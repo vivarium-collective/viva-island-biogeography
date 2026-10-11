@@ -31,6 +31,7 @@ from viva_island_biogeography.composites.food_web import island_food_web
 from viva_island_biogeography.composites._common import island_specs
 from viva_island_biogeography import viz
 from vivarium_workbench.lib.run_log import append_run_event
+from vivarium_workbench.lib.run_viz import mirror_viz_dir
 
 SPEC_ID = "viva_island_biogeography.composites.food_web.island_food_web"
 STUDY_SLUG = "island-food-web"
@@ -114,6 +115,11 @@ def main() -> int:
             viz.spatial_map_animation(fw_rows, meta, color_by="richness",
                                       title="Food-web archipelago richness over time"),
             viz_dir / "spatial_map.html")
+        viz_paths = [
+            viz_dir / "richness_vs_area.html",
+            viz_dir / "richness_timeseries.html",
+            viz_dir / "spatial_map.html",
+        ]
 
         t1 = richness_area_corr > RICHNESS_CORR_MIN
         t2 = richness_gain > RICHNESS_GAIN_MIN
@@ -136,6 +142,8 @@ def main() -> int:
             "n_steps": 0, "status": "failed"})
         raise
 
+    # Carry the figures into the Runs-tab "📊 Viz" action (.pbg/runs/<id>/viz.json).
+    mirror_viz_dir(WORKSPACE_ROOT, run_id, viz_paths)
     append_run_event(WORKSPACE_ROOT, {
         "run_id": run_id, "event": "completed", "completed_at": time.time(),
         "n_steps": STEPS, "status": "completed", "outcomes": outcomes})
