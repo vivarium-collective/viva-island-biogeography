@@ -1,0 +1,135 @@
+schema_version: 4
+name: island-food-web
+title: "Trophic structure restores the species-area law"
+created: '2026-10-11'
+status: planned
+phase: Simulate
+question: |
+  Does replacing the random interaction matrix with a trophic food web
+  (producers -> primary -> secondary consumers, antisymmetric predator-prey
+  couplings) change whether the model reproduces the classic species-area
+  relationship of island biogeography?
+hypothesis: |
+  Antisymmetric predator-prey interactions stabilise coexistence (a predator's
+  gain is its prey's loss, so no single species runs away), so larger islands —
+  with more carrying capacity to support more trophic links — should sustain
+  MORE species. The food-web variant should therefore show a POSITIVE
+  richness-vs-area correlation (recovering the MacArthur-Wilson species-area law)
+  and support higher equilibrium richness than the random-competition archipelago
+  of Study 1 at matched parameters.
+objective: |
+  Run the `island_food_web` composite across a seed ensemble and measure
+  (a) the across-island correlation of equilibrium richness with log-area and
+  (b) mean equilibrium richness, comparing against a matched-parameter
+  `island_archipelago` (random matrix) run.
+description: |
+  Faithful port of experiments/island_food_web.py (generate_food_web +
+  generate_interaction_matrix_from_food_web). The ONLY change from Study 1 is
+  the interaction matrix; the islands, migration coupler, and dynamics are
+  identical. The contrast isolates interaction STRUCTURE as the cause of the
+  species-area law: random competition (Study 1) destroys it, trophic structure
+  (this study) restores it.
+baseline:
+- name: baseline
+  composite: viva_island_biogeography.composites.food_web.island_food_web
+  params:
+    n_islands: 8
+    n_species: 30
+    growth_rate: 0.03
+    predator_prey_interaction: 0.1
+    introduction_probability: 0.05
+    seed: 0
+variants: []
+expected_behavior:
+- name: food-web-recovers-species-area
+  en: |
+    With trophic interactions, equilibrium species richness INCREASES with
+    island area: the across-island richness-vs-log-area correlation is clearly
+    positive (measured ~ +0.50), recovering the classic species-area law.
+  observable: richness
+  condition: pearson(mean_richness, log(area)) > 0.2
+  rationale: |
+    Antisymmetric predator-prey couplings prevent competitive runaway, so the
+    extra carrying capacity of larger islands supports additional coexisting
+    species rather than just more individuals of a winner.
+  measure:
+    kind: derived_scalar
+    field: richness_area_corr
+  expect:
+    op: '>'
+    value: 0.2
+- name: trophic-coexistence-exceeds-random
+  en: |
+    The food-web variant sustains higher mean equilibrium richness than the
+    random-competition archipelago (Study 1) at matched parameters.
+  observable: richness
+  condition: mean_richness(food_web) - mean_richness(random) > 0.5
+  rationale: |
+    Predator-prey stabilisation vs competitive exclusion: the same islands,
+    migration, and capacities, differing only in interaction structure, should
+    hold more species under a food web.
+  measure:
+    kind: derived_scalar
+    field: richness_gain_over_random
+  expect:
+    op: '>'
+    value: 0.5
+behavior_tests:
+- name: food-web-recovers-species-area
+  classification: primary
+  description: Ensemble across-island corr(richness, log area) must exceed 0.2.
+  measure:
+    kind: derived_scalar
+    field: richness_area_corr
+  pass_if:
+    op: '>'
+    value: 0.2
+    provenance:
+      kind: calibration
+      note: |
+        Measured ~ +0.50 (8-island, 30-species, 6-seed ensemble, 150
+        generations). 0.2 is a conservative positive floor that still fails if
+        the species-area signal collapsed.
+  requires_simulation: baseline
+- name: trophic-coexistence-exceeds-random
+  classification: primary
+  description: |
+    Ensemble mean equilibrium richness of the food-web variant minus that of the
+    matched random-matrix archipelago must exceed 0.5 species.
+  measure:
+    kind: derived_scalar
+    field: richness_gain_over_random
+  pass_if:
+    op: '>'
+    value: 0.5
+    provenance:
+      kind: theory
+      note: |
+        Measured gain ~ +1.8 species (food web ~3.8 vs random ~1.95, matched
+        params). The ordering — not an exact gap — is the falsifiable signature.
+  requires_simulation: baseline
+pipeline_gate:
+  prerequisites:
+  - study: island-archipelago
+    condition: tests-passed
+  enables: []
+  proceed_condition: |
+    island-food-web is the investigation's capstone contrast; it depends on the
+    random-competition baseline established by island-archipelago.
+canonical_runs:
+- name: default
+  script: studies/island-food-web/sims/run.py
+  args: []
+  label: "Food-web archipelago vs random competition (8 islands, 30 species, 6 seeds)"
+  default: true
+visualizations:
+- name: richness-vs-area
+  chart: viz/richness_vs_area.html
+  render: python sims/run.py
+- name: food-web-richness-timeseries
+  chart: viz/richness_timeseries.html
+  render: python sims/run.py
+- name: food-web-spatial-map
+  chart: viz/spatial_map.html
+  render: python sims/run.py
+conclusion: null

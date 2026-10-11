@@ -13,7 +13,9 @@ import random
 
 from process_bigraph.composite_generator import composite_generator
 
+from ..core import register_processes
 from ..processes import generate_random_interaction_matrix
+from ..types import register_types
 from ._common import build_archipelago_document, archipelago_emitter_paths
 
 
@@ -44,6 +46,7 @@ from ._common import build_archipelago_document, archipelago_emitter_paths
         "address": "local:ParquetEmitter",
         "paths": ["islands", "richness"],
     }],
+    core_extensions=[register_types, register_processes],
 )
 def island_archipelago(
     core=None,

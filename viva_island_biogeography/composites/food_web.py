@@ -15,6 +15,8 @@ import random
 import numpy as np
 from process_bigraph.composite_generator import composite_generator
 
+from ..core import register_processes
+from ..types import register_types
 from ._common import build_archipelago_document
 
 
@@ -81,6 +83,7 @@ def interaction_matrix_from_food_web(species_list, food_web, predator_prey_inter
         "address": "local:ParquetEmitter",
         "paths": ["islands", "richness"],
     }],
+    core_extensions=[register_types, register_processes],
 )
 def island_food_web(
     core=None,

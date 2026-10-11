@@ -1,0 +1,138 @@
+schema_version: 4
+name: island-archipelago
+title: "Carrying capacity sets abundance, not richness"
+created: '2026-10-11'
+status: planned
+phase: Simulate
+question: |
+  In the Lotka-Volterra island model, does island area control the equilibrium
+  state — and if so, which quantity: total abundance, species richness, or both?
+hypothesis: |
+  Area enters the model only through the carrying capacity
+  (max_individuals_capacity = area * individuals_per_area), which caps TOTAL
+  individuals. With a random (non-trophic) interaction matrix, Lotka-Volterra
+  competition drives strong competitive exclusion on every island regardless of
+  size, so equilibrium TOTAL ABUNDANCE should scale tightly with area while
+  equilibrium SPECIES RICHNESS should be low and essentially independent of area
+  — i.e. this model does NOT reproduce the classic MacArthur-Wilson species-area
+  law under random competition.
+objective: |
+  Run the `island_archipelago` composite (a mainland + 5 smaller islands, each
+  an IslandProcess coupled by one MigrationProcess) to equilibrium and measure,
+  across islands, the correlation of (a) equilibrium total abundance with area
+  and (b) equilibrium species richness with log-area.
+description: |
+  Faithful port of experiments/island_lotka_volterra.py. Area appears only as
+  the per-island carrying capacity in the discrete LV update's rescale step.
+  The study separates the two things "area effect" could mean and shows the
+  model couples area to abundance (exactly) but not to richness (random
+  competition collapses each island to a couple of dominant species). Study 3
+  (island-food-web) shows that trophic interaction structure is what restores
+  the area-richness relationship.
+baseline:
+- name: baseline
+  composite: viva_island_biogeography.composites.archipelago.island_archipelago
+  params:
+    n_islands: 6
+    n_species: 30
+    growth_rate: 0.03
+    interaction_weight: 0.1
+    introduction_probability: 0.05
+    seed: 0
+variants: []
+expected_behavior:
+- name: abundance-scales-with-area
+  en: |
+    Across islands, equilibrium TOTAL abundance is near-perfectly correlated
+    with island area — each island fills to its carrying capacity.
+  observable: total_abundance
+  condition: pearson(mean_total_abundance, area) > 0.95
+  rationale: |
+    Area enters the LV update only as the carrying-capacity cap
+    (area * individuals_per_area); dominant species grow until the island's
+    projected total is rescaled to that cap, so equilibrium total tracks area
+    almost exactly (measured corr ~ 1.00).
+  measure:
+    kind: derived_scalar
+    field: capacity_area_corr
+  expect:
+    op: '>'
+    value: 0.95
+- name: richness-not-set-by-area
+  en: |
+    Across islands, equilibrium species richness is NOT positively driven by
+    area under random competition: the richness-vs-log-area correlation stays
+    below 0.35 (measured ~ -0.10).
+  observable: richness
+  condition: pearson(mean_richness, log(area)) < 0.35
+  rationale: |
+    Random Lotka-Volterra competition causes strong competitive exclusion
+    independent of capacity, so bigger islands hold more individuals of the same
+    few winners rather than more species. This is the honest divergence from
+    classic MacArthur-Wilson theory — area sets abundance, not diversity, when
+    interactions are non-trophic. (Contrast Study 3.)
+  measure:
+    kind: derived_scalar
+    field: richness_area_corr
+  expect:
+    op: '<'
+    value: 0.35
+behavior_tests:
+- name: abundance-scales-with-area
+  classification: primary
+  description: Pearson corr of per-island equilibrium total abundance vs area must exceed 0.95.
+  measure:
+    kind: derived_scalar
+    field: capacity_area_corr
+  pass_if:
+    op: '>'
+    value: 0.95
+    provenance:
+      kind: theory
+      note: |
+        Carrying capacity is area * individuals_per_area and the LV rescale
+        drives each island's total to that cap; the ~1.00 correlation is a
+        direct, near-deterministic consequence of the ported update rule.
+  requires_simulation: baseline
+- name: richness-not-set-by-area
+  classification: primary
+  description: Pearson corr of per-island equilibrium richness vs log-area must stay below 0.35.
+  measure:
+    kind: derived_scalar
+    field: richness_area_corr
+  pass_if:
+    op: '<'
+    value: 0.35
+    provenance:
+      kind: calibration
+      note: |
+        Measured richness-vs-log-area corr under random competition is ~ -0.10
+        (6-island, 30-species, seed 0, equilibrium tail); 0.35 is a generous
+        ceiling that still fails loudly if a strong positive species-area law
+        appeared, which it does not for non-trophic interactions.
+  requires_simulation: baseline
+pipeline_gate:
+  prerequisites: []
+  enables:
+  - island-food-web
+  proceed_condition: |
+    island-archipelago establishes the carrying-capacity baseline and the
+    "no species-area law under random competition" result that island-food-web
+    is contrasted against.
+canonical_runs:
+- name: default
+  script: studies/island-archipelago/sims/run.py
+  args: []
+  label: "Lotka-Volterra archipelago (6 islands, 30 species, 150 generations, seed 0)"
+  default: true
+visualizations:
+- name: spatial-map-animation
+  chart: viz/spatial_map.html
+  render: python sims/run.py
+- name: richness-timeseries
+  chart: viz/richness_timeseries.html
+  render: python sims/run.py
+- name: mainland-abundance-dynamics
+  chart: viz/mainland_abundance.html
+  render: python sims/run.py
+conclusion: null

@@ -67,15 +67,20 @@ def build_archipelago_document(
     interval: float = 1.0,
     seed: int = 0,
     individuals_per_area: float = 100.0,
+    geometry_seed: int = 0,
 ):
     """Assemble the full process-bigraph document for an archipelago.
 
     ``interaction_matrix`` is an ``n_species x n_species`` ndarray supplied by
     the caller (random for the baseline, food-web-derived for the variant).
+
+    Island **geometry** (positions + areas of any islands beyond the fixed
+    preset) is drawn from ``geometry_seed``, deliberately decoupled from the
+    dynamics ``seed`` so that a seed ensemble over the stochastic dynamics keeps
+    the archipelago fixed — essential for across-island area/distance analyses.
     """
     species_list = [f"Species_{i}" for i in range(n_species)]
-    rng = random.Random(seed)
-    specs = island_specs(n_islands, n_species, rng)
+    specs = island_specs(n_islands, n_species, random.Random(geometry_seed))
     matrix_list = interaction_matrix.tolist()
 
     islands_store: dict[str, dict] = {}

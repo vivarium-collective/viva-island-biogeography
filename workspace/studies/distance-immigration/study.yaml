@@ -1,0 +1,125 @@
+schema_version: 4
+name: distance-immigration
+title: "Isolation reduces colonization; migration conserves individuals"
+created: '2026-10-11'
+status: planned
+phase: Simulate
+question: |
+  Does the distance-decaying migration kernel (migration_rate = 1/(1+distance))
+  reproduce the immigration side of MacArthur-Wilson theory — more isolated
+  islands receive fewer colonists — and does inter-island migration conserve
+  individuals exactly?
+hypothesis: |
+  Because the per-pair migration probability falls as 1/(1+distance), an island
+  that is on average farther from the others should receive fewer immigrants per
+  generation, so immigration received should correlate negatively with mean
+  distance. Separately, every emigration moves exactly one individual to exactly
+  one other island, so the archipelago-wide net migration flux must be exactly
+  zero (individuals are conserved by the coupler).
+objective: |
+  Over a seed ensemble, measure (a) the across-island correlation of immigration
+  received with mean distance to the other islands, and (b) the total net
+  migration flux summed over all islands and generations.
+description: |
+  Faithful port of IslandManager.simulate's migration loop: for each ordered
+  island pair (i, j), with probability migration_rate(d_ij) a random present
+  species moves one individual i -> j. This study isolates the MigrationProcess
+  coupler: it validates the distance kernel (the colonization/immigration side of
+  island biogeography) and the conservation law that makes migration a genuine
+  exchange rather than a source/sink. Islands are held at full occupancy so the
+  measured immigration reflects the geometry, not transient population collapse.
+baseline:
+- name: baseline
+  composite: viva_island_biogeography.composites.archipelago.island_archipelago
+  params:
+    n_islands: 8
+    n_species: 30
+    introduction_probability: 0.05
+    seed: 0
+variants: []
+expected_behavior:
+- name: isolation-reduces-immigration
+  en: |
+    Across islands, immigration received per generation decreases with mean
+    distance to the other islands (correlation clearly negative, measured ~ -0.7).
+  observable: immigration_received
+  condition: pearson(immigration_received, mean_distance) < -0.3
+  rationale: |
+    migration_rate = 1/(1+distance) makes distant island pairs exchange fewer
+    migrants, so a more isolated island accumulates fewer arrivals — the
+    colonization gradient at the heart of MacArthur-Wilson island biogeography.
+  measure:
+    kind: derived_scalar
+    field: immigration_distance_corr
+  expect:
+    op: '<'
+    value: -0.3
+- name: migration-conserves-individuals
+  en: |
+    Inter-island migration conserves individuals exactly: the net migration flux
+    summed over all islands, species, and generations is zero.
+  observable: net_migration_flux
+  condition: abs(total_net_migration) < 1e-9
+  rationale: |
+    Every emigration (-1 at the source) is matched by an immigration (+1 at the
+    destination), so the coupler is a pure exchange with no creation or
+    destruction of individuals.
+  measure:
+    kind: derived_scalar
+    field: total_net_migration
+  expect:
+    op: approx
+    value: 0.0
+    tol: 1e-9
+behavior_tests:
+- name: isolation-reduces-immigration
+  classification: primary
+  description: Ensemble corr(immigration received, mean distance) must be below -0.3.
+  measure:
+    kind: derived_scalar
+    field: immigration_distance_corr
+  pass_if:
+    op: '<'
+    value: -0.3
+    provenance:
+      kind: calibration
+      note: |
+        Measured ~ -0.7 to -0.74 (8-island geometry, full-occupancy tally,
+        seed ensemble). -0.3 is a conservative negative ceiling.
+  requires_simulation: baseline
+- name: migration-conserves-individuals
+  classification: primary
+  description: Total net migration flux over the ensemble must be ~0 (|flux| < 1e-9).
+  measure:
+    kind: derived_scalar
+    field: total_net_migration
+  pass_if:
+    op: approx
+    value: 0.0
+    tol: 1e-9
+    provenance:
+      kind: theory
+      note: |
+        Conservation is exact by construction: each migration event writes -1 to
+        the source and +1 to the destination of the same species.
+  requires_simulation: baseline
+pipeline_gate:
+  prerequisites: []
+  enables: []
+  proceed_condition: |
+    distance-immigration validates the migration coupler's kernel + conservation
+    independently of the per-island LV dynamics.
+canonical_runs:
+- name: default
+  script: studies/distance-immigration/sims/run.py
+  args: []
+  label: "Migration kernel + conservation (8 islands, seed ensemble)"
+  default: true
+visualizations:
+- name: migration-network
+  chart: viz/migration_network.html
+  render: python sims/run.py
+- name: immigration-vs-distance
+  chart: viz/immigration_vs_distance.html
+  render: python sims/run.py
+conclusion: null

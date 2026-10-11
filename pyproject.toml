@@ -40,4 +40,4 @@ Issues = "https://github.com/vivarium-collective/viva-island-biogeography/issues
 packages = ["viva_island_biogeography"]
 
 [tool.uv.sources]
-vivarium-workbench = { path = "/Users/eranagmon/code/vivarium-workbench", editable = true }
+vivarium-workbench = { git = "https://github.com/vivarium-collective/vivarium-workbench.git", branch = "main" }
