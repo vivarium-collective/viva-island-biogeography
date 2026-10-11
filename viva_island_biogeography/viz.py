@@ -114,6 +114,16 @@ def spatial_map_animation(rows, island_meta, *, title="Island archipelago over t
             return richness_of(ab)
         return sum(ab.values())
 
+    # Subsample to a readable number of animation frames: 150 slider steps
+    # render as an unreadable tick ruler, so step through ~24 evenly-spaced
+    # generations (first and last always included).
+    n_rows = len(rows)
+    max_frames = 24
+    if n_rows > max_frames:
+        frame_idx = sorted(set(int(round(k)) for k in np.linspace(0, n_rows - 1, max_frames)))
+    else:
+        frame_idx = list(range(n_rows))
+
     values_over_time = [[metric(r["islands"][n]) for n in names] for r in rows]
     vmax = max((max(v) for v in values_over_time if v), default=1) or 1
     cbar_title = "Species<br>richness" if color_by == "richness" else "Total<br>abundance"
@@ -135,38 +145,46 @@ def spatial_map_animation(rows, island_meta, *, title="Island archipelago over t
         )
 
     fig = go.Figure(
-        data=[frame_trace(values_over_time[0])],
+        data=[frame_trace(values_over_time[frame_idx[0]])],
         frames=[
             go.Frame(data=[frame_trace(values_over_time[k])], name=f"{times[k]:.0f}")
-            for k in range(len(rows))
+            for k in frame_idx
         ],
     )
-    # pad axes
-    pad = 0.12 * (max(xs) - min(xs) + 1)
-    fig.update_xaxes(range=[min(xs) - pad - 10, max(xs) + pad + 10], title="x position")
-    fig.update_yaxes(range=[min(ys) - pad - 10, max(ys) + pad + 10], title="y position",
-                     scaleanchor="x", scaleratio=1)
+    # Square data window centered on the archipelago, so equal-aspect geometry
+    # (scaleanchor) is satisfied by shrinking the plot DOMAIN to a square
+    # (constrain="domain") rather than ballooning an axis range — the latter
+    # collapsed every island into the centre on a wide, short container.
+    cx, cy = (min(xs) + max(xs)) / 2.0, (min(ys) + max(ys)) / 2.0
+    half = max(max(xs) - min(xs), max(ys) - min(ys)) / 2.0
+    r = max(half * 1.22, 30.0)
+    fig.update_xaxes(range=[cx - r, cx + r], title="x position", constrain="domain")
+    fig.update_yaxes(range=[cy - r, cy + r], title="y position",
+                     scaleanchor="x", scaleratio=1, constrain="domain")
 
     fig.update_layout(
+        height=560,
         updatemenus=[dict(
             type="buttons", showactive=False, x=0.02, y=1.12, xanchor="left",
             buttons=[
-                dict(label="Play", method="animate",
-                     args=[None, {"frame": {"duration": 120, "redraw": True},
-                                  "fromcurrent": True}]),
-                dict(label="Pause", method="animate",
+                dict(label="▶ Play", method="animate",
+                     args=[None, {"frame": {"duration": 350, "redraw": True},
+                                  "fromcurrent": True,
+                                  "transition": {"duration": 150}}]),
+                dict(label="❚❚ Pause", method="animate",
                      args=[[None], {"frame": {"duration": 0, "redraw": False},
                                     "mode": "immediate"}]),
             ],
         )],
         sliders=[dict(
-            active=0, x=0.1, len=0.85, y=0,
+            active=0, x=0.1, len=0.85, y=0, pad=dict(t=10, b=10),
             currentvalue=dict(prefix="generation = ", font=dict(color=INK)),
+            tickcolor=GRID, ticklen=4, minorticklen=0, font=dict(color=MUTED, size=10),
             steps=[dict(method="animate", label=f"{times[k]:.0f}",
                         args=[[f"{times[k]:.0f}"],
                               {"frame": {"duration": 0, "redraw": True},
                                "mode": "immediate"}])
-                   for k in range(len(rows))],
+                   for k in frame_idx],
         )],
     )
     return _apply_theme(fig, title)
@@ -234,10 +252,11 @@ def metric_vs_predictor(xvals, yvals, labels, *, xtitle, ytitle, title,
     x = np.asarray(xvals, dtype=float)
     y = np.asarray(yvals, dtype=float)
     fig = go.Figure()
+    # Markers only (no always-on text): island labels collided badly where
+    # several islands share a similar area. Identity lives in the hover.
     fig.add_trace(go.Scatter(
-        x=x, y=y, mode="markers+text", text=labels, textposition="top center",
-        textfont=dict(color=INK_SECONDARY, size=10),
-        marker=dict(size=13, color=CATEGORICAL[0], line=dict(color=SURFACE, width=2)),
+        x=x, y=y, mode="markers", text=labels,
+        marker=dict(size=14, color=CATEGORICAL[0], line=dict(color=SURFACE, width=2)),
         name="islands",
         hovertemplate="<b>%{text}</b><br>" + xtitle + "=%{x:.1f}<br>" +
                       ytitle + "=%{y:.2f}<extra></extra>",
@@ -289,6 +308,7 @@ def migration_network(island_meta, *, title="Inter-island migration kernel  1/(1
         showlegend=False,
         hovertemplate="<b>%{text}</b><extra></extra>",
     ))
-    fig.update_xaxes(title="x position")
-    fig.update_yaxes(title="y position", scaleanchor="x", scaleratio=1)
+    fig.update_layout(height=560)
+    fig.update_xaxes(title="x position", constrain="domain")
+    fig.update_yaxes(title="y position", scaleanchor="x", scaleratio=1, constrain="domain")
     return _apply_theme(fig, title)
