@@ -1,81 +1,149 @@
 schema_version: 2
 name: island-biogeography
-title: "Island biogeography: a Lotka-Volterra metacommunity under contract"
+title: "Island biogeography: reproducing the equilibrium theory and its extensions"
 created: '2026-10-11'
 status: running
 question: |
-  Does the archived island-biogeography Lotka-Volterra metacommunity model,
-  faithfully ported into process-bigraph, reproduce the two central predictions
-  of MacArthur-Wilson island biogeography — species richness increasing with
-  island area and decreasing with isolation — and if not, what parts does it
-  reproduce and why?
+  Does island biogeography theory — MacArthur & Wilson's equilibrium of
+  immigration and extinction (1963, 1967) — hold up when built as composable
+  process-bigraph models, and where does it bend? Three layers: (1) reproduce
+  the ORIGINAL theory directly (the colonization/extinction rate model), (2) ask
+  how much of it a faithful Lotka-Volterra metacommunity port reproduces and why,
+  and (3) extend it with four nuanced follow-ups — neutral theory, microbial
+  ecology, island ontogeny, and the rescue effect.
 hypothesis: |
-  The model builds in the distance/isolation mechanism (migration_rate =
-  1/(1+distance)) and a per-island carrying capacity (area * individuals_per_area),
-  so we expect the immigration-distance gradient to hold robustly. The
-  area-richness law, however, is not built in: it must EMERGE from the
-  interaction dynamics, and we expect it to appear only when interactions are
-  trophic (a food web), not under random competition.
+  The canonical equilibrium model should reproduce its own three predictions
+  exactly — richness relaxing to S* where immigration I(S)=(P-S)c meets extinction
+  E(S)=S*e, the species-area power law S~A^z, and the isolation decline — since
+  they follow from the rate equations. The Lotka-Volterra port builds in the
+  distance kernel and a per-island carrying capacity, so the isolation gradient
+  and area->abundance scaling should hold, but the area-RICHNESS law must EMERGE
+  and we expect it only with trophic structure. The extensions should show the
+  theory's limits: neutral drift should also produce a SAR (so the SAR cannot
+  discriminate mechanism), microbes should show a flatter taxa-area slope, island
+  ontogeny should make richness transient (a hump), and the rescue effect
+  (immigration lowering extinction) should raise richness and damp turnover.
 description: |
-  A faithful process-bigraph port of vivarium-collective/island-biogeography
-  (experiments/island_lotka_volterra.py + experiments/island_food_web.py). Each
-  island is an IslandProcess running the discrete Lotka-Volterra step with a
-  carrying-capacity rescale; a single MigrationProcess couples them with
-  distance-stochastic single-individual migration and random species
-  introduction. Three studies interrogate the model against island-biogeography
-  theory: carrying-capacity scaling (area -> abundance), the isolation gradient
-  + migration conservation, and the role of trophic structure in the
-  species-area law.
+  Island biogeography built three ways in process-bigraph.
+
+  LAYER 1 - reproduce the original theory. The MacArthurWilsonEquilibriumProcess
+  implements the phenomenological 1967 model: a mainland pool of P species feeds
+  an island on which each species is present or absent, colonizing at
+  c=c0/(1+distance) and going extinct at e=e0*(ref_area/area)^z. Two studies
+  reproduce the rate-crossing equilibrium + turnover, and the species-area +
+  isolation laws.
+
+  LAYER 2 - the Lotka-Volterra port under contract. A faithful port of
+  vivarium-collective/island-biogeography (IslandProcess + MigrationProcess):
+  mechanistic LV dynamics with a carrying-capacity rescale, coupled by
+  distance-stochastic migration. Three studies test how much of MacArthur-Wilson
+  this mechanistic model actually makes.
+
+  LAYER 3 - extensions / nuanced biology. Four follow-ups: Hubbell's neutral
+  metacommunity (does drift mimic the SAR?), the microbial regime (does the
+  taxa-area relationship hold and flatten?), Whittaker's General Dynamic Model
+  (does geological island ontogeny make richness hump then decline?), and the
+  Brown & Kodric-Brown rescue effect (how does coupling the two curves lift
+  richness and damp turnover?).
 studies:
+- mw-equilibrium-reproduction
+- species-area-and-isolation
+- neutral-vs-equilibrium
+- microbial-island-biogeography
+- general-dynamic-model
+- rescue-effect
 - island-archipelago
 - distance-immigration
 - island-food-web
 executive:
   what_is_this: |
-    A real port of an archived ecological model into composable process-bigraph
-    Processes, used to test which island-biogeography predictions the model
-    actually makes. Islands are time-stepped Lotka-Volterra Processes; a
-    migration coupler exchanges individuals by distance. Three studies measure
-    the area-abundance, isolation-immigration, and area-richness relationships.
+    Island biogeography theory built as composable process-bigraph models and
+    tested across three layers: the original MacArthur-Wilson equilibrium model
+    reproduced directly, a mechanistic Lotka-Volterra port tested for how much of
+    the theory it makes, and four extensions probing where the theory bends
+    (neutral drift, microbes, geological ontogeny, the rescue effect). Nine
+    studies in all, each with interactive figures.
   verdict: |
-    The port reproduces island biogeography PARTIALLY and mechanistically, as
-    predicted. (1) Carrying-capacity scaling is exact: equilibrium total
-    abundance tracks island area with correlation ~1.0. (2) The isolation
-    gradient holds: immigration received falls with mean distance (corr ~ -0.7),
-    and migration conserves individuals exactly. (3) The classic species-AREA law
-    is NOT reproduced under random competition (richness-vs-area corr ~ -0.1) but
-    IS recovered once interactions are trophic (food web: corr ~ +0.5), and the
-    food web sustains ~1.8 more species per island than random competition at
-    matched parameters.
+    The original theory is reproduced directly and cleanly, the LV port
+    reproduces it partially and mechanistically, and the four extensions show
+    exactly where it bends. (1) Canonical reproduction: the equilibrium model
+    sits on MacArthur & Wilson's crossing rate curves (observed vs analytic S*
+    corr = 0.992), turns over strongly at constant richness (~15x), and yields the
+    species-area law (z = 0.12) and the isolation decline (Spearman -0.97). (2) LV
+    port: area sets abundance exactly (corr ~ 1.0), isolation sets colonization
+    (corr ~ -0.7, migration conserves individuals), but the species-area law
+    emerges only with trophic structure (random competition corr ~ -0.1; food web
+    ~ +0.5). (3) Extensions: neutral drift ALSO produces a positive SAR (z ~ 0.76
+    vs 0.13), so the SAR cannot discriminate neutral from niche; the microbial
+    regime holds a positive but flatter taxa-area slope (z ~ 0.04, ~3x flatter,
+    ~20x faster turnover); island ontogeny makes richness hump then decline
+    (peak ~52, falling to ~27); and the rescue effect raises equilibrium richness
+    (30 -> 37) while damping turnover (30 -> 23 events/gen).
   verdict_status: supported
   verdict_detail: |
-    All six behavior tests across the three studies are designed to pass against
-    the measured values with conservative margins; the headline scientific
-    finding (area sets abundance, trophic structure sets the species-area law,
-    isolation sets colonization) is the honest, falsifiable result of the port.
-  decisions_needed: []
+    Every behavior test across the nine studies is designed to pass against the
+    measured values with conservative margins; the headline findings are the
+    honest, falsifiable results of the models. The scientific through-line: the
+    equilibrium of immigration and extinction is reproducible and robust, but it
+    is mechanism-agnostic (neutral drift mimics it), scale-dependent (microbes
+    flatten it), non-stationary over geological time (ontogeny makes it a hump),
+    and sharpened by coupling (rescue lifts it).
+  decisions_needed:
+  - "Calibrate the microbial and neutral regimes against real data (EMP, tree-hole, Horner-Devine taxa-area) rather than demonstrating the regimes qualitatively."
 scientific_argument:
   main_claim: |
-    In this Lotka-Volterra island model, island area controls equilibrium
-    abundance (via carrying capacity) and isolation controls colonization (via
-    the 1/(1+distance) kernel), but the classic species-area relationship emerges
-    only from trophic interaction structure, not from area or random competition
-    alone.
+    MacArthur & Wilson's equilibrium of immigration and extinction is faithfully
+    reproducible as a process-bigraph model and robust in its core predictions,
+    but it is mechanism-agnostic, scale-dependent, non-stationary, and
+    coupling-sensitive — four extensions that the same modular substrate makes
+    explicit alongside the original theory.
   evidence_for:
-  - "island-archipelago: corr(equilibrium total abundance, area) ~ 1.00 — exact capacity scaling."
-  - "distance-immigration: corr(immigration received, mean distance) ~ -0.7; net migration flux exactly 0."
-  - "island-food-web: corr(richness, log area) ~ +0.5 and ~ +1.8 species gain over random competition at matched parameters."
+  - "mw-equilibrium-reproduction: observed equilibrium richness tracks analytic S*=P*c/(c+e) with corr=0.992; turnover ~15x net change at constant S."
+  - "species-area-and-isolation: species-area power law z=0.12; isolation decline Spearman=-0.97 (Pearson -0.79, a hyperbolic drop)."
+  - "island-archipelago: corr(equilibrium total abundance, area) ~ 1.00 — exact capacity scaling (LV port)."
+  - "distance-immigration: corr(immigration received, mean distance) ~ -0.7; net migration flux exactly 0 (LV port)."
+  - "island-food-web: corr(richness, log area) ~ +0.5 and ~+1.8 species gain over random competition (LV port)."
+  - "neutral-vs-equilibrium: Hubbell drift also gives a positive SAR (z~0.76 vs equilibrium z~0.13) — the SAR alone cannot discriminate neutral from niche."
+  - "microbial-island-biogeography: the taxa-area relationship holds but flattens for microbes (z~0.04 vs macro 0.12, ~3x) with ~20x faster turnover."
+  - "general-dynamic-model: island ontogeny makes richness hump then decline (peak ~52 at mid-age, falling to ~27) — the equilibrium is transient over geological time."
+  - "rescue-effect: immigration lowering extinction raises equilibrium richness (30->37) and damps turnover (30->23 events/gen); reduces exactly to the baseline at rescue=0."
   evidence_against:
-  - "island-archipelago: corr(richness, log area) ~ -0.1 — the classic species-area law is absent under random competition, so the full MacArthur-Wilson richness prediction is NOT reproduced by the model as a whole."
+  - "island-archipelago: corr(richness, log area) ~ -0.1 — the species-area law is absent under random competition, so the LV port does not make the full MacArthur-Wilson richness prediction on its own."
+  - "The microbial and neutral SAR slopes are regime demonstrations (chosen parameters), not yet fit to empirical EMP/tree-hole data — the next calibration step."
   key_figures:
-  - "island-archipelago/viz/spatial_map.html — animated richness over the archipelago."
-  - "island-food-web/viz/richness_vs_area.html — food web vs random competition species-area contrast."
-  - "distance-immigration/viz/immigration_vs_distance.html — the colonization gradient."
+  - "mw-equilibrium-reproduction/viz/rate_crossing.html — the simulation sits on MacArthur & Wilson's crossing immigration/extinction curves."
+  - "species-area-and-isolation/viz/species_area.html — the species-area power law with fitted z."
+  - "neutral-vs-equilibrium/viz/sar_overlay.html — neutral vs equilibrium SAR: two mechanisms, one law."
+  - "general-dynamic-model/viz/ — richness humps then declines over island ontogeny."
+  - "rescue-effect/viz/ — richness rises and turnover falls as the curves couple."
+  - "island-food-web/viz/richness_vs_area.html — food web vs random competition species-area contrast (LV port)."
   caveats:
-  - "Discrete-time model: one tick == one generation; the interval magnitude is not sub-divided."
-  - "Composition nuance: within a tick, migration reads pre-LV counts (synchronous delta composition), so single-individual abundance undershoots of magnitude <=1 can occur transiently and self-heal next generation — see the MigrationProcess docstring."
-  - "Richness and species-area results are ensemble means over seeds; single realisations are noisy because richness is low (strong exclusion)."
+  - "Discrete-time models: one tick == one generation; the interval magnitude is not sub-divided."
+  - "Equilibrium, species-area and turnover results are ensemble means over seeds; single realisations are noisy because richness is modest."
+  - "The canonical species-area slope (z~0.12) sits at the low end of the empirical 0.1-0.35 band, partly because the largest islands approach pool saturation."
+  - "LV-port composition nuance: within a tick, migration reads pre-LV counts, so single-individual undershoots of magnitude <=1 can occur transiently and self-heal next generation (see the MigrationProcess docstring)."
+  - "The neutral SAR is steep (z~0.76) at low per-island individual count J (drift drives small islands near-monospecific); shallower with higher density."
 acceptance_criteria:
+- study: mw-equilibrium-reproduction
+  behavior: equilibrium-tracks-theory
+- study: mw-equilibrium-reproduction
+  behavior: turnover-at-equilibrium
+- study: species-area-and-isolation
+  behavior: species-area-law
+- study: species-area-and-isolation
+  behavior: isolation-declines
+- study: neutral-vs-equilibrium
+  behavior: neutral-produces-sar
+- study: microbial-island-biogeography
+  behavior: microbial-sar-holds
+- study: microbial-island-biogeography
+  behavior: microbial-z-flatter
+- study: general-dynamic-model
+  behavior: richness-is-humped
+- study: rescue-effect
+  behavior: rescue-raises-richness
+- study: rescue-effect
+  behavior: rescue-lowers-turnover
 - study: island-archipelago
   behavior: abundance-scales-with-area
 - study: island-archipelago

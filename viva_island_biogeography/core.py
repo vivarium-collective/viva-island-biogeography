@@ -14,12 +14,23 @@ from __future__ import annotations
 
 from process_bigraph import allocate_core
 
-from .processes import IslandProcess, MigrationProcess
+from .processes import (
+    IslandProcess,
+    MigrationProcess,
+    MacArthurWilsonEquilibriumProcess,
+)
+from .models_neutral import NeutralMetacommunityProcess
+from .models_gdm import GeneralDynamicModelProcess
+from .models_rescue import RescueEffectProcess
 from .types import register_types
 
 _PROCESSES = (
     ("IslandProcess", IslandProcess),
     ("MigrationProcess", MigrationProcess),
+    ("MacArthurWilsonEquilibriumProcess", MacArthurWilsonEquilibriumProcess),
+    ("NeutralMetacommunityProcess", NeutralMetacommunityProcess),
+    ("GeneralDynamicModelProcess", GeneralDynamicModelProcess),
+    ("RescueEffectProcess", RescueEffectProcess),
 )
 
 

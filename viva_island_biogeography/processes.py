@@ -332,3 +332,152 @@ class MigrationProcess(Process):
 
         # Drop empty per-island maps so the emitted delta is minimal.
         return {"exchange": {k: v for k, v in exchange.items() if v}}
+
+
+# ----------------------------------------------------------------------
+# Canonical MacArthur-Wilson equilibrium model
+# ----------------------------------------------------------------------
+# A second, deliberately *phenomenological* process alongside the mechanistic
+# Lotka-Volterra port above. Where IslandProcess grows abundances through
+# explicit interactions, this reproduces the ORIGINAL theory of island
+# biogeography (MacArthur & Wilson 1963 Evolution 17:373; 1967 monograph): an
+# island draws from a mainland species pool of size P, each species simply
+# present or absent, with per-species colonization and extinction probabilities
+# set by isolation (distance) and island area. Species richness relaxes to the
+# equilibrium S* where the immigration rate I(S) = (P - S)*c equals the
+# extinction rate E(S) = S*e, and species identity turns over even at constant S.
+
+
+def colonization_prob(distance: float, base: float) -> float:
+    """Per-species per-generation colonization probability, declining with isolation.
+
+    ``c(d) = base / (1 + distance)`` — the same distance decay the LV port uses
+    for migration (:func:`migration_rate`), so isolation lowers immigration in
+    both models. ``base`` is the colonization probability of a mainland
+    (distance 0) species.
+    """
+    return base / (1.0 + max(0.0, float(distance)))
+
+
+def extinction_prob(area: float, base: float, area_exponent: float,
+                    ref_area: float = 1.0) -> float:
+    """Per-species per-generation extinction probability, declining with area.
+
+    ``e(A) = base * (ref_area / A) ** area_exponent``, clamped to ``[0, 1]``.
+    Larger islands carry larger populations per species and so lose them less
+    often — the area effect. ``ref_area`` is the area at which extinction equals
+    ``base`` (set it to the largest island so that island is the least
+    extinction-prone). In the extinction-limited regime (A << ref_area) this
+    yields S* ~ A**area_exponent, i.e. a species-area power law with slope
+    z ~ area_exponent.
+    """
+    area = float(area)
+    if area <= 0.0:
+        return float(min(1.0, max(0.0, base)))
+    return float(min(1.0, max(0.0, base * (ref_area / area) ** area_exponent)))
+
+
+def mw_equilibrium_richness(n_pool: int, c: float, e: float) -> float:
+    """Analytic equilibrium richness S* = P * c / (c + e) (0 if c + e == 0)."""
+    denom = c + e
+    return float(n_pool) * c / denom if denom > 0 else 0.0
+
+
+class MacArthurWilsonEquilibriumProcess(Process):
+    """One island under the canonical MacArthur-Wilson equilibrium model.
+
+    The phenomenological colonization/extinction model of *The Theory of Island
+    Biogeography* (MacArthur & Wilson 1963, 1967), as a counterpart to the
+    mechanistic Lotka-Volterra :class:`IslandProcess`. A mainland pool of
+    ``n_pool`` species feeds the island; each species is present (1) or absent
+    (0). Each generation every absent species colonizes with probability
+    ``c = colonization_base / (1 + distance)`` and every present species goes
+    extinct with probability ``e = extinction_base * (ref_area/area)**area_exponent``.
+
+    Richness relaxes to S* = P*c/(c+e): larger area (lower ``e``) and lower
+    isolation (higher ``c``) both raise it, and species identity turns over even
+    once S has plateaued (the turnover prediction). Immigration I(S)=(P-S)c
+    falls with S and extinction E(S)=S*e rises with S; they cross at S* — the
+    rate-crossing diagram.
+
+    Outputs (all deltas, so the stores accumulate to absolute values — the
+    mass/length delta precedent used throughout this workspace):
+
+    presence : map[string, float]
+        Per-species occupancy delta (+1 colonization, -1 extinction); the store
+        accumulates to a 0/1 occupancy vector.
+    richness : float
+        Local richness delta; accumulates to the absolute present-species count.
+    cum_colonizations, cum_extinctions : float
+        Per-tick gross colonization / extinction counts, emitted as deltas so
+        the stores accumulate to running totals (their first difference per tick
+        is the gross turnover, from which the per-S event rates are measured).
+    """
+
+    config_schema = {
+        "name": {"_type": "string", "_default": "island"},
+        "n_pool": {"_type": "integer", "_default": 50},
+        "colonization_base": {"_type": "float", "_default": 0.02},
+        "extinction_base": {"_type": "float", "_default": 0.012},
+        "area": {"_type": "float", "_default": 100.0},
+        "distance": {"_type": "float", "_default": 0.0},
+        "area_exponent": {"_type": "float", "_default": 0.25},
+        "ref_area": {"_type": "float", "_default": 100.0},
+        "x": {"_type": "float", "_default": 0.0},
+        "y": {"_type": "float", "_default": 0.0},
+        "seed": {"_type": "integer", "_default": 0},
+    }
+
+    def __init__(self, config=None, core=None):
+        super().__init__(config=config, core=core)
+        self.n_pool = int(self.config["n_pool"])
+        self.species_list = [f"Species_{i}" for i in range(self.n_pool)]
+        self.c = colonization_prob(self.config["distance"], self.config["colonization_base"])
+        self.e = extinction_prob(
+            self.config["area"], self.config["extinction_base"],
+            self.config["area_exponent"], self.config["ref_area"])
+        self._rng = random.Random((self.config["seed"], self.config["name"]).__hash__())
+        self._prev_richness = 0
+
+    def inputs(self):
+        return {"presence": "map[string,float]"}
+
+    def outputs(self):
+        return {
+            "presence": "map[string,float]",
+            "richness": "float",
+            "cum_colonizations": "float",
+            "cum_extinctions": "float",
+        }
+
+    def initial_state(self):
+        return {"presence": {s: 0.0 for s in self.species_list}}
+
+    def update(self, state, interval):
+        presence = dict(state.get("presence", {}) or {})
+        delta: dict[str, float] = {}
+        colonizations = 0
+        extinctions = 0
+        for s in self.species_list:
+            present = float(presence.get(s, 0.0)) > 0.0
+            if present:
+                if self._rng.random() < self.e:
+                    delta[s] = -1.0
+                    extinctions += 1
+            else:
+                if self._rng.random() < self.c:
+                    delta[s] = 1.0
+                    colonizations += 1
+
+        richness_now = sum(
+            1 for s in self.species_list
+            if float(presence.get(s, 0.0)) + delta.get(s, 0.0) > 0.0)
+        d_richness = float(richness_now - self._prev_richness)
+        self._prev_richness = richness_now
+
+        return {
+            "presence": delta,
+            "richness": d_richness,
+            "cum_colonizations": float(colonizations),
+            "cum_extinctions": float(extinctions),
+        }

@@ -36,7 +36,85 @@ simulations: []
 
 # Workspace-scoped datasets (file path + format + provenance). Populated by
 # the Inputs tab "Attach dataset" action.
-datasets: []
+datasets:
+  - name: "GBIF occurrence downloads"
+    url: "https://www.gbif.org"
+    format: "Darwin Core Archive (CSV/TSV)"
+    source: "Global Biodiversity Information Facility"
+    claims: []
+    description: >-
+      Billions of georeferenced species-occurrence records, filterable by
+      archipelago polygon. Per-island species lists give empirical species-area
+      (z, c) and isolation gradients to parameterize/validate MacArthur-Wilson
+      immigration-extinction models. Each occ_download() mints a citable DOI
+      (10.15468/dl.*); the ssarp R package builds island SARs directly from GBIF.
+  - name: "DAISIE island datasets"
+    url: "https://cran.r-project.org/package=DAISIE"
+    format: "R data objects (phylogenies + endemicity tables)"
+    source: "Etienne, Valente, Phillimore et al. (CRAN)"
+    claims: []
+    description: >-
+      Curated oceanic-island colonization/phylogenetic datasets (Galapagos,
+      Canary, Azores, Hawaiian radiations) bundled with the DAISIE maximum-
+      likelihood colonization/speciation/extinction inference + simulation
+      engine. A ready macroevolutionary island-dynamics substrate.
+  - name: "Simberloff & Wilson mangrove defaunation (island R package)"
+    url: "https://cran.r-project.org/package=island"
+    format: "R list of presence/absence data frames by survey date"
+    source: "Simberloff & Wilson 1969 (Ecology 50:278); island pkg `simberloff` object"
+    claims: []
+    description: >-
+      The classic Florida Keys mangrove-island defaunation time series (6 islets,
+      pre/post methyl-bromide) plus machinery to fit colonization & extinction
+      rates. The canonical 'fit c/e from a colonization time series' validation
+      harness for any equilibrium-theory simulator.
+  - name: "sars R package island SAR datasets"
+    url: "https://cran.r-project.org/package=sars"
+    format: "R data objects (island species-area tables, e.g. galap)"
+    source: "Matthews et al. (CRAN)"
+    claims: []
+    description: >-
+      Bundled classic island species-area datasets (e.g. Galapagos plants) with
+      20+ SAR model fits. A reliable, stable substitute for reproducing the
+      species-area power law when a single Dryad archive is not available.
+  - name: "Earth Microbiome Project (EMP)"
+    url: "https://qiita.ucsd.edu/emp/"
+    format: "BIOM feature tables + FASTA/FASTQ + sample-metadata TSV"
+    source: "Thompson et al. 2017 (Nature 551:457); DOI 10.1038/nature24621"
+    claims: []
+    description: >-
+      >25,000 standardized 16S/18S/ITS amplicon samples across global environment
+      types with spatial metadata. Supplies distance-decay and environmental-
+      selection parameters and a global 'mainland' source pool for microbial
+      island-colonization models.
+  - name: "American Gut / Microsetta (host-as-island)"
+    url: "https://www.ebi.ac.uk/ena/browser/view/PRJEB11419"
+    format: "FASTQ + 16S feature tables + metadata TSV"
+    source: "Qiita study 10317 / ENA BioProject PRJEB11419 / MGnify MGYS00000596"
+    claims: []
+    description: >-
+      >25,000 self-sampled human gut/skin/oral 16S samples with lifestyle
+      metadata. Each host is an island patch; cross-host and temporal variation
+      feed host-as-island metacommunity colonization-extinction models (Costello 2012).
+  - name: "Human Microbiome Project (HMP)"
+    url: "https://portal.hmpdacc.org"
+    format: "FASTQ/BAM + 16S OTU tables + curated metadata"
+    source: "NCBI BioProject PRJNA43021; AWS Open Data mirror"
+    claims: []
+    description: >-
+      Multi-body-site 16S + WGS metagenomes from ~300 healthy adults (18 body
+      sites). Body sites form a within-host archipelago of habitat types for
+      colonization/selection metacommunity validation.
+  - name: "Thousand Island Lake soil microbes (true-island SAR)"
+    url: "https://doi.org/10.1038/s41396-020-0657-8"
+    format: "amplicon FASTQ + per-island OTU tables (see paper data-availability)"
+    source: "Wang et al. 2020 (ISME J 14:1886)"
+    claims: []
+    description: >-
+      306 soil samples from 29 land-bridge islands + mainland (bacteria & fungi).
+      One of the few microbial *true-island* SAR datasets with area and isolation
+      covariates - the closest microbial analog for direct MacArthur-Wilson
+      parameterization.
 
 references_bib: workspace/references/papers.bib
 server:

@@ -1,0 +1,182 @@
+name: structured_resources
+version: '1'
+description: >-
+  Curated scientific resources for island-biogeography investigations into
+  spatial dynamics: open empirical datasets that can fit immigration/extinction
+  rates and species-area/isolation laws (evidence-datasets), and the external
+  simulation frameworks the process-bigraph models can be bridged to or
+  validated against (imported-engines).
+evidence_dataset_qa_rule: >-
+  Every evidence dataset carries a provenance_class and a verbatim caution.
+  A model_prediction stays status: pending until a study is wired to it.
+resources:
+
+# --- evidence-dataset: empirical anchors -----------------------------------
+- id: evidence-simberloff-defaunation
+  type: evidence-dataset
+  name: Simberloff & Wilson mangrove defaunation (1969)
+  summary: >-
+    The classic Florida Keys mangrove-island defaunation colonization time
+    series — the empirical trajectory toward equilibrium turnover.
+  citation: {bibtex_key: simberloff1969experimental, doi: "10.2307/1934856"}
+  provenance_class: FIELD-EXPERIMENT
+  source_figure_table: "Ecology 50(2):278, colonization curves"
+  original_measurement:
+    quantity: arthropod species richness recolonization toward equilibrium
+    value: null
+    units: species per island over time
+    uncertainty_or_detection_limit: "6 islets, pre/post methyl-bromide"
+  model_prediction: {study: mw-equilibrium-reproduction, output: eq_track_corr}
+  access: "island R package `simberloff` object (CRAN)"
+  caution: >-
+    Rates are taxon- and island-specific; the `island` package stochastic fit
+    (Alonso et al. 2015) is the recommended c/e estimator, not a raw curve read.
+  status: wired
+  references: [simberloff1969experimental, simberloff1970experimental]
+
+- id: evidence-hornerdevine-taxa-area
+  type: evidence-dataset
+  name: Bacterial taxa-area relationship (Horner-Devine 2004)
+  summary: >-
+    First empirical microbial taxa-area relationship (salt-marsh sediment
+    bacteria) — a flatter z than macro-organisms.
+  citation: {bibtex_key: hornerdevine2004taxa, doi: "10.1038/nature03073"}
+  provenance_class: FIELD-SURVEY
+  source_figure_table: "Nature 432:750, taxa-area slope"
+  original_measurement:
+    quantity: taxa-area exponent z
+    value: 0.04
+    units: "dimensionless (log-log slope)"
+    uncertainty_or_detection_limit: "z ~ 0.02-0.10 depending on scale/method"
+  model_prediction: {study: microbial-island-biogeography, output: sar_z_micro}
+  access: "see paper; reconstructable via GBIF / amplicon archives"
+  caution: >-
+    Undersampling biases z downward (Woodcock 2006); compare like-for-like
+    sampling effort before matching a simulated z.
+  status: wired
+  references: [hornerdevine2004taxa, martiny2006microbial]
+
+- id: evidence-bell-treeholes
+  type: evidence-dataset
+  name: Tree-hole bacterial islands (Bell 2005)
+  summary: >-
+    Water-filled beech tree-holes as literal aquatic islands; bacterial
+    richness scales with island (water) volume.
+  citation: {bibtex_key: bell2005islands, doi: "10.1126/science.1111318"}
+  provenance_class: FIELD-SURVEY
+  source_figure_table: "Science 308:1884"
+  original_measurement:
+    quantity: bacterial taxon richness vs island volume
+    value: null
+    units: taxa vs mL
+    uncertainty_or_detection_limit: "discrete natural microcosms"
+  model_prediction: {study: microbial-island-biogeography, output: sar_z_micro}
+  access: "see paper; neutral fit in Woodcock 2007"
+  caution: >-
+    Volume is the area analog here; a neutral model also fits (Woodcock 2007),
+    so a positive SAR alone does not distinguish niche from drift.
+  status: catalogued
+  references: [bell2005islands, woodcock2007neutral]
+
+- id: evidence-emp-global
+  type: evidence-dataset
+  name: Earth Microbiome Project (global source pool)
+  summary: >-
+    >25,000 standardized amplicon samples across global environments — a
+    mainland source pool and a distance-decay reference for microbial islands.
+  citation: {bibtex_key: martiny2006microbial}
+  provenance_class: FIELD-SURVEY
+  source_figure_table: "Qiita EMP portal; Thompson et al. 2017 Nature 551:457"
+  original_measurement:
+    quantity: environment x geography community matrix
+    value: null
+    units: BIOM feature tables
+    uncertainty_or_detection_limit: "16S/18S/ITS; spatial metadata"
+  model_prediction: {status: pending}
+  access: "https://qiita.ucsd.edu/emp/"
+  caution: >-
+    Amplicon relative abundances are compositional; a metacommunity source pool
+    derived from EMP must be rarefied/normalized before use.
+  status: catalogued
+  references: [martiny2006microbial, hanson2012beyond]
+
+- id: evidence-thousand-island-soil
+  type: evidence-dataset
+  name: Thousand Island Lake soil microbes (Wang 2020)
+  summary: >-
+    One of the few microbial TRUE-island SAR datasets — soil bacteria & fungi
+    on 29 land-bridge islands with area and isolation covariates.
+  citation: {bibtex_key: wang2020mechanisms, doi: "10.1038/s41396-020-0657-8"}
+  provenance_class: FIELD-SURVEY
+  source_figure_table: "ISME J 14:1886"
+  original_measurement:
+    quantity: microbial richness vs island area and isolation
+    value: null
+    units: OTU richness
+    uncertainty_or_detection_limit: "306 samples, 29 islands + mainland"
+  model_prediction: {study: microbial-island-biogeography, output: sar_z_micro}
+  access: "see paper data-availability (NCBI SRA)"
+  caution: >-
+    Area raised richness but isolation did not in this system — a direct test
+    of whether the isolation term matters for microbes.
+  status: catalogued
+  references: [wang2020mechanisms]
+
+- id: evidence-galapagos-sar
+  type: evidence-dataset
+  name: Galapagos / oceanic-island species-area (sars, DAISIE)
+  summary: >-
+    Classic macro-island species-area datasets (e.g. Galapagos plants) for
+    reproducing the power law S ~ A^z and its macro z (~0.25-0.35).
+  citation: {bibtex_key: whittaker2008general}
+  provenance_class: FIELD-SURVEY
+  source_figure_table: "sars R package `galap`; DAISIE island datasets"
+  original_measurement:
+    quantity: species-area exponent z
+    value: 0.3
+    units: "dimensionless (log-log slope)"
+    uncertainty_or_detection_limit: "macro z typically 0.15-0.35"
+  model_prediction: {study: species-area-and-isolation, output: sar_z}
+  access: "CRAN sars / DAISIE packages"
+  caution: >-
+    Single-archipelago z differs from inter-province z (Rosenzweig 1995); match
+    the scale of the simulated gradient to the empirical one.
+  status: wired
+  references: [arrhenius1921species, preston1962canonical, whittaker2008general]
+
+# --- imported-engine: external simulation frameworks -----------------------
+- id: engine-daisie
+  type: imported-engine
+  name: DAISIE (macroevolutionary island dynamics)
+  summary: >-
+    Maximum-likelihood colonization/speciation/extinction inference and forward
+    simulation of oceanic-island biotas.
+  engine: DAISIE
+  wraps: "R package DAISIE (rsetienne/DAISIE)"
+  role: "macroevolutionary (speciation-inclusive) island assembly"
+  used_by: [species-area-and-isolation, general-dynamic-model]
+  references: [valente2015equilibrium, whittaker2008general]
+
+- id: engine-pycoalescence
+  type: imported-engine
+  name: pycoalescence / necsim (spatial neutral)
+  summary: >-
+    High-performance coalescent spatially-explicit neutral biodiversity engine;
+    generates neutral SAR/SAD null expectations.
+  engine: pycoalescence
+  wraps: "pycoalescence (necsim C++ core)"
+  role: "neutral dispersal/drift null model"
+  used_by: [neutral-vs-equilibrium]
+  references: [thompson2020pycoalescence, rosindell2008coalescence, hubbell2001unified]
+
+- id: engine-mobsim
+  type: imported-engine
+  name: mobsim (biodiversity across spatial scales)
+  summary: >-
+    Simulates communities with a set SAD + spatial aggregation and measures
+    rarefaction/SAR — a validation/measurement harness.
+  engine: mobsim
+  wraps: "R package mobsim (MoBiodiv/mobsim)"
+  role: "SAR/rarefaction measurement + synthetic community control"
+  used_by: [neutral-vs-equilibrium, species-area-and-isolation]
+  references: [may2018mobsim]

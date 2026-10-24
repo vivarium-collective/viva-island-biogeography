@@ -1,0 +1,167 @@
+schema_version: 4
+name: general-dynamic-model
+title: "General Dynamic Model: does island ontogeny make richness hump then decline?"
+created: '2026-10-24'
+status: completed
+phase: Evaluate
+question: |
+  Under the General Dynamic Model of oceanic island biogeography (Whittaker,
+  Triantis & Ladle 2008), an island's area is not static: it is born, grows as
+  it is built up, then subsides and erodes over geological time. When area rises
+  then erodes (island ontogeny), does species richness OVERSHOOT and then
+  DECLINE — a humped trajectory — unlike the flat static-area MacArthur-Wilson
+  equilibrium?
+hypothesis: |
+  The GeneralDynamicModelProcess uses the same colonization/extinction
+  bookkeeping as the MacArthur-Wilson process — each of n_pool mainland species
+  present or absent, colonizing absent species at c = colonization_base and
+  removing present species at e(t) — but recomputes e(t) each tick from a
+  time-varying area(t) = area_max*((t/t_peak)*exp(1-t/t_peak))^ontogeny_shape
+  that rises to area_max at t_peak then erodes. Because extinction falls with
+  area, the instantaneous equilibrium S*(t) = P*c/(c+e(t)) is itself humped.
+  Richness chases this moving target with a relaxation lag, so it must rise to an
+  overshoot while the island is young and large, then decline as the island
+  erodes — a hump the static MacArthur-Wilson plateau cannot produce. The lag
+  also makes the richness-vs-area trajectory trace a hysteresis loop (richness
+  peaks after area and decays more slowly).
+objective: |
+  Over a 10-seed ensemble on a focal mid-age island (t_peak = 150), run the
+  island through 500 model-time units (~3.3 * t_peak) so it is carried well past
+  its area peak and into erosion. Measure the peak richness, its timing, and the
+  early- and late-run richness, and confirm the ensemble-mean richness is humped
+  (peak in the middle third of the run, clearing both the early and late richness
+  by a clear margin). Render area(t) and richness(t) overlaid, the richness-area
+  hysteresis loop, and the ensemble trajectory with a variance band.
+description: |
+  This study extends the static MacArthur-Wilson equilibrium
+  (mw-equilibrium-reproduction) with the single ingredient Whittaker, Triantis
+  & Ladle (2008, citekey whittaker2008general) argue is decisive for oceanic
+  (volcanic) islands: island ontogeny. The GeneralDynamicModelProcess is
+  deliberately identical to MacArthurWilsonEquilibriumProcess except that the
+  island's area traces a humped life-cycle A(t), so the per-species extinction
+  probability e(t) = extinction_base*(ref_area/A(t))^area_exponent is lowest at
+  the island's prime and rises again as it erodes. Three islands are staggered
+  along a t_peak age gradient (120/150/180) so a single run shows young, mid-life
+  and old islands peaking at different times — the GDM's space-for-time logic.
+  The headline result is the emergent humped richness trajectory, the GDM's
+  central qualitative departure from the 1967 equilibrium theory.
+baseline:
+- name: baseline
+  composite: viva_island_biogeography.composites.gdm.general_dynamic_model
+  params:
+    n_islands: 3
+    n_pool: 60
+    colonization_base: 0.05
+    extinction_base: 0.01
+    area_max: 100.0
+    t_peak_min: 120.0
+    t_peak_max: 180.0
+    ontogeny_shape: 2.0
+    area_exponent: 1.0
+    ref_area: 100.0
+    seed: 1
+variants: []
+expected_behavior:
+- name: richness-is-humped
+  en: |
+    Under island ontogeny the ensemble-mean richness rises to a peak in roughly
+    the middle third of the run then declines: the peak index is neither at the
+    start nor the end, and peak richness exceeds both the early and late richness
+    by a clear margin (overshoot-then-decline, not a static plateau).
+  observable: richness_trajectory
+  condition: peak in middle third AND early < 0.75*peak AND late < 0.75*peak
+  rationale: |
+    The GDM's defining prediction is that richness tracks a humped S*(t) driven
+    by the island's rise-and-erode area, so richness must overshoot and then fall
+    rather than relax to a flat equilibrium. A peak pinned to the middle of the
+    run that clears both ends distinguishes a genuine hump from a monotone
+    approach or a late plateau.
+  measure:
+    kind: derived_scalar
+    field: richness-is-humped
+  expect:
+    op: '=='
+    value: PASS
+behavior_tests:
+- name: richness-is-humped
+  classification: primary
+  description: |
+    Ensemble-mean richness on the focal island must be humped: peak inside the
+    middle third of the run, and both the early and late richness below 0.75x the
+    peak.
+  measure:
+    kind: derived_scalar
+    field: richness-is-humped
+  pass_if:
+    op: '=='
+    value: PASS
+    provenance:
+      kind: calibration
+      note: |
+        Measured on the focal mid-age island (island_01, t_peak=150), 10-seed
+        ensemble, 500 model-time units (run length 501 ticks; middle third =
+        ticks 167-334). Ensemble-mean richness peaks at S = 51.8 at t = 195
+        (well inside the middle third), rising from an early-run mean of 18.5
+        (first 10%) and falling to a late-run mean of 26.7 (last 10%) — a
+        peak/late ratio of 1.94 and peak/early of 2.80. Both ends clear the
+        0.75*peak = 38.9 margin, so the hump gate passes with room to spare. The
+        0.75 margin and middle-third window are conservative floors for a visible
+        overshoot-then-decline.
+  requires_simulation: baseline
+pipeline_gate:
+  prerequisites:
+  - mw-equilibrium-reproduction
+  enables: []
+  proceed_condition: |
+    Having established that the static MacArthur-Wilson process reproduces the
+    rate-crossing equilibrium and turnover, adding island ontogeny (time-varying
+    area) and observing an emergent humped richness trajectory demonstrates the
+    General Dynamic Model's qualitative departure from the static equilibrium.
+canonical_runs:
+- name: default
+  script: studies/general-dynamic-model/sims/run.py
+  args: []
+  label: "Area(t) + richness(t) hump, hysteresis loop, 10-seed ensemble trajectory"
+  default: true
+visualizations:
+- name: area-richness-overlay
+  chart: viz/area_richness_overlay.html
+  render: python sims/run.py
+- name: richness-area-hysteresis
+  chart: viz/richness_area_hysteresis.html
+  render: python sims/run.py
+- name: ensemble-richness
+  chart: viz/ensemble_richness.html
+  render: python sims/run.py
+conclusion: |
+  Adding island ontogeny to the MacArthur-Wilson colonization/extinction process
+  produces the General Dynamic Model's signature prediction (Whittaker, Triantis
+  & Ladle 2008): species richness is humped in time, not flat. On the focal
+  mid-age island (t_peak=150, 10-seed ensemble, 500 model-time units),
+  ensemble-mean richness rises to a peak of S = 51.8 at t = 195 — comfortably
+  inside the middle third of the run — then declines to a late-run mean of 26.7
+  (a ~1.9x drop from the peak) as the island erodes and extinction climbs. The
+  richness peak lags the area peak and the trajectory decays more slowly than it
+  rose, tracing a richness-area hysteresis loop. This is exactly the
+  overshoot-then-decline the static-area MacArthur-Wilson equilibrium (which
+  relaxes to a single flat S*) cannot generate, confirming that island ontogeny
+  alone is sufficient to turn the equilibrium plateau into a humped life-cycle
+  trajectory.
+runs:
+- name: default-ensemble
+  status: completed
+  kind: simulation
+  canonical: true
+  description: 3 islands on a t_peak age gradient, 10-seed ensemble, 500 steps.
+  emitter: ram
+  result: PASS
+  outcomes:
+    richness-is-humped:
+      result: PASS
+      detail: peak S=51.8 at t=195 (mid-run); early 18.5, late 26.7 -> clear hump.
+findings:
+- id: richness-is-transient
+  kind: biological
+  status: confirms
+  statement: 'Under island ontogeny (area rises then erodes), richness overshoots and then declines (peak ~52 at mid-age, falling to ~27): the MacArthur-Wilson equilibrium is transient over geological time, as the General Dynamic Model predicts (Whittaker 2008).'
+verdict: supported
