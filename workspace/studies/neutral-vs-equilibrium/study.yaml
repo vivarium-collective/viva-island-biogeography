@@ -172,3 +172,24 @@ conclusion: |
   rank-abundance curve and an internal-mode Preston octave distribution on the
   largest island (~46 species of J = 200), the zero-sum-multinomial signature of
   drift under a uniform metacommunity.
+runs:
+- name: default-ensemble
+  status: completed
+  kind: simulation
+  canonical: true
+  description: Neutral + equilibrium composites over the same area gradient, 8-seed ensemble.
+  emitter: ram
+  result: PASS
+  outcomes:
+    neutral-produces-sar:
+      result: PASS
+      detail: neutral SAR slope z = 0.76 (> 0.05).
+    both-models-show-sar:
+      result: PASS
+      detail: neutral z=0.76 and equilibrium z=0.13, both > 0.05.
+findings:
+- id: sar-mechanism-agnostic
+  kind: computational
+  status: novel
+  statement: Hubbell neutral drift also produces a positive species-area relationship (z ~ 0.76 vs equilibrium z ~ 0.13), so the SAR alone cannot discriminate neutral drift from niche-based colonization/extinction - two unrelated mechanisms converge on the same qualitative law.
+verdict: qualified

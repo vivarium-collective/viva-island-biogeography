@@ -147,3 +147,21 @@ conclusion: |
   relaxes to a single flat S*) cannot generate, confirming that island ontogeny
   alone is sufficient to turn the equilibrium plateau into a humped life-cycle
   trajectory.
+runs:
+- name: default-ensemble
+  status: completed
+  kind: simulation
+  canonical: true
+  description: 3 islands on a t_peak age gradient, 10-seed ensemble, 500 steps.
+  emitter: ram
+  result: PASS
+  outcomes:
+    richness-is-humped:
+      result: PASS
+      detail: peak S=51.8 at t=195 (mid-run); early 18.5, late 26.7 -> clear hump.
+findings:
+- id: richness-is-transient
+  kind: biological
+  status: confirms
+  statement: 'Under island ontogeny (area rises then erodes), richness overshoots and then declines (peak ~52 at mid-age, falling to ~27): the MacArthur-Wilson equilibrium is transient over geological time, as the General Dynamic Model predicts (Whittaker 2008).'
+verdict: supported

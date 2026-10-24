@@ -141,3 +141,24 @@ conclusion: |
   Wilson's crossing immigration/extinction curves. The emergent species-area
   slope on this gradient is z ~ 0.12, in the low end of the empirical 0.1-0.35
   band, partly because the large islands approach pool saturation.
+runs:
+- name: default-ensemble
+  status: completed
+  kind: simulation
+  canonical: true
+  description: 12 islands over a log-spaced area gradient, 8-seed ensemble, 400 generations, tail 25%.
+  emitter: ram
+  result: PASS
+  outcomes:
+    equilibrium-tracks-theory:
+      result: PASS
+      detail: ensemble corr(observed S, analytic S*) = 0.992 (> 0.9).
+    turnover-at-equilibrium:
+      result: PASS
+      detail: turnover ratio = 15.5 on the representative island (> 3).
+findings:
+- id: equilibrium-reproduced
+  kind: computational
+  status: confirms
+  statement: "The equilibrium model sits on MacArthur & Wilson's crossing rate curves: ensemble-mean richness tracks the analytic S* = P*c/(c+e) across the area gradient (corr 0.992), and species identity turns over ~15x the net change while richness holds."
+verdict: supported

@@ -52,6 +52,14 @@ def _plotly_colorscale(steps):
 
 
 def _apply_theme(fig: go.Figure, title: str) -> go.Figure:
+    # Give every figure an explicit pixel height. The workbench embeds each
+    # chart in an iframe sized to its CONTENT height; a responsive
+    # `height:100%` div has no definite content height there, so the iframe
+    # over-grows and leaves a tall band of whitespace below the plot. A fixed
+    # height makes the embed deterministic. Functions that set their own height
+    # (e.g. the square spatial map) keep it.
+    if fig.layout.height is None:
+        fig.update_layout(height=460)
     fig.update_layout(
         title=dict(text=title, font=dict(color=INK, size=18)),
         paper_bgcolor=SURFACE,

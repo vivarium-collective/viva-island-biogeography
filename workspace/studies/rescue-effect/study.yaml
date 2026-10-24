@@ -193,3 +193,27 @@ conclusion: |
   (|err| 0.10), confirming the model is a faithful extension of the baseline
   rather than a different model. Immigration lowering extinction is enough to
   raise equilibrium diversity and stabilize species identity.
+runs:
+- name: default-ensemble
+  status: completed
+  kind: simulation
+  canonical: true
+  description: 9-island rescue_strength gradient (0->0.8), 8-seed ensemble, 400 generations.
+  emitter: ram
+  result: PASS
+  outcomes:
+    rescue-raises-richness:
+      result: PASS
+      detail: S* 30.1 (no rescue) -> 37.3 (rescue 0.8), +7.2.
+    rescue-lowers-turnover:
+      result: PASS
+      detail: turnover 30.0 -> 22.6 events/gen with rescue.
+    r0-matches-baseline:
+      result: PASS
+      detail: at rescue=0, S=30.10 vs analytic M-W S*=30.00 (|err|=0.10).
+findings:
+- id: rescue-lifts-and-damps
+  kind: biological
+  status: confirms
+  statement: Coupling the curves via the rescue effect (immigration lowering extinction) raises equilibrium richness (30->37) and damps turnover (30->23 events/gen), reducing exactly to the independent-curves baseline at rescue=0 (Brown & Kodric-Brown 1977).
+verdict: supported

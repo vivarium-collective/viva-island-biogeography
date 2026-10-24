@@ -179,3 +179,24 @@ conclusion: |
   reproduces both the microbial and macro regimes with no new process; the Earth
   Microbiome Project and tree-hole bacterial surveys are the next calibration
   targets.
+runs:
+- name: default-ensemble
+  status: completed
+  kind: simulation
+  canonical: true
+  description: Macro + microbial regimes over the same area gradient, 6-seed ensemble.
+  emitter: ram
+  result: PASS
+  outcomes:
+    microbial-sar-holds:
+      result: PASS
+      detail: microbial taxa-area z = 0.043 (> 0).
+    microbial-z-flatter:
+      result: PASS
+      detail: z_micro 0.043 < z_macro 0.123 (~3x flatter).
+findings:
+- id: microbial-taxa-area-flattens
+  kind: biological
+  status: confirms
+  statement: The taxa-area relationship holds for microbes but is flatter (z ~ 0.04 vs macro 0.12, ~3x) with ~20x faster turnover, consistent with the empirical microbial taxa-area literature (Horner-Devine 2004; Bell 2005).
+verdict: supported

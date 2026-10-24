@@ -314,6 +314,9 @@ def main() -> None:
     study_names: list[str] = []
     study_statuses: list[str] = []
     study_warnings: list[str] = []
+    # Strengthened audit: completed studies that record no run outcomes render
+    # as "pending evidence" in the report. Collect offenders and fail at end.
+    pending_evidence_fails: list[str] = []
     # F-friction #6: keep a separate count of studies that fail dashboard
     # load so the summary line can swap ✓ for ✗ when any fail. Without this,
     # the summary said `dashboard ✓` while WARN lines underneath said
@@ -358,8 +361,52 @@ def main() -> None:
                         f"  WARN study {s_name} fails dashboard load: {e}"
                     )
                     n_studies_failed_dashboard += 1
+
+            # Reviewer-readiness (strengthened audit): a study that DECLARES
+            # completion must record run outcomes for EVERY behavior test, or
+            # the report shows it as "pending evidence" despite the passing
+            # headline — the gap that let every study read 'pending' in the
+            # graph/overview. runs[].outcomes must be a DICT keyed by behavior-
+            # test name with an UPPERCASE result (PASS/FAIL/PARTIAL/SKIP); a
+            # missing entry or a non-UPPERCASE result renders as pending.
+            _st = str(study_data.get("status") or "").strip().lower()
+            _claims_done = (
+                _st in {"completed", "complete", "done", "passed"}
+                or study_data.get("gate_status") == "passed"
+                or study_data.get("evaluation_status") == "evaluated"
+            )
+            if _claims_done:
+                _bts = [b.get("name") for b in (study_data.get("behavior_tests") or [])
+                        if isinstance(b, dict) and b.get("name")]
+                _recorded: dict = {}
+                for _r in (study_data.get("runs") or []):
+                    if isinstance(_r, dict) and isinstance(_r.get("outcomes"), dict):
+                        _recorded.update(_r["outcomes"])
+                _VALID = {"PASS", "FAIL", "PARTIAL", "SKIP"}
+                if not study_data.get("runs"):
+                    pending_evidence_fails.append(
+                        f"  {s_name}: declares completion ({_st or 'evaluated/passed'}) but has NO `runs:` "
+                        "block -> report shows 'pending evidence'. Add a `runs:` block with an `outcomes` "
+                        "dict (UPPERCASE result keyed by behavior-test name).")
+                else:
+                    _missing = [n for n in _bts if n not in _recorded]
+                    _bad = [k for k, v in _recorded.items()
+                            if not (isinstance(v, dict)
+                                    and str(v.get("result", "")).upper() in _VALID)]
+                    if _missing:
+                        pending_evidence_fails.append(
+                            f"  {s_name}: completed but runs[].outcomes record no result for behavior "
+                            f"test(s) {sorted(_missing)} -> these render as 'pending'.")
+                    if _bad:
+                        pending_evidence_fails.append(
+                            f"  {s_name}: runs[].outcomes for {sorted(_bad)} lack an UPPERCASE "
+                            "PASS/FAIL/PARTIAL/SKIP result -> render as pending.")
         except Exception as exc:
             study_warnings.append(f"  WARN could not parse {study_yaml_path}: {exc}")
+
+    if pending_evidence_fails:
+        _fail("completed studies would render as 'pending evidence' (no run-linked "
+              "outcomes for their behavior tests):\n" + "\n".join(pending_evidence_fails))
 
     n_studies = len(study_names)
     status_counts = Counter(study_statuses)

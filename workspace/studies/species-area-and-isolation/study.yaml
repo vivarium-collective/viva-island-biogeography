@@ -141,3 +141,24 @@ conclusion: |
   kernel makes the decline sharp-then-plateau, which Pearson -0.79 understates).
   Area acts through extinction and isolation through colonization, exactly as the
   two-curve theory predicts.
+runs:
+- name: default-ensemble
+  status: completed
+  kind: simulation
+  canonical: true
+  description: Area gradient (isolation fixed) + distance gradient (area fixed), 8-seed ensemble.
+  emitter: ram
+  result: PASS
+  outcomes:
+    species-area-law:
+      result: PASS
+      detail: log-log slope z = 0.12 (> 0.08).
+    isolation-declines:
+      result: PASS
+      detail: Spearman corr(distance, S) = -0.97 (< -0.9); Pearson -0.79.
+findings:
+- id: two-laws-emerge
+  kind: computational
+  status: confirms
+  statement: 'Both canonical predictions emerge as laws: richness grows with area as a power law S ~ A^z (z = 0.12) and declines monotonically with isolation (Spearman -0.97) - area acting through extinction, isolation through colonization.'
+verdict: supported
