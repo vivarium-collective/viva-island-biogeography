@@ -80,11 +80,22 @@ def _apply_theme(fig: go.Figure, title: str) -> go.Figure:
 
 
 def write_html(fig: go.Figure, path, title: str = "") -> None:
+    # Fixed PIXEL height on the graph div — NOT Plotly's default "100%". The
+    # workbench embeds each chart in an iframe whose ResizeObserver sizes it to
+    # its CONTENT height. A height:100% div + Plotly's `responsive` autosize form
+    # a feedback loop: the iframe grows to content, the responsive plot fills the
+    # taller iframe, content grows, the iframe grows again — unbounded whitespace.
+    # A fixed div height + non-responsive config breaks the loop; width stays
+    # 100% so the plot still fills the pane. (_apply_theme sets layout.height;
+    # spatial figures set their own and keep it.)
+    h = int(fig.layout.height or 460)
     fig.write_html(
         str(path),
         include_plotlyjs="cdn",
         full_html=True,
-        config={"displayModeBar": True, "responsive": True},
+        default_height=h,
+        default_width="100%",
+        config={"displayModeBar": True, "responsive": False},
     )
 
 
