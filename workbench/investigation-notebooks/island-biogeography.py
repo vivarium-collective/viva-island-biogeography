@@ -17,21 +17,24 @@ if _os.environ.get("PYTHONUTF8") != "1":
     _os.execv(_sys.executable, [_sys.executable, *_sys.argv])
 
 
-# # Island biogeography: a Lotka-Volterra metacommunity under contract
+# # Island biogeography: reproducing the equilibrium theory and its extensions
 #
 # _Investigation `island-biogeography` — coder reproduction notebook._
 #
-# **Question.** Does the archived island-biogeography Lotka-Volterra metacommunity model,
-# faithfully ported into process-bigraph, reproduce the two central predictions
-# of MacArthur-Wilson island biogeography — species richness increasing with
-# island area and decreasing with isolation — and if not, what parts does it
-# reproduce and why?
+# **Question.** Does island biogeography theory — MacArthur & Wilson's equilibrium of
+# immigration and extinction (1963, 1967) — hold up when built as composable
+# process-bigraph models, and where does it bend? Three layers: (1) reproduce
+# the ORIGINAL theory directly (the colonization/extinction rate model), (2) ask
+# how much of it a faithful Lotka-Volterra metacommunity port reproduces and why,
+# and (3) extend it with four nuanced follow-ups — neutral theory, microbial
+# ecology, island ontogeny, and the rescue effect.
 #
-# A real port of an archived ecological model into composable process-bigraph
-# Processes, used to test which island-biogeography predictions the model
-# actually makes. Islands are time-stepped Lotka-Volterra Processes; a
-# migration coupler exchanges individuals by distance. Three studies measure
-# the area-abundance, isolation-immigration, and area-richness relationships.
+# Island biogeography theory built as composable process-bigraph models and
+# tested across three layers: the original MacArthur-Wilson equilibrium model
+# reproduced directly, a mechanistic Lotka-Volterra port tested for how much of
+# the theory it makes, and four extensions probing where the theory bends
+# (neutral drift, microbes, geological ontogeny, the rescue effect). Nine
+# studies in all, each with interactive figures.
 #
 # ---
 #
@@ -252,6 +255,702 @@ def _render_one(address, config, runs_db, study_yaml, overrides=None):
         return _p.read_text(encoding='utf-8', errors='replace')
     return f'<p style="color:#6b7280">unsupported figure type: {address}</p>'
 
+# ## Study: Reproducing the MacArthur-Wilson equilibrium: rate crossing + turnover (`mw-equilibrium-reproduction`)
+#
+# **Question.** Does a direct, phenomenological implementation of the original theory of
+# island biogeography (MacArthur & Wilson 1963, 1967) reproduce its three core
+# claims — (1) species richness relaxes to the equilibrium S* where the
+# immigration and extinction rate curves cross, (2) richness tracks the analytic
+# S* = P*c/(c+e) across islands, and (3) species identity turns over while
+# richness stays constant?
+#
+# **Objective.** Over a log-spaced area gradient (12 islands, isolation fixed) and an 8-seed
+# ensemble, measure (a) the correlation between the ensemble-mean equilibrium
+# richness and the analytic S*, and (b) the turnover ratio (gross events / net
+# richness change) on a representative island, and render the rate-crossing
+# diagram, the approach-to-equilibrium trajectories, and the turnover curves.
+#
+# **Hypothesis.** The mw_equilibrium composite colonizes each absent species at probability
+# c = colonization_base/(1+distance) and goes extinct each present species at
+# e = extinction_base*(ref_area/area)^area_exponent. Immigration I(S)=(P-S)c
+# falls with S, extinction E(S)=S*e rises with S, so richness must relax to and
+# fluctuate about S* = P*c/(c+e). Because colonization and extinction never stop,
+# the island keeps gaining and losing species at equilibrium (turnover), so gross
+# colonization+extinction events over a window vastly exceed the net change in S.
+
+# ### Parameters
+#
+# | simulation | composite | steps | params |
+# | --- | --- | --- | --- |
+# | `baseline` | `viva_island_biogeography.composites.mw_equilibrium.mw_equilibrium` | 0 | n_islands=12, n_pool=60, colonization_base=0.02, extinction_base=0.012, area_min=1.0, area_max=100.0, area_exponent=0.25, seed=1 |
+
+# ### The model & its parameters
+#
+# Each composite is a process-bigraph *document* — named processes wired by `inputs`/`outputs` ports over shared stores. Below, each composite shows what it does, then a **parameter cell** with its tunable knobs (the current default and what each one means). Edit any value, then re-run the **Run** section to rebuild and re-simulate with your changes.
+
+# **The model — `viva_island_biogeography.composites.mw_equilibrium.mw_equilibrium`**
+#
+# Canonical MacArthur-Wilson equilibrium model: independent islands drawing from a mainland species pool, each relaxing to S* set by area (extinction) and isolation (colonization). One run yields the rate-crossing equilibrium, the species-area power law, and turnover.
+
+# === Parameters — edit any value, then re-run from the Run cell below ===
+# Each entry is the composite's current default; the comment explains it.
+ov_viva_island_biogeography_composites_mw_equilibrium_mw_equilibrium = {
+    'n_islands'        : 24,   # Number of independent islands
+    'n_pool'           : 60,   # Mainland species-pool size P
+    'colonization_base': 0.02,   # Per-species colonization prob at distance 0
+    'extinction_base'  : 0.012,   # Per-species extinction prob at the reference (largest) area
+    'area_min'         : 1.0,   # Smallest island area (log-spaced across islands)
+    'area_max'         : 100.0,   # Largest island area (= reference area for extinction)
+    'distance_min'     : 0.0,   # Least isolated island distance (linear across islands)
+    'distance_max'     : 0.0,   # Most isolated island distance (0 = isolation held fixed)
+    'area_exponent'    : 0.25,   # Area-extinction exponent; sets the species-area slope z
+    'interval'         : 1.0,   # Generations per tick (discrete model: keep 1.0)
+    'seed'             : 0,   # RNG seed; each island uses seed + its index
+}
+
+# ### Run
+#
+# _Set `STEPS`, then run. Each composite is built live from its (edited) spec above and run; a composite whose module processes aren't implemented yet reports the error instead of crashing. Set `RERUN = False` to skip re-simulating._
+
+# === Study: mw-equilibrium-reproduction ===
+STUDY = 'mw-equilibrium-reproduction'
+STUDY_DIR = REPO / 'workspace/studies' / STUDY
+STUDY_YAML = str(STUDY_DIR / "study.yaml")
+RUNS_DB = str(STUDY_DIR / "runs.db")
+
+# This study has no *recorded* runs yet. RERUN builds its declared
+# composite(s) live and runs them; a composite whose module processes
+# are not implemented yet reports the error instead of crashing.
+STEPS_baseline = 100
+INTERVAL_baseline = 1.0
+
+if RERUN:
+    from process_bigraph import Composite
+    try:
+        with quiet():  # keep per-step stdout out of the notebook
+            _ov = ov_viva_island_biogeography_composites_mw_equilibrium_mw_equilibrium if 'ov_viva_island_biogeography_composites_mw_equilibrium_mw_equilibrium' in dir() else None  # edits from the panel cell, if any
+            spec_viva_island_biogeography_composites_mw_equilibrium_mw_equilibrium = materialize_composite('viva_island_biogeography.composites.mw_equilibrium.mw_equilibrium', _ov)
+            _comp = Composite({'state': spec_viva_island_biogeography_composites_mw_equilibrium_mw_equilibrium['state']}, core=core)
+            _comp.run(STEPS_baseline)
+        print('ran', 'baseline', f'(viva_island_biogeography.composites.mw_equilibrium.mw_equilibrium) for', STEPS_baseline, 'steps')
+    except Exception as _e:
+        print(f"baseline not runnable yet: {type(_e).__name__}: {_e}")
+else:
+    print("RERUN=False — not re-simulating.")
+
+# ### Visualizations
+#
+# _Results are shown by the figures below, produced by the run above._
+
+# **rate-crossing**
+
+def _save_viz(study, slug, html):
+    d = REPO / 'reports/notebooks/figures' / study
+    d.mkdir(parents=True, exist_ok=True)
+    out = d / (slug + '.html')
+    out.write_text(html, encoding='utf-8')
+    print('  wrote', out)
+
+
+# rate-crossing
+_save_viz('mw-equilibrium-reproduction', 'rate-crossing', _render_one('', {}, RUNS_DB, STUDY_YAML))
+
+# **approach-to-equilibrium**
+
+# approach-to-equilibrium
+_save_viz('mw-equilibrium-reproduction', 'approach-to-equilibrium', _render_one('', {}, RUNS_DB, STUDY_YAML))
+
+# **turnover**
+
+# turnover
+_save_viz('mw-equilibrium-reproduction', 'turnover', _render_one('', {}, RUNS_DB, STUDY_YAML))
+
+# ### Acceptance criteria
+#
+# _Pre-registered checks (criteria/thresholds only — run the cells above to evaluate them)._
+#
+# | test | measures | passes if |
+# | --- | --- | --- |
+# | equilibrium-tracks-theory _(primary)_ | kind=derived_scalar field=eq_track_corr | op > value 0.9 provenance {'kind': 'calibration', 'note': 'Measured eq_track_corr = 0.992 (12 islands, 8-seed ensemble, 400\ngenerations, tail 25%). 0.9 is a conservative floor for "tracks theory".\n'} |
+# | turnover-at-equilibrium _(primary)_ | kind=derived_scalar field=turnover_ratio | op > value 3.0 provenance {'kind': 'calibration', 'note': 'Measured turnover_ratio = 15.5 on the representative mid-gradient island\n(gross colonization+extinction / |net dS| over the tail window).\n'} |
+
+# ## Study: The species-area law and the isolation gradient (`species-area-and-isolation`)
+#
+# **Question.** Under the canonical MacArthur-Wilson equilibrium model, do the two central
+# predictions emerge as quantitative laws — (1) equilibrium richness grows with
+# island area as a power law S ~ A^z (Arrhenius 1921; Preston 1962), and (2)
+# equilibrium richness declines monotonically with isolation distance?
+#
+# **Objective.** Measure (a) the species-area slope z from a log-log fit over an area gradient
+# (isolation fixed), and (b) the Spearman rank correlation of richness with
+# isolation distance over a distance gradient (area fixed), each on an 8-seed
+# ensemble mean, and render the species-area and species-distance curves.
+#
+# **Hypothesis.** In the extinction-limited regime, S* ~ A^(area_exponent), so a log-spaced area
+# gradient at fixed isolation should give a straight line on log-log axes with
+# slope z ~ area_exponent. Separately, because colonization c = c0/(1+distance)
+# falls hyperbolically with distance, a distance gradient at fixed area should
+# give richness that drops steeply then plateaus — a monotone decline (rank
+# correlation strongly negative).
+
+# ### Parameters
+#
+# | simulation | composite | steps | params |
+# | --- | --- | --- | --- |
+# | `baseline` | `viva_island_biogeography.composites.mw_equilibrium.mw_equilibrium` | 0 | n_islands=12, n_pool=60, colonization_base=0.02, extinction_base=0.012, area_exponent=0.25, seed=1 |
+#
+# Declared parameter sets (`study.yaml` variants):
+#
+# - **isolation-gradient** — `n_islands=12`, `n_pool=60`, `area_min=30.0`, `area_max=30.0`, `distance_min=0.0`, `distance_max=30.0`, `seed=1`
+
+# ### The model & its parameters
+#
+# Each composite is a process-bigraph *document* — named processes wired by `inputs`/`outputs` ports over shared stores. Below, each composite shows what it does, then a **parameter cell** with its tunable knobs (the current default and what each one means). Edit any value, then re-run the **Run** section to rebuild and re-simulate with your changes.
+
+# **The model — `viva_island_biogeography.composites.mw_equilibrium.mw_equilibrium`**
+#
+# Canonical MacArthur-Wilson equilibrium model: independent islands drawing from a mainland species pool, each relaxing to S* set by area (extinction) and isolation (colonization). One run yields the rate-crossing equilibrium, the species-area power law, and turnover.
+
+# === Parameters — edit any value, then re-run from the Run cell below ===
+# Each entry is the composite's current default; the comment explains it.
+ov_viva_island_biogeography_composites_mw_equilibrium_mw_equilibrium = {
+    'n_islands'        : 24,   # Number of independent islands
+    'n_pool'           : 60,   # Mainland species-pool size P
+    'colonization_base': 0.02,   # Per-species colonization prob at distance 0
+    'extinction_base'  : 0.012,   # Per-species extinction prob at the reference (largest) area
+    'area_min'         : 1.0,   # Smallest island area (log-spaced across islands)
+    'area_max'         : 100.0,   # Largest island area (= reference area for extinction)
+    'distance_min'     : 0.0,   # Least isolated island distance (linear across islands)
+    'distance_max'     : 0.0,   # Most isolated island distance (0 = isolation held fixed)
+    'area_exponent'    : 0.25,   # Area-extinction exponent; sets the species-area slope z
+    'interval'         : 1.0,   # Generations per tick (discrete model: keep 1.0)
+    'seed'             : 0,   # RNG seed; each island uses seed + its index
+}
+
+# ### Run
+#
+# _Set `STEPS`, then run. Each composite is built live from its (edited) spec above and run; a composite whose module processes aren't implemented yet reports the error instead of crashing. Set `RERUN = False` to skip re-simulating._
+
+# === Study: species-area-and-isolation ===
+STUDY = 'species-area-and-isolation'
+STUDY_DIR = REPO / 'workspace/studies' / STUDY
+STUDY_YAML = str(STUDY_DIR / "study.yaml")
+RUNS_DB = str(STUDY_DIR / "runs.db")
+
+# This study has no *recorded* runs yet. RERUN builds its declared
+# composite(s) live and runs them; a composite whose module processes
+# are not implemented yet reports the error instead of crashing.
+STEPS_baseline = 100
+INTERVAL_baseline = 1.0
+
+if RERUN:
+    from process_bigraph import Composite
+    try:
+        with quiet():  # keep per-step stdout out of the notebook
+            _ov = ov_viva_island_biogeography_composites_mw_equilibrium_mw_equilibrium if 'ov_viva_island_biogeography_composites_mw_equilibrium_mw_equilibrium' in dir() else None  # edits from the panel cell, if any
+            spec_viva_island_biogeography_composites_mw_equilibrium_mw_equilibrium = materialize_composite('viva_island_biogeography.composites.mw_equilibrium.mw_equilibrium', _ov)
+            _comp = Composite({'state': spec_viva_island_biogeography_composites_mw_equilibrium_mw_equilibrium['state']}, core=core)
+            _comp.run(STEPS_baseline)
+        print('ran', 'baseline', f'(viva_island_biogeography.composites.mw_equilibrium.mw_equilibrium) for', STEPS_baseline, 'steps')
+    except Exception as _e:
+        print(f"baseline not runnable yet: {type(_e).__name__}: {_e}")
+else:
+    print("RERUN=False — not re-simulating.")
+
+# ### Visualizations
+#
+# _Results are shown by the figures below, produced by the run above._
+
+# **species-area**
+
+# species-area
+_save_viz('species-area-and-isolation', 'species-area', _render_one('', {}, RUNS_DB, STUDY_YAML))
+
+# **species-distance**
+
+# species-distance
+_save_viz('species-area-and-isolation', 'species-distance', _render_one('', {}, RUNS_DB, STUDY_YAML))
+
+# ### Acceptance criteria
+#
+# _Pre-registered checks (criteria/thresholds only — run the cells above to evaluate them)._
+#
+# | test | measures | passes if |
+# | --- | --- | --- |
+# | species-area-law _(primary)_ | kind=derived_scalar field=sar_z | op > value 0.08 provenance {'kind': 'calibration', 'note': 'Measured z = 0.12 (area gradient 1-100, isolation 0, 8-seed ensemble).\nWithin the low end of the empirical 0.1-0.35 band; large islands approach\npool saturation, which flattens the slope.\n'} |
+# | isolation-declines _(primary)_ | kind=derived_scalar field=isolation_corr_spearman | op < value -0.9 provenance {'kind': 'calibration', 'note': 'Measured Spearman = -0.97 (distance gradient 0-30 at fixed area 30,\n8-seed ensemble). Pearson is only -0.79 because the c=c0/(1+d) decline is\nhyperbolic; rank correlation captures the monotonicity.\n'} |
+
+# ## Study: Neutral vs equilibrium: do dispersal-drift and colonization-extinction predict the same macroecology? (`neutral-vs-equilibrium`)
+#
+# **Question.** Hubbell's (2001) neutral theory and MacArthur & Wilson's (1967) equilibrium
+# theory derive island diversity from completely different mechanisms — neutral
+# dispersal-drift among ecologically equivalent individuals in a fixed-size local
+# community, versus per-species colonization/extinction rates set by area and
+# isolation. Do these two mechanisms nonetheless predict the SAME emergent
+# macroecology — specifically, do both produce a positive species-area
+# relationship S ∝ A^z, and what does the neutral local species-abundance
+# distribution look like?
+#
+# **Objective.** Over a shared log-spaced area gradient (12 islands, isolation fixed) and an
+# 8-seed ensemble, measure the emergent species-area slope z for BOTH the neutral
+# (hubbell2001unified) and equilibrium (MacArthur-Wilson) composites, confirm both
+# are positive, and render (a) the SAR overlay on log-log axes and (b) the neutral
+# species-abundance distribution for a representative island (rank-abundance curve
+# + Preston octaves).
+#
+# **Hypothesis.** The neutral metacommunity (Hubbell 2001) holds a zero-sum local community of
+# J = area*density individuals evolving by J Moran death/replacement events per
+# generation, with immigration probability m = immigration_base/(1+distance) from
+# a shared pool of n_pool species. Larger islands sample and retain more species
+# before drift erodes them, so a positive species-area relationship must emerge
+# with NO colonization/extinction rate asymmetry at all — purely from drift plus
+# dispersal. Run alongside the MacArthur-Wilson equilibrium composite over the
+# same area gradient, both models should show a positive z, but by different
+# mechanisms and (potentially) with different slopes. The neutral local community
+# should also display the characteristic skewed, concave rank-abundance /
+# zero-sum-multinomial species-abundance distribution from drift alone.
+
+# ### Parameters
+#
+# | simulation | composite | steps | params |
+# | --- | --- | --- | --- |
+# | `baseline` | `viva_island_biogeography.composites.neutral.neutral_metacommunity` | 0 | n_islands=12, n_pool=64, density=2.0, immigration_base=0.2, area_min=1.0, area_max=100.0, distance_min=0.0, distance_max=0.0, seed=1 |
+
+# ### The model & its parameters
+#
+# Each composite is a process-bigraph *document* — named processes wired by `inputs`/`outputs` ports over shared stores. Below, each composite shows what it does, then a **parameter cell** with its tunable knobs (the current default and what each one means). Edit any value, then re-run the **Run** section to rebuild and re-simulate with your changes.
+
+# **The model — `viva_island_biogeography.composites.neutral.neutral_metacommunity`**
+#
+# Hubbell (2001) zero-sum neutral metacommunity: independent fixed-J islands over an area gradient, each evolving by Moran dispersal-drift from a shared species pool. Richness and the species-abundance distribution emerge with no niche differences and no colonization/extinction rate asymmetry — the neutral counterpoint to MacArthur-Wilson.
+
+# === Parameters — edit any value, then re-run from the Run cell below ===
+# Each entry is the composite's current default; the comment explains it.
+ov_viva_island_biogeography_composites_neutral_neutral_metacommunity = {
+    'n_islands'       : 12,   # Number of independent islands
+    'n_pool'          : 64,   # Metacommunity species-pool size
+    'density'         : 2.0,   # Individuals per unit area (sets local size J = area*density)
+    'immigration_base': 0.2,   # Per-replacement immigration probability m at distance 0
+    'area_min'        : 1.0,   # Smallest island area (log-spaced across islands)
+    'area_max'        : 100.0,   # Largest island area
+    'distance_min'    : 0.0,   # Least isolated island distance (linear across islands)
+    'distance_max'    : 0.0,   # Most isolated island distance (0 = isolation held fixed)
+    'interval'        : 1.0,   # Generations per tick (discrete model: keep 1.0)
+    'seed'            : 0,   # RNG seed; each island uses seed + its index
+}
+
+# ### Run
+#
+# _Set `STEPS`, then run. Each composite is built live from its (edited) spec above and run; a composite whose module processes aren't implemented yet reports the error instead of crashing. Set `RERUN = False` to skip re-simulating._
+
+# === Study: neutral-vs-equilibrium ===
+STUDY = 'neutral-vs-equilibrium'
+STUDY_DIR = REPO / 'workspace/studies' / STUDY
+STUDY_YAML = str(STUDY_DIR / "study.yaml")
+RUNS_DB = str(STUDY_DIR / "runs.db")
+
+# This study has no *recorded* runs yet. RERUN builds its declared
+# composite(s) live and runs them; a composite whose module processes
+# are not implemented yet reports the error instead of crashing.
+STEPS_baseline = 100
+INTERVAL_baseline = 1.0
+
+if RERUN:
+    from process_bigraph import Composite
+    try:
+        with quiet():  # keep per-step stdout out of the notebook
+            _ov = ov_viva_island_biogeography_composites_neutral_neutral_metacommunity if 'ov_viva_island_biogeography_composites_neutral_neutral_metacommunity' in dir() else None  # edits from the panel cell, if any
+            spec_viva_island_biogeography_composites_neutral_neutral_metacommunity = materialize_composite('viva_island_biogeography.composites.neutral.neutral_metacommunity', _ov)
+            _comp = Composite({'state': spec_viva_island_biogeography_composites_neutral_neutral_metacommunity['state']}, core=core)
+            _comp.run(STEPS_baseline)
+        print('ran', 'baseline', f'(viva_island_biogeography.composites.neutral.neutral_metacommunity) for', STEPS_baseline, 'steps')
+    except Exception as _e:
+        print(f"baseline not runnable yet: {type(_e).__name__}: {_e}")
+else:
+    print("RERUN=False — not re-simulating.")
+
+# ### Visualizations
+#
+# _Results are shown by the figures below, produced by the run above._
+
+# **sar-overlay**
+
+# sar-overlay
+_save_viz('neutral-vs-equilibrium', 'sar-overlay', _render_one('', {}, RUNS_DB, STUDY_YAML))
+
+# **rank-abundance**
+
+# rank-abundance
+_save_viz('neutral-vs-equilibrium', 'rank-abundance', _render_one('', {}, RUNS_DB, STUDY_YAML))
+
+# **preston-octaves**
+
+# preston-octaves
+_save_viz('neutral-vs-equilibrium', 'preston-octaves', _render_one('', {}, RUNS_DB, STUDY_YAML))
+
+# ### Acceptance criteria
+#
+# _Pre-registered checks (criteria/thresholds only — run the cells above to evaluate them)._
+#
+# | test | measures | passes if |
+# | --- | --- | --- |
+# | neutral-produces-sar _(primary)_ | kind=derived_scalar field=z_neutral | op > value 0.05 provenance {'kind': 'calibration', 'note': 'Measured z_neutral = 0.763 (12 islands log-spaced area 1-100, density 2\n→ J 2-200, immigration_base 0.2, n_pool 64, 8-seed ensemble, 300\ngenerations, tail 25%). 0.05 is a conservative floor for "clear positive\nSAR"; the measured value is far above it.\n'} |
+# | both-models-show-sar _(primary)_ | kind=derived_scalar field=both_sar | op == value 1.0 provenance {'kind': 'calibration', 'note': 'Measured z_neutral = 0.763 and z_equilibrium = 0.126 over the identical\narea gradient (MacArthur-Wilson composite, n_pool 60, colonization_base\n0.02, extinction_base 0.012, area_exponent 0.25). Both exceed 0.05, so\nboth_sar = 1.0 (both-positive indicator).\n'} |
+
+# ## Study: Does the taxa-area relationship hold for microbes — and flatten? (`microbial-island-biogeography`)
+#
+# **Question.** Does the taxa-area relationship — the microbial analogue of the species-area
+# law — hold under the MacArthur-Wilson equilibrium model when it is run in a
+# microbial regime, and is its slope z flatter than for macro-organisms?
+#
+# **Objective.** Reusing the MacArthur-Wilson equilibrium process (no new process), run two
+# regimes over the same log-spaced area gradient (isolation fixed): a MACRO
+# regime (n_pool=60, area_exponent=0.25) and a MICROBIAL regime (n_pool=300,
+# shallow area_exponent=0.10, high colonization+extinction). Measure the log-log
+# taxa-area slope z for each on a 6-seed ensemble mean, measure the gross
+# equilibrium turnover rate, and render the macro-vs-microbe overlay.
+#
+# **Hypothesis.** Microbial communities obey the same equilibrium logic as macro-organisms
+# (richness set by the crossing of area-driven extinction against isolation-
+# driven colonization), so a microbial regime should still give a positive
+# taxa-area slope (z > 0). But because microbes draw on an enormous taxa pool
+# (so islands rarely saturate), disperse widely, and turn over fast locally
+# (martiny2006microbial; hanson2012beyond), the area effect on extinction is
+# weaker and the measured slope should be *flatter* than the macro slope —
+# consistent with the observed microbial band z ~ 0.02-0.1 (hornerdevine2004taxa;
+# bell2005islands) versus the classic macro z ~ 0.15-0.35.
+
+# ### Parameters
+#
+# | simulation | composite | steps | params |
+# | --- | --- | --- | --- |
+# | `baseline` | `viva_island_biogeography.composites.microbial.microbial_island` | 0 | n_islands=12, n_pool=300, colonization_base=0.1, extinction_base=0.06, area_min=1.0, area_max=100.0, area_exponent=0.1, seed=1 |
+#
+# Declared parameter sets (`study.yaml` variants):
+#
+# - **macro-comparison** — `n_islands=12`, `n_pool=60`, `colonization_base=0.02`, `extinction_base=0.012`, `area_min=1.0`, `area_max=100.0`, `area_exponent=0.25`, `seed=1`
+
+# ### The model & its parameters
+#
+# Each composite is a process-bigraph *document* — named processes wired by `inputs`/`outputs` ports over shared stores. Below, each composite shows what it does, then a **parameter cell** with its tunable knobs (the current default and what each one means). Edit any value, then re-run the **Run** section to rebuild and re-simulate with your changes.
+
+# **The model — `viva_island_biogeography.composites.microbial.microbial_island`**
+#
+# MacArthur-Wilson equilibrium model in a microbial regime: a large mainland taxa pool, fast colonization + extinction (high turnover), and a shallow area-extinction exponent giving the observed flat microbial taxa-area slope (z ~ 0.02-0.1; Horner-Devine 2004, Bell 2005). Reuses MacArthurWilsonEquilibriumProcess with no new process.
+
+# === Parameters — edit any value, then re-run from the Run cell below ===
+# Each entry is the composite's current default; the comment explains it.
+ov_viva_island_biogeography_composites_microbial_microbial_island = {
+    'n_islands'        : 12,   # Number of independent islands (habitat patches)
+    'n_pool'           : 300,   # Mainland taxa-pool size P (large for microbes)
+    'colonization_base': 0.1,   # Per-taxon colonization prob at distance 0 (fast dispersal)
+    'extinction_base'  : 0.06,   # Per-taxon extinction prob at the reference area (fast local turnover)
+    'area_min'         : 1.0,   # Smallest patch area (log-spaced across islands)
+    'area_max'         : 100.0,   # Largest patch area (= reference area for extinction)
+    'distance_min'     : 0.0,   # Least isolated patch distance (linear across islands)
+    'distance_max'     : 0.0,   # Most isolated patch distance (0 = isolation held fixed)
+    'area_exponent'    : 0.1,   # Area-extinction exponent; low -> flat microbial taxa-area slope z
+    'interval'         : 1.0,   # Generations per tick (discrete model: keep 1.0)
+    'seed'             : 0,   # RNG seed; each island uses seed + its index
+}
+
+# ### Run
+#
+# _Set `STEPS`, then run. Each composite is built live from its (edited) spec above and run; a composite whose module processes aren't implemented yet reports the error instead of crashing. Set `RERUN = False` to skip re-simulating._
+
+# === Study: microbial-island-biogeography ===
+STUDY = 'microbial-island-biogeography'
+STUDY_DIR = REPO / 'workspace/studies' / STUDY
+STUDY_YAML = str(STUDY_DIR / "study.yaml")
+RUNS_DB = str(STUDY_DIR / "runs.db")
+
+# This study has no *recorded* runs yet. RERUN builds its declared
+# composite(s) live and runs them; a composite whose module processes
+# are not implemented yet reports the error instead of crashing.
+STEPS_baseline = 100
+INTERVAL_baseline = 1.0
+
+if RERUN:
+    from process_bigraph import Composite
+    try:
+        with quiet():  # keep per-step stdout out of the notebook
+            _ov = ov_viva_island_biogeography_composites_microbial_microbial_island if 'ov_viva_island_biogeography_composites_microbial_microbial_island' in dir() else None  # edits from the panel cell, if any
+            spec_viva_island_biogeography_composites_microbial_microbial_island = materialize_composite('viva_island_biogeography.composites.microbial.microbial_island', _ov)
+            _comp = Composite({'state': spec_viva_island_biogeography_composites_microbial_microbial_island['state']}, core=core)
+            _comp.run(STEPS_baseline)
+        print('ran', 'baseline', f'(viva_island_biogeography.composites.microbial.microbial_island) for', STEPS_baseline, 'steps')
+    except Exception as _e:
+        print(f"baseline not runnable yet: {type(_e).__name__}: {_e}")
+else:
+    print("RERUN=False — not re-simulating.")
+
+# ### Visualizations
+#
+# _Results are shown by the figures below, produced by the run above._
+
+# **taxa-area-overlay**
+
+# taxa-area-overlay
+_save_viz('microbial-island-biogeography', 'taxa-area-overlay', _render_one('', {}, RUNS_DB, STUDY_YAML))
+
+# **turnover-comparison**
+
+# turnover-comparison
+_save_viz('microbial-island-biogeography', 'turnover-comparison', _render_one('', {}, RUNS_DB, STUDY_YAML))
+
+# **richness-distribution**
+
+# richness-distribution
+_save_viz('microbial-island-biogeography', 'richness-distribution', _render_one('', {}, RUNS_DB, STUDY_YAML))
+
+# ### Acceptance criteria
+#
+# _Pre-registered checks (criteria/thresholds only — run the cells above to evaluate them)._
+#
+# | test | measures | passes if |
+# | --- | --- | --- |
+# | microbial-sar-holds _(primary)_ | kind=derived_scalar field=z_micro | op > value 0.0 provenance {'kind': 'calibration', 'note': 'Measured z_micro = 0.0429 (area gradient 1-100, isolation 0, 6-seed\nensemble; microbial regime n_pool=300, colonization_base=0.10,\nextinction_base=0.06, area_exponent=0.10). Positive and squarely inside\nthe empirical microbial band z ~ 0.02-0.1 (hornerdevine2004taxa salt-\nmarsh sediment; bell2005islands tree-hole bacteria).\n'} |
+# | microbial-z-flatter _(primary)_ | kind=derived_scalar field=z_flatter_margin | op > value 0.0 provenance {'kind': 'calibration', 'note': 'Measured z_micro = 0.0429 vs z_macro = 0.1227 over the identical area\ngradient and seeds (6-seed ensemble), so z_flatter_margin =\nz_macro - z_micro = 0.0798 > 0. z_macro reproduces the 0.12 slope the\nspecies-area-and-isolation study measured in the macro regime. The\nmicrobial slope is ~2.9x flatter, consistent with the observed microbe-\nvs-macro contrast (hornerdevine2004taxa; hanson2012beyond). Gross\nequilibrium turnover is ~20x higher in the microbial regime (25.99 vs\n1.27 events · gen⁻¹ · island⁻¹), the fast-turnover signature.\n'} |
+
+# ## Study: General Dynamic Model: does island ontogeny make richness hump then decline? (`general-dynamic-model`)
+#
+# **Question.** Under the General Dynamic Model of oceanic island biogeography (Whittaker,
+# Triantis & Ladle 2008), an island's area is not static: it is born, grows as
+# it is built up, then subsides and erodes over geological time. When area rises
+# then erodes (island ontogeny), does species richness OVERSHOOT and then
+# DECLINE — a humped trajectory — unlike the flat static-area MacArthur-Wilson
+# equilibrium?
+#
+# **Objective.** Over a 10-seed ensemble on a focal mid-age island (t_peak = 150), run the
+# island through 500 model-time units (~3.3 * t_peak) so it is carried well past
+# its area peak and into erosion. Measure the peak richness, its timing, and the
+# early- and late-run richness, and confirm the ensemble-mean richness is humped
+# (peak in the middle third of the run, clearing both the early and late richness
+# by a clear margin). Render area(t) and richness(t) overlaid, the richness-area
+# hysteresis loop, and the ensemble trajectory with a variance band.
+#
+# **Hypothesis.** The GeneralDynamicModelProcess uses the same colonization/extinction
+# bookkeeping as the MacArthur-Wilson process — each of n_pool mainland species
+# present or absent, colonizing absent species at c = colonization_base and
+# removing present species at e(t) — but recomputes e(t) each tick from a
+# time-varying area(t) = area_max*((t/t_peak)*exp(1-t/t_peak))^ontogeny_shape
+# that rises to area_max at t_peak then erodes. Because extinction falls with
+# area, the instantaneous equilibrium S*(t) = P*c/(c+e(t)) is itself humped.
+# Richness chases this moving target with a relaxation lag, so it must rise to an
+# overshoot while the island is young and large, then decline as the island
+# erodes — a hump the static MacArthur-Wilson plateau cannot produce. The lag
+# also makes the richness-vs-area trajectory trace a hysteresis loop (richness
+# peaks after area and decays more slowly).
+
+# ### Parameters
+#
+# | simulation | composite | steps | params |
+# | --- | --- | --- | --- |
+# | `baseline` | `viva_island_biogeography.composites.gdm.general_dynamic_model` | 0 | n_islands=3, n_pool=60, colonization_base=0.05, extinction_base=0.01, area_max=100.0, t_peak_min=120.0, t_peak_max=180.0, ontogeny_shape=2.0, area_exponent=1.0, ref_area=100.0, seed=1 |
+
+# ### The model & its parameters
+#
+# Each composite is a process-bigraph *document* — named processes wired by `inputs`/`outputs` ports over shared stores. Below, each composite shows what it does, then a **parameter cell** with its tunable knobs (the current default and what each one means). Edit any value, then re-run the **Run** section to rebuild and re-simulate with your changes.
+
+# **The model — `viva_island_biogeography.composites.gdm.general_dynamic_model`**
+#
+# General Dynamic Model of oceanic island biogeography (Whittaker, Triantis & Ladle 2008): a few islands with time-varying area (ontogeny) staggered along a t_peak age gradient. Each island grows then erodes, so species richness overshoots and then declines — a humped trajectory the static MacArthur-Wilson equilibrium cannot produce.
+
+# === Parameters — edit any value, then re-run from the Run cell below ===
+# Each entry is the composite's current default; the comment explains it.
+ov_viva_island_biogeography_composites_gdm_general_dynamic_model = {
+    'n_islands'        : 3,   # Number of independent islands (age gradient)
+    'n_pool'           : 60,   # Mainland species-pool size P
+    'colonization_base': 0.05,   # Per-species colonization prob (isolation held at 0)
+    'extinction_base'  : 0.01,   # Per-species extinction prob at the reference (max) area
+    'area_max'         : 100.0,   # Peak island area (reached at t_peak)
+    't_peak_min'       : 120.0,   # Youngest island's area-peak time
+    't_peak_max'       : 180.0,   # Oldest island's area-peak time (age gradient)
+    'ontogeny_shape'   : 2.0,   # Sharpness of the area hump (>1 sharpens)
+    'area_exponent'    : 1.0,   # Area-extinction exponent (larger => steeper decline)
+    'ref_area'         : 100.0,   # Area at which extinction equals extinction_base
+    'interval'         : 1.0,   # Model-time units per tick (discrete model: keep 1.0)
+    'seed'             : 0,   # RNG seed; each island uses seed + its index
+}
+
+# ### Run
+#
+# _Set `STEPS`, then run. Each composite is built live from its (edited) spec above and run; a composite whose module processes aren't implemented yet reports the error instead of crashing. Set `RERUN = False` to skip re-simulating._
+
+# === Study: general-dynamic-model ===
+STUDY = 'general-dynamic-model'
+STUDY_DIR = REPO / 'workspace/studies' / STUDY
+STUDY_YAML = str(STUDY_DIR / "study.yaml")
+RUNS_DB = str(STUDY_DIR / "runs.db")
+
+# This study has no *recorded* runs yet. RERUN builds its declared
+# composite(s) live and runs them; a composite whose module processes
+# are not implemented yet reports the error instead of crashing.
+STEPS_baseline = 100
+INTERVAL_baseline = 1.0
+
+if RERUN:
+    from process_bigraph import Composite
+    try:
+        with quiet():  # keep per-step stdout out of the notebook
+            _ov = ov_viva_island_biogeography_composites_gdm_general_dynamic_model if 'ov_viva_island_biogeography_composites_gdm_general_dynamic_model' in dir() else None  # edits from the panel cell, if any
+            spec_viva_island_biogeography_composites_gdm_general_dynamic_model = materialize_composite('viva_island_biogeography.composites.gdm.general_dynamic_model', _ov)
+            _comp = Composite({'state': spec_viva_island_biogeography_composites_gdm_general_dynamic_model['state']}, core=core)
+            _comp.run(STEPS_baseline)
+        print('ran', 'baseline', f'(viva_island_biogeography.composites.gdm.general_dynamic_model) for', STEPS_baseline, 'steps')
+    except Exception as _e:
+        print(f"baseline not runnable yet: {type(_e).__name__}: {_e}")
+else:
+    print("RERUN=False — not re-simulating.")
+
+# ### Visualizations
+#
+# _Results are shown by the figures below, produced by the run above._
+
+# **area-richness-overlay**
+
+# area-richness-overlay
+_save_viz('general-dynamic-model', 'area-richness-overlay', _render_one('', {}, RUNS_DB, STUDY_YAML))
+
+# **richness-area-hysteresis**
+
+# richness-area-hysteresis
+_save_viz('general-dynamic-model', 'richness-area-hysteresis', _render_one('', {}, RUNS_DB, STUDY_YAML))
+
+# **ensemble-richness**
+
+# ensemble-richness
+_save_viz('general-dynamic-model', 'ensemble-richness', _render_one('', {}, RUNS_DB, STUDY_YAML))
+
+# ### Acceptance criteria
+#
+# _Pre-registered checks (criteria/thresholds only — run the cells above to evaluate them)._
+#
+# | test | measures | passes if |
+# | --- | --- | --- |
+# | richness-is-humped _(primary)_ | kind=derived_scalar field=richness-is-humped | op == value PASS provenance {'kind': 'calibration', 'note': 'Measured on the focal mid-age island (island_01, t_peak=150), 10-seed\nensemble, 500 model-time units (run length 501 ticks; middle third =\nticks 167-334). Ensemble-mean richness peaks at S = 51.8 at t = 195\n(well inside the middle third), rising from an early-run mean of 18.5\n(first 10%) and falling to a late-run mean of 26.7 (last 10%) — a\npeak/late ratio of 1.94 and peak/early of 2.80. Both ends clear the\n0.75*peak = 38.9 margin, so the hump gate passes with room to spare. The\n0.75 margin and middle-third window are conservative floors for a visible\novershoot-then-decline.\n'} |
+
+# ## Study: The rescue effect: immigration lowers extinction (Brown & Kodric-Brown 1977) (`rescue-effect`)
+#
+# **Question.** In the canonical MacArthur-Wilson model the immigration curve I(S)=(P-S)c and
+# the extinction curve E(S)=S*e are independent. Brown & Kodric-Brown (1977;
+# citekey brown1977turnover) argued they are not: a population fed by immigrant
+# propagules is less likely to blink out, so immigration also *lowers*
+# extinction — the rescue effect. How does coupling the two curves this way
+# raise equilibrium richness and reduce turnover compared to the
+# independent-curves baseline?
+#
+# **Objective.** Over a rescue-strength gradient (9 islands, r = 0.0 .. 0.8, matched area and
+# isolation) on an 8-seed ensemble, measure (a) the ensemble-mean equilibrium
+# richness S at each rescue strength against the analytic S*(r), and (b) the
+# equilibrium turnover (gross colonization+extinction events per generation) at
+# each rescue strength; report the matched no-rescue (r=0) vs with-rescue (r=0.8)
+# comparison, and verify that at r=0 the simulated S* matches the analytic
+# MacArthur-Wilson S* = P*c/(c+e). Render the richness-rising, turnover-falling,
+# and coupled rate-crossing figures.
+#
+# **Hypothesis.** If the same colonization pressure c that fills empty niches also rescues
+# present species (each present species rescued per tick with probability c, its
+# extinction probability then cut to e*(1-rescue_strength)), the effective
+# per-species extinction rate becomes e_eff = e*(1 - c*rescue_strength). The
+# extinction curve is pulled down, so the rate crossing slides right: equilibrium
+# richness rises to S* = P*c/(c + e*(1-c*rescue_strength)) and the equilibrium
+# event flux S*·e_eff — the turnover — falls. With rescue_strength=0 the model
+# reduces exactly to the independent-curves MacArthur-Wilson equilibrium.
+
+# ### Parameters
+#
+# | simulation | composite | steps | params |
+# | --- | --- | --- | --- |
+# | `baseline` | `viva_island_biogeography.composites.rescue.rescue_effect` | 0 | n_islands=9, n_pool=60, colonization_base=0.5, extinction_base=0.5, area=100.0, distance=0.0, area_exponent=0.25, rescue_min=0.0, rescue_max=0.8, seed=1 |
+#
+# Declared parameter sets (`study.yaml` variants):
+#
+# - **no-rescue** — `n_islands=9`, `n_pool=60`, `colonization_base=0.5`, `extinction_base=0.5`, `area=100.0`, `distance=0.0`, `area_exponent=0.25`, `rescue_min=0.0`, `rescue_max=0.0`, `seed=1`
+
+# ### The model & its parameters
+#
+# Each composite is a process-bigraph *document* — named processes wired by `inputs`/`outputs` ports over shared stores. Below, each composite shows what it does, then a **parameter cell** with its tunable knobs (the current default and what each one means). Edit any value, then re-run the **Run** section to rebuild and re-simulate with your changes.
+
+# **The model — `viva_island_biogeography.composites.rescue.rescue_effect`**
+#
+# Brown & Kodric-Brown (1977) rescue-effect archipelago: identical islands (same area and isolation) differing only in how strongly incoming propagules rescue present species from extinction. Coupling the immigration and extinction curves raises equilibrium richness and damps turnover; rescue_strength=0 reduces to the independent-curves MacArthur-Wilson equilibrium.
+
+# === Parameters — edit any value, then re-run from the Run cell below ===
+# Each entry is the composite's current default; the comment explains it.
+ov_viva_island_biogeography_composites_rescue_rescue_effect = {
+    'n_islands'        : 9,   # Number of islands (rescue-strength levels, or replicates)
+    'n_pool'           : 60,   # Mainland species-pool size P
+    'colonization_base': 0.5,   # Per-species colonization prob at distance 0 (also the rescue probability)
+    'extinction_base'  : 0.5,   # Per-species baseline extinction prob at the reference area
+    'area'             : 100.0,   # Island area (shared across all islands)
+    'distance'         : 0.0,   # Isolation distance (shared across all islands)
+    'area_exponent'    : 0.25,   # Area-extinction exponent
+    'rescue_min'       : 0.0,   # Rescue strength on the first island (0 = no rescue = baseline M-W)
+    'rescue_max'       : 0.8,   # Rescue strength on the last island (linear across islands)
+    'interval'         : 1.0,   # Generations per tick (discrete model: keep 1.0)
+    'seed'             : 0,   # RNG seed; each island uses seed + its index
+}
+
+# ### Run
+#
+# _Set `STEPS`, then run. Each composite is built live from its (edited) spec above and run; a composite whose module processes aren't implemented yet reports the error instead of crashing. Set `RERUN = False` to skip re-simulating._
+
+# === Study: rescue-effect ===
+STUDY = 'rescue-effect'
+STUDY_DIR = REPO / 'workspace/studies' / STUDY
+STUDY_YAML = str(STUDY_DIR / "study.yaml")
+RUNS_DB = str(STUDY_DIR / "runs.db")
+
+# This study has no *recorded* runs yet. RERUN builds its declared
+# composite(s) live and runs them; a composite whose module processes
+# are not implemented yet reports the error instead of crashing.
+STEPS_baseline = 100
+INTERVAL_baseline = 1.0
+
+if RERUN:
+    from process_bigraph import Composite
+    try:
+        with quiet():  # keep per-step stdout out of the notebook
+            _ov = ov_viva_island_biogeography_composites_rescue_rescue_effect if 'ov_viva_island_biogeography_composites_rescue_rescue_effect' in dir() else None  # edits from the panel cell, if any
+            spec_viva_island_biogeography_composites_rescue_rescue_effect = materialize_composite('viva_island_biogeography.composites.rescue.rescue_effect', _ov)
+            _comp = Composite({'state': spec_viva_island_biogeography_composites_rescue_rescue_effect['state']}, core=core)
+            _comp.run(STEPS_baseline)
+        print('ran', 'baseline', f'(viva_island_biogeography.composites.rescue.rescue_effect) for', STEPS_baseline, 'steps')
+    except Exception as _e:
+        print(f"baseline not runnable yet: {type(_e).__name__}: {_e}")
+else:
+    print("RERUN=False — not re-simulating.")
+
+# ### Visualizations
+#
+# _Results are shown by the figures below, produced by the run above._
+
+# **richness-vs-rescue**
+
+# richness-vs-rescue
+_save_viz('rescue-effect', 'richness-vs-rescue', _render_one('', {}, RUNS_DB, STUDY_YAML))
+
+# **turnover-vs-rescue**
+
+# turnover-vs-rescue
+_save_viz('rescue-effect', 'turnover-vs-rescue', _render_one('', {}, RUNS_DB, STUDY_YAML))
+
+# **rate-crossing**
+
+# rate-crossing
+_save_viz('rescue-effect', 'rate-crossing', _render_one('', {}, RUNS_DB, STUDY_YAML))
+
+# ### Acceptance criteria
+#
+# _Pre-registered checks (criteria/thresholds only — run the cells above to evaluate them)._
+#
+# | test | measures | passes if |
+# | --- | --- | --- |
+# | rescue-raises-richness _(primary)_ | kind=derived_scalar field=richness_margin | op > value 2.0 provenance {'kind': 'calibration', 'note': 'Measured S = 37.26 at r=0.8 vs 30.10 at r=0 (margin +7.16 species;\n9-island rescue gradient, 8-seed ensemble, 400 generations, tail 25%,\nc=e=0.5, P=60). The simulated gradient tracks the analytic\nS*(r)=P*c/(c+e(1-c*r)) across all levels (30.00 -> 37.50). 2.0 is a\nconservative floor for "clearly more species".\n'} |
+# | rescue-lowers-turnover _(primary)_ | kind=derived_scalar field=turnover_drop | op > value 2.0 provenance {'kind': 'calibration', 'note': 'Measured equilibrium turnover 30.02 events/gen at r=0 vs 22.56 at r=0.8\n(drop 7.45 events/gen; turnover ratio 0.752), same ensemble. Turnover\nfalls monotonically along the rescue gradient. 2.0 is a conservative\nfloor for a clear reduction.\n'} |
+# | r0-matches-baseline _(supporting)_ | kind=derived_scalar field=sanity_err_r0 | op < value 1.5 provenance {'kind': 'calibration', 'note': 'Measured S_obs(r=0) = 30.10 vs analytic MacArthur-Wilson S* = 30.00\n(|err| = 0.10 species), confirming exact reduction to the baseline when\nrescue is off. 1.5 is the ensemble-noise tolerance.\n'} |
+
 # ## Study: Carrying capacity sets abundance, not richness (`island-archipelago`)
 #
 # **Question.** In the Lotka-Volterra island model, does island area control the equilibrium
@@ -332,14 +1031,6 @@ else:
 # _Results are shown by the figures below, produced by the run above._
 
 # **spatial-map-animation**
-
-def _save_viz(study, slug, html):
-    d = REPO / 'reports/notebooks/figures' / study
-    d.mkdir(parents=True, exist_ok=True)
-    out = d / (slug + '.html')
-    out.write_text(html, encoding='utf-8')
-    print('  wrote', out)
-
 
 # spatial-map-animation
 _save_viz('island-archipelago', 'spatial-map-animation', _render_one('', {}, RUNS_DB, STUDY_YAML))
@@ -563,3 +1254,6 @@ _save_viz('island-food-web', 'food-web-spatial-map', _render_one('', {}, RUNS_DB
 # | --- | --- | --- |
 # | food-web-recovers-species-area _(primary)_ | kind=derived_scalar field=richness_area_corr | op > value 0.2 provenance {'kind': 'calibration', 'note': 'Measured ~ +0.50 (8-island, 30-species, 6-seed ensemble, 150\ngenerations). 0.2 is a conservative positive floor that still fails if\nthe species-area signal collapsed.\n'} |
 # | trophic-coexistence-exceeds-random _(primary)_ | kind=derived_scalar field=richness_gain_over_random | op > value 0.5 provenance {'kind': 'theory', 'note': 'Measured gain ~ +1.8 species (food web ~3.8 vs random ~1.95, matched\nparams). The ordering — not an exact gap — is the falsifiable signature.\n'} |
+
+# ## Open decisions
+# - Calibrate the microbial and neutral regimes against real data (EMP, tree-hole, Horner-Devine taxa-area) rather than demonstrating the regimes qualitatively.
