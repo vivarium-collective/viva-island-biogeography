@@ -1,0 +1,143 @@
+schema_version: 4
+name: mw-equilibrium-reproduction
+title: "Reproducing the MacArthur-Wilson equilibrium: rate crossing + turnover"
+created: '2026-10-24'
+status: completed
+phase: Evaluate
+question: |
+  Does a direct, phenomenological implementation of the original theory of
+  island biogeography (MacArthur & Wilson 1963, 1967) reproduce its three core
+  claims — (1) species richness relaxes to the equilibrium S* where the
+  immigration and extinction rate curves cross, (2) richness tracks the analytic
+  S* = P*c/(c+e) across islands, and (3) species identity turns over while
+  richness stays constant?
+hypothesis: |
+  The mw_equilibrium composite colonizes each absent species at probability
+  c = colonization_base/(1+distance) and goes extinct each present species at
+  e = extinction_base*(ref_area/area)^area_exponent. Immigration I(S)=(P-S)c
+  falls with S, extinction E(S)=S*e rises with S, so richness must relax to and
+  fluctuate about S* = P*c/(c+e). Because colonization and extinction never stop,
+  the island keeps gaining and losing species at equilibrium (turnover), so gross
+  colonization+extinction events over a window vastly exceed the net change in S.
+objective: |
+  Over a log-spaced area gradient (12 islands, isolation fixed) and an 8-seed
+  ensemble, measure (a) the correlation between the ensemble-mean equilibrium
+  richness and the analytic S*, and (b) the turnover ratio (gross events / net
+  richness change) on a representative island, and render the rate-crossing
+  diagram, the approach-to-equilibrium trajectories, and the turnover curves.
+description: |
+  This study reproduces the ORIGINAL theory directly, as a counterpart to the
+  mechanistic Lotka-Volterra port used elsewhere in this investigation. The
+  MacArthurWilsonEquilibriumProcess treats each species as present/absent and
+  draws colonization/extinction from the isolation- and area-dependent rates of
+  The Theory of Island Biogeography. A single run over an area gradient yields
+  the rate-crossing equilibrium, the approach to S*, and turnover at constant
+  richness — the three signatures of the 1967 monograph.
+baseline:
+- name: baseline
+  composite: viva_island_biogeography.composites.mw_equilibrium.mw_equilibrium
+  params:
+    n_islands: 12
+    n_pool: 60
+    colonization_base: 0.02
+    extinction_base: 0.012
+    area_min: 1.0
+    area_max: 100.0
+    area_exponent: 0.25
+    seed: 1
+variants: []
+expected_behavior:
+- name: equilibrium-tracks-theory
+  en: |
+    The ensemble-mean equilibrium richness per island tracks the analytic
+    S* = P*c/(c+e) closely across the area gradient (correlation near 1).
+  observable: equilibrium_richness
+  condition: pearson(S_observed, S_star) > 0.9
+  rationale: |
+    If the colonization/extinction process is implemented correctly, its
+    stationary richness must sit at the fixed point of I(S)=E(S); averaging over
+    seeds removes the single-realization noise so the fixed point is visible.
+  measure:
+    kind: derived_scalar
+    field: eq_track_corr
+  expect:
+    op: '>'
+    value: 0.9
+- name: turnover-at-equilibrium
+  en: |
+    Species identity turns over at equilibrium: gross colonization + extinction
+    events over the equilibrium window vastly exceed the net change in richness.
+  observable: turnover_ratio
+  condition: gross_events / net_change > 3
+  rationale: |
+    Turnover is the central dynamical prediction distinguishing the equilibrium
+    theory from a static species count — richness is a balance, not a fixed set.
+  measure:
+    kind: derived_scalar
+    field: turnover_ratio
+  expect:
+    op: '>'
+    value: 3.0
+behavior_tests:
+- name: equilibrium-tracks-theory
+  classification: primary
+  description: Ensemble corr(observed equilibrium S, analytic S*) must exceed 0.9.
+  measure:
+    kind: derived_scalar
+    field: eq_track_corr
+  pass_if:
+    op: '>'
+    value: 0.9
+    provenance:
+      kind: calibration
+      note: |
+        Measured eq_track_corr = 0.992 (12 islands, 8-seed ensemble, 400
+        generations, tail 25%). 0.9 is a conservative floor for "tracks theory".
+  requires_simulation: baseline
+- name: turnover-at-equilibrium
+  classification: primary
+  description: Gross equilibrium events must exceed net richness change by >3x.
+  measure:
+    kind: derived_scalar
+    field: turnover_ratio
+  pass_if:
+    op: '>'
+    value: 3.0
+    provenance:
+      kind: calibration
+      note: |
+        Measured turnover_ratio = 15.5 on the representative mid-gradient island
+        (gross colonization+extinction / |net dS| over the tail window).
+  requires_simulation: baseline
+pipeline_gate:
+  prerequisites: []
+  enables:
+  - species-area-and-isolation
+  proceed_condition: |
+    Establishing that the mw_equilibrium process reproduces the rate-crossing
+    equilibrium and turnover licenses using it to measure the species-area and
+    isolation laws.
+canonical_runs:
+- name: default
+  script: studies/mw-equilibrium-reproduction/sims/run.py
+  args: []
+  label: "Rate crossing + approach to S* + turnover (12 islands, 8-seed ensemble)"
+  default: true
+visualizations:
+- name: rate-crossing
+  chart: viz/rate_crossing.html
+  render: python sims/run.py
+- name: approach-to-equilibrium
+  chart: viz/approach_to_equilibrium.html
+  render: python sims/run.py
+- name: turnover
+  chart: viz/turnover.html
+  render: python sims/run.py
+conclusion: |
+  The mw_equilibrium process reproduces the original theory: ensemble-mean
+  equilibrium richness tracks the analytic S* = P*c/(c+e) across the area
+  gradient (corr = 0.992), and species identity turns over strongly while
+  richness holds (turnover ratio ~ 15x). The simulation sits on MacArthur and
+  Wilson's crossing immigration/extinction curves. The emergent species-area
+  slope on this gradient is z ~ 0.12, in the low end of the empirical 0.1-0.35
+  band, partly because the large islands approach pool saturation.

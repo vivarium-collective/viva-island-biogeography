@@ -160,7 +160,11 @@ def main() -> None:
                     _fail(f"dataset '{d['name']}' sha256 mismatch (recorded={sha[:16]}…, actual={actual[:16]}…)")
         elif url is not None:
             if not sha:
-                _fail(f"dataset '{d['name']}' has url but no sha256")
+                # External accession / portal URLs (GBIF, ENA, Qiita, CRAN, DOIs)
+                # have no local file to hash, so sha256 is optional for url-only
+                # datasets — warn, don't fail.
+                print(f"  WARN dataset '{d['name']}': url with no sha256 "
+                      f"(external link; not locally hashable)", file=sys.stderr)
         else:
             _fail(f"dataset '{d['name']}' has neither path nor url")
 

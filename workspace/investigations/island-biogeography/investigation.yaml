@@ -27,6 +27,8 @@ description: |
   + migration conservation, and the role of trophic structure in the
   species-area law.
 studies:
+- mw-equilibrium-reproduction
+- species-area-and-isolation
 - island-archipelago
 - distance-immigration
 - island-food-web
