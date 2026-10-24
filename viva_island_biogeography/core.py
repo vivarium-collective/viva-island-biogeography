@@ -19,12 +19,18 @@ from .processes import (
     MigrationProcess,
     MacArthurWilsonEquilibriumProcess,
 )
+from .models_neutral import NeutralMetacommunityProcess
+from .models_gdm import GeneralDynamicModelProcess
+from .models_rescue import RescueEffectProcess
 from .types import register_types
 
 _PROCESSES = (
     ("IslandProcess", IslandProcess),
     ("MigrationProcess", MigrationProcess),
     ("MacArthurWilsonEquilibriumProcess", MacArthurWilsonEquilibriumProcess),
+    ("NeutralMetacommunityProcess", NeutralMetacommunityProcess),
+    ("GeneralDynamicModelProcess", GeneralDynamicModelProcess),
+    ("RescueEffectProcess", RescueEffectProcess),
 )
 
 
