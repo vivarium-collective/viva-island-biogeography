@@ -1,0 +1,174 @@
+schema_version: 4
+name: neutral-vs-equilibrium
+title: "Neutral vs equilibrium: do dispersal-drift and colonization-extinction predict the same macroecology?"
+created: '2026-10-24'
+status: completed
+phase: Evaluate
+question: |
+  Hubbell's (2001) neutral theory and MacArthur & Wilson's (1967) equilibrium
+  theory derive island diversity from completely different mechanisms — neutral
+  dispersal-drift among ecologically equivalent individuals in a fixed-size local
+  community, versus per-species colonization/extinction rates set by area and
+  isolation. Do these two mechanisms nonetheless predict the SAME emergent
+  macroecology — specifically, do both produce a positive species-area
+  relationship S ∝ A^z, and what does the neutral local species-abundance
+  distribution look like?
+hypothesis: |
+  The neutral metacommunity (Hubbell 2001) holds a zero-sum local community of
+  J = area*density individuals evolving by J Moran death/replacement events per
+  generation, with immigration probability m = immigration_base/(1+distance) from
+  a shared pool of n_pool species. Larger islands sample and retain more species
+  before drift erodes them, so a positive species-area relationship must emerge
+  with NO colonization/extinction rate asymmetry at all — purely from drift plus
+  dispersal. Run alongside the MacArthur-Wilson equilibrium composite over the
+  same area gradient, both models should show a positive z, but by different
+  mechanisms and (potentially) with different slopes. The neutral local community
+  should also display the characteristic skewed, concave rank-abundance /
+  zero-sum-multinomial species-abundance distribution from drift alone.
+objective: |
+  Over a shared log-spaced area gradient (12 islands, isolation fixed) and an
+  8-seed ensemble, measure the emergent species-area slope z for BOTH the neutral
+  (hubbell2001unified) and equilibrium (MacArthur-Wilson) composites, confirm both
+  are positive, and render (a) the SAR overlay on log-log axes and (b) the neutral
+  species-abundance distribution for a representative island (rank-abundance curve
+  + Preston octaves).
+description: |
+  This study adds Hubbell's (2001) *Unified Neutral Theory of Biodiversity and
+  Biogeography* (citekey hubbell2001unified) as a mechanistic counterpoint to the
+  already-reproduced MacArthur-Wilson equilibrium model. The
+  NeutralMetacommunityProcess assumes strict ecological equivalence: every
+  individual has identical birth/death/dispersal rates, and local diversity is a
+  dynamic balance between demographic drift in a finite zero-sum community and
+  immigration from the metacommunity. The metacommunity is treated as a uniform
+  pool, so the skewed local species-abundance distribution that appears is a pure
+  dispersal-drift result. By driving both the neutral and the equilibrium
+  composites over an identical area gradient we test whether two unrelated
+  mechanisms converge on the same macroecological law (a positive SAR) — a classic
+  question in community ecology (neutral theory as a null model for niche-based
+  equilibrium theory).
+baseline:
+- name: baseline
+  composite: viva_island_biogeography.composites.neutral.neutral_metacommunity
+  params:
+    n_islands: 12
+    n_pool: 64
+    density: 2.0
+    immigration_base: 0.2
+    area_min: 1.0
+    area_max: 100.0
+    distance_min: 0.0
+    distance_max: 0.0
+    seed: 1
+variants: []
+expected_behavior:
+- name: neutral-produces-sar
+  en: |
+    The neutral (dispersal-drift) metacommunity produces a clear positive
+    species-area relationship (fitted power-law slope z > 0.05) from drift and
+    dispersal alone, with no colonization/extinction rate asymmetry.
+  observable: species_area_slope
+  condition: z_neutral > 0.05
+  rationale: |
+    If richness is set by a drift-dispersal balance in a fixed-J local community,
+    larger J (larger area) must hold more species, so S must rise with A. A
+    positive z establishes that neutral theory alone reproduces the SAR.
+  measure:
+    kind: derived_scalar
+    field: z_neutral
+  expect:
+    op: '>'
+    value: 0.05
+- name: both-models-show-sar
+  en: |
+    Both mechanisms — neutral dispersal-drift AND MacArthur-Wilson
+    colonization-extinction — yield a positive species-area relationship over the
+    same area gradient (both z > 0.05).
+  observable: species_area_slope
+  condition: z_neutral > 0.05 and z_equilibrium > 0.05
+  rationale: |
+    The headline comparison: two unrelated mechanisms converging on the same
+    qualitative macroecological law means the SAR cannot by itself discriminate
+    between neutral and niche-based (equilibrium) explanations.
+  measure:
+    kind: derived_scalar
+    field: both_sar
+  expect:
+    op: '=='
+    value: 1.0
+behavior_tests:
+- name: neutral-produces-sar
+  classification: primary
+  description: The neutral model's fitted species-area slope z must exceed 0.05.
+  measure:
+    kind: derived_scalar
+    field: z_neutral
+  pass_if:
+    op: '>'
+    value: 0.05
+    provenance:
+      kind: calibration
+      note: |
+        Measured z_neutral = 0.763 (12 islands log-spaced area 1-100, density 2
+        → J 2-200, immigration_base 0.2, n_pool 64, 8-seed ensemble, 300
+        generations, tail 25%). 0.05 is a conservative floor for "clear positive
+        SAR"; the measured value is far above it.
+  requires_simulation: baseline
+- name: both-models-show-sar
+  classification: primary
+  description: Both the neutral and the equilibrium model must show z > 0.05.
+  measure:
+    kind: derived_scalar
+    field: both_sar
+  pass_if:
+    op: '=='
+    value: 1.0
+    provenance:
+      kind: calibration
+      note: |
+        Measured z_neutral = 0.763 and z_equilibrium = 0.126 over the identical
+        area gradient (MacArthur-Wilson composite, n_pool 60, colonization_base
+        0.02, extinction_base 0.012, area_exponent 0.25). Both exceed 0.05, so
+        both_sar = 1.0 (both-positive indicator).
+  requires_simulation: baseline
+pipeline_gate:
+  prerequisites:
+  - mw-equilibrium-reproduction
+  enables: []
+  proceed_condition: |
+    Reproducing MacArthur-Wilson first (mw-equilibrium-reproduction) licenses
+    using its composite as the equilibrium comparator here; establishing that the
+    neutral model independently produces a positive SAR closes the
+    neutral-vs-equilibrium comparison.
+canonical_runs:
+- name: default
+  script: studies/neutral-vs-equilibrium/sims/run.py
+  args: []
+  label: "Neutral vs equilibrium SAR + neutral species-abundance distribution (12 islands, 8-seed ensemble)"
+  default: true
+visualizations:
+- name: sar-overlay
+  chart: viz/sar_overlay.html
+  render: python sims/run.py
+- name: rank-abundance
+  chart: viz/rank_abundance.html
+  render: python sims/run.py
+- name: preston-octaves
+  chart: viz/preston_octaves.html
+  render: python sims/run.py
+conclusion: |
+  Two mechanisms, one law. Hubbell's (2001) zero-sum neutral metacommunity
+  (hubbell2001unified) produces a clear positive species-area relationship —
+  fitted slope z_neutral = 0.763 over a log-spaced area gradient (J = 2-200
+  individuals) — from dispersal-drift alone, with no colonization/extinction rate
+  asymmetry. The already-reproduced MacArthur-Wilson equilibrium model over the
+  identical gradient gives z_equilibrium = 0.126. Both are positive, so the SAR by
+  itself cannot discriminate neutral from niche-based equilibrium explanations —
+  the central caution of neutral theory as a null model. The two slopes do differ
+  markedly: the neutral SAR is far steeper here because the smallest islands carry
+  only J = 2-3 individuals and drift drives them nearly monospecific (S ≈ 1-2),
+  while the equilibrium model keeps even the smallest islands richer; the neutral
+  slope accordingly overshoots the empirical z ≈ 0.1-0.35 band at this density.
+  The neutral local community reproduces the expected skewed, concave
+  rank-abundance curve and an internal-mode Preston octave distribution on the
+  largest island (~46 species of J = 200), the zero-sum-multinomial signature of
+  drift under a uniform metacommunity.

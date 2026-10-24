@@ -1,0 +1,195 @@
+schema_version: 4
+name: rescue-effect
+title: "The rescue effect: immigration lowers extinction (Brown & Kodric-Brown 1977)"
+created: '2026-10-24'
+status: completed
+phase: Evaluate
+question: |
+  In the canonical MacArthur-Wilson model the immigration curve I(S)=(P-S)c and
+  the extinction curve E(S)=S*e are independent. Brown & Kodric-Brown (1977;
+  citekey brown1977turnover) argued they are not: a population fed by immigrant
+  propagules is less likely to blink out, so immigration also *lowers*
+  extinction — the rescue effect. How does coupling the two curves this way
+  raise equilibrium richness and reduce turnover compared to the
+  independent-curves baseline?
+hypothesis: |
+  If the same colonization pressure c that fills empty niches also rescues
+  present species (each present species rescued per tick with probability c, its
+  extinction probability then cut to e*(1-rescue_strength)), the effective
+  per-species extinction rate becomes e_eff = e*(1 - c*rescue_strength). The
+  extinction curve is pulled down, so the rate crossing slides right: equilibrium
+  richness rises to S* = P*c/(c + e*(1-c*rescue_strength)) and the equilibrium
+  event flux S*·e_eff — the turnover — falls. With rescue_strength=0 the model
+  reduces exactly to the independent-curves MacArthur-Wilson equilibrium.
+objective: |
+  Over a rescue-strength gradient (9 islands, r = 0.0 .. 0.8, matched area and
+  isolation) on an 8-seed ensemble, measure (a) the ensemble-mean equilibrium
+  richness S at each rescue strength against the analytic S*(r), and (b) the
+  equilibrium turnover (gross colonization+extinction events per generation) at
+  each rescue strength; report the matched no-rescue (r=0) vs with-rescue (r=0.8)
+  comparison, and verify that at r=0 the simulated S* matches the analytic
+  MacArthur-Wilson S* = P*c/(c+e). Render the richness-rising, turnover-falling,
+  and coupled rate-crossing figures.
+description: |
+  This study extends the independent-curves MacArthur-Wilson equilibrium
+  (mw-equilibrium-reproduction) with the rescue effect of Brown & Kodric-Brown
+  (1977), who found that immigration to boulder-field "islands" propped up
+  resident populations and flattened the expected species-area/isolation
+  relationships. The RescueEffectProcess keeps every rule of
+  MacArthurWilsonEquilibriumProcess but lets the incoming colonization pressure
+  also rescue present species from extinction, coupling the two rate curves. A
+  single run sweeps rescue strength at fixed area and isolation, isolating the
+  coupling as the only varying quantity.
+baseline:
+- name: baseline
+  composite: viva_island_biogeography.composites.rescue.rescue_effect
+  params:
+    n_islands: 9
+    n_pool: 60
+    colonization_base: 0.5
+    extinction_base: 0.5
+    area: 100.0
+    distance: 0.0
+    area_exponent: 0.25
+    rescue_min: 0.0
+    rescue_max: 0.8
+    seed: 1
+variants:
+- name: no-rescue
+  composite: viva_island_biogeography.composites.rescue.rescue_effect
+  params:
+    n_islands: 9
+    n_pool: 60
+    colonization_base: 0.5
+    extinction_base: 0.5
+    area: 100.0
+    distance: 0.0
+    area_exponent: 0.25
+    rescue_min: 0.0
+    rescue_max: 0.0
+    seed: 1
+expected_behavior:
+- name: rescue-raises-richness
+  en: |
+    Coupling immigration into extinction raises the ensemble-mean equilibrium
+    richness: the with-rescue island (r=0.8) holds clearly more species than the
+    no-rescue island (r=0) at matched area and isolation.
+  observable: equilibrium_richness
+  condition: S_with_rescue - S_no_rescue > 2
+  rationale: |
+    Rescue cuts the effective extinction rate to e*(1-c*rescue_strength), pulling
+    the extinction curve down so the rate crossing S* = P*c/(c+e_eff) slides to a
+    higher richness.
+  measure:
+    kind: derived_scalar
+    field: richness_margin
+  expect:
+    op: '>'
+    value: 2.0
+- name: rescue-lowers-turnover
+  en: |
+    The rescue effect damps turnover: the equilibrium gross-event rate (gross
+    colonization+extinction events per generation) is lower with rescue than
+    without.
+  observable: turnover_rate
+  condition: turnover_no_rescue - turnover_with_rescue > 2
+  rationale: |
+    At equilibrium the event flux is S*·e_eff; rescue lowers e_eff faster than it
+    raises S*, so fewer species are lost (and, by balance, fewer gained) per
+    generation — the turnover falls even as richness rises.
+  measure:
+    kind: derived_scalar
+    field: turnover_drop
+  expect:
+    op: '>'
+    value: 2.0
+behavior_tests:
+- name: rescue-raises-richness
+  classification: primary
+  description: With-rescue equilibrium richness must exceed no-rescue by > 2 species.
+  measure:
+    kind: derived_scalar
+    field: richness_margin
+  pass_if:
+    op: '>'
+    value: 2.0
+    provenance:
+      kind: calibration
+      note: |
+        Measured S = 37.26 at r=0.8 vs 30.10 at r=0 (margin +7.16 species;
+        9-island rescue gradient, 8-seed ensemble, 400 generations, tail 25%,
+        c=e=0.5, P=60). The simulated gradient tracks the analytic
+        S*(r)=P*c/(c+e(1-c*r)) across all levels (30.00 -> 37.50). 2.0 is a
+        conservative floor for "clearly more species".
+  requires_simulation: baseline
+- name: rescue-lowers-turnover
+  classification: primary
+  description: No-rescue turnover must exceed with-rescue turnover by > 2 events/gen.
+  measure:
+    kind: derived_scalar
+    field: turnover_drop
+  pass_if:
+    op: '>'
+    value: 2.0
+    provenance:
+      kind: calibration
+      note: |
+        Measured equilibrium turnover 30.02 events/gen at r=0 vs 22.56 at r=0.8
+        (drop 7.45 events/gen; turnover ratio 0.752), same ensemble. Turnover
+        falls monotonically along the rescue gradient. 2.0 is a conservative
+        floor for a clear reduction.
+  requires_simulation: baseline
+- name: r0-matches-baseline
+  classification: supporting
+  description: |
+    At rescue_strength=0 the process must reduce to the independent-curves
+    MacArthur-Wilson equilibrium: simulated S must match analytic S*=P*c/(c+e).
+  measure:
+    kind: derived_scalar
+    field: sanity_err_r0
+  pass_if:
+    op: '<'
+    value: 1.5
+    provenance:
+      kind: calibration
+      note: |
+        Measured S_obs(r=0) = 30.10 vs analytic MacArthur-Wilson S* = 30.00
+        (|err| = 0.10 species), confirming exact reduction to the baseline when
+        rescue is off. 1.5 is the ensemble-noise tolerance.
+  requires_simulation: baseline
+pipeline_gate:
+  prerequisites:
+  - mw-equilibrium-reproduction
+  enables: []
+  proceed_condition: |
+    With the rescue effect shown to raise equilibrium richness and damp turnover
+    (and to collapse onto the baseline when rescue is off), the coupled-curve
+    extension is validated and available for the species-area/isolation
+    flattening that Brown & Kodric-Brown (1977) attributed to rescue.
+canonical_runs:
+- name: default
+  script: studies/rescue-effect/sims/run.py
+  args: []
+  label: "Rescue gradient: richness rising + turnover falling (9 islands, 8-seed ensemble)"
+  default: true
+visualizations:
+- name: richness-vs-rescue
+  chart: viz/richness_vs_rescue.html
+  render: python sims/run.py
+- name: turnover-vs-rescue
+  chart: viz/turnover_vs_rescue.html
+  render: python sims/run.py
+- name: rate-crossing
+  chart: viz/rate_crossing.html
+  render: python sims/run.py
+conclusion: |
+  Coupling the two MacArthur-Wilson curves reproduces Brown & Kodric-Brown's
+  (1977) rescue effect. As rescue strength rises from 0 to 0.8, the ensemble-mean
+  equilibrium richness climbs from 30.1 to 37.3 species (+7.2) while the
+  equilibrium turnover falls from 30.0 to 22.6 gross events per generation
+  (ratio 0.75) — richness up, turnover down, exactly as predicted. The simulated
+  gradient sits on the analytic S*(r) = P*c/(c + e(1 - c*r)) at every level, and
+  at r=0 it collapses onto the independent-curves MacArthur-Wilson S* = 30.0
+  (|err| 0.10), confirming the model is a faithful extension of the baseline
+  rather than a different model. Immigration lowering extinction is enough to
+  raise equilibrium diversity and stabilize species identity.

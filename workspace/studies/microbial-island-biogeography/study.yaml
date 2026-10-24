@@ -1,0 +1,181 @@
+schema_version: 4
+name: microbial-island-biogeography
+title: "Does the taxa-area relationship hold for microbes — and flatten?"
+created: '2026-10-24'
+status: completed
+phase: Evaluate
+question: |
+  Does the taxa-area relationship — the microbial analogue of the species-area
+  law — hold under the MacArthur-Wilson equilibrium model when it is run in a
+  microbial regime, and is its slope z flatter than for macro-organisms?
+hypothesis: |
+  Microbial communities obey the same equilibrium logic as macro-organisms
+  (richness set by the crossing of area-driven extinction against isolation-
+  driven colonization), so a microbial regime should still give a positive
+  taxa-area slope (z > 0). But because microbes draw on an enormous taxa pool
+  (so islands rarely saturate), disperse widely, and turn over fast locally
+  (martiny2006microbial; hanson2012beyond), the area effect on extinction is
+  weaker and the measured slope should be *flatter* than the macro slope —
+  consistent with the observed microbial band z ~ 0.02-0.1 (hornerdevine2004taxa;
+  bell2005islands) versus the classic macro z ~ 0.15-0.35.
+objective: |
+  Reusing the MacArthur-Wilson equilibrium process (no new process), run two
+  regimes over the same log-spaced area gradient (isolation fixed): a MACRO
+  regime (n_pool=60, area_exponent=0.25) and a MICROBIAL regime (n_pool=300,
+  shallow area_exponent=0.10, high colonization+extinction). Measure the log-log
+  taxa-area slope z for each on a 6-seed ensemble mean, measure the gross
+  equilibrium turnover rate, and render the macro-vs-microbe overlay.
+description: |
+  Microbial island biogeography (martiny2006microbial; hanson2012beyond) revived
+  the MacArthur-Wilson framework for microbes and found that the classic laws
+  hold in sign but differ sharply in degree. Horner-Devine et al. (2004,
+  hornerdevine2004taxa) measured a shallow taxa-area slope z ~ 0.02-0.1 for salt-
+  marsh sediment bacteria; Bell et al. (2005, bell2005islands) found a positive
+  but low z for bacteria in water-filled tree holes. The flatness is attributed
+  to a vast species pool (islands never saturate it), high passive dispersal
+  (little colonization limitation), and rapid local turnover.
+  This study does not build a new model: it reuses the already-validated
+  mw_equilibrium process in a microbial parameter regime (the microbial_island
+  composite) and compares it, on the same area gradient, to the macro regime the
+  species-area-and-isolation study calibrated. The microbial regime's shallow
+  area-extinction exponent reproduces the observed flat taxa-area slope while the
+  high per-taxon rates reproduce the fast turnover. The Earth Microbiome Project
+  (global 16S taxa-area surveys) and the tree-hole bacterial datasets
+  (bell2005islands) are the natural empirical validation targets for the measured
+  z and turnover. Builds on species-area-and-isolation, which established that the
+  process sits on the equilibrium rate curves and gives z ~ 0.12 in the macro
+  regime.
+baseline:
+- name: baseline
+  composite: viva_island_biogeography.composites.microbial.microbial_island
+  params:
+    n_islands: 12
+    n_pool: 300
+    colonization_base: 0.10
+    extinction_base: 0.06
+    area_min: 1.0
+    area_max: 100.0
+    area_exponent: 0.10
+    seed: 1
+variants:
+- name: macro-comparison
+  composite: viva_island_biogeography.composites.mw_equilibrium.mw_equilibrium
+  params:
+    n_islands: 12
+    n_pool: 60
+    colonization_base: 0.02
+    extinction_base: 0.012
+    area_min: 1.0
+    area_max: 100.0
+    area_exponent: 0.25
+    seed: 1
+expected_behavior:
+- name: microbial-sar-holds
+  en: |
+    The microbial taxa-area relationship holds: equilibrium richness increases
+    with patch area as a power law with a clearly positive slope z.
+  observable: microbial_taxa_area_slope
+  condition: z_micro > 0
+  rationale: |
+    Even with a large pool and fast turnover, larger patches carry larger per-
+    taxon populations and so lose taxa less often; the equilibrium S* still rises
+    with area, giving a positive taxa-area slope (martiny2006microbial).
+  measure:
+    kind: derived_scalar
+    field: z_micro
+  expect:
+    op: '>'
+    value: 0.0
+- name: microbial-z-flatter
+  en: |
+    The microbial taxa-area slope is flatter than the macro slope (z_micro <
+    z_macro), matching the observed shallow microbial band z ~ 0.02-0.1.
+  observable: microbe_vs_macro_slope
+  condition: z_micro < z_macro
+  rationale: |
+    A huge taxa pool keeps microbial islands far from saturation and high
+    dispersal weakens colonization limitation, so the area effect on richness is
+    weaker than for macro-organisms (hornerdevine2004taxa; bell2005islands).
+  measure:
+    kind: derived_scalar
+    field: z_flatter_margin
+  expect:
+    op: '>'
+    value: 0.0
+behavior_tests:
+- name: microbial-sar-holds
+  classification: primary
+  description: Microbial log-log taxa-area slope z must be positive.
+  measure:
+    kind: derived_scalar
+    field: z_micro
+  pass_if:
+    op: '>'
+    value: 0.0
+    provenance:
+      kind: calibration
+      note: |
+        Measured z_micro = 0.0429 (area gradient 1-100, isolation 0, 6-seed
+        ensemble; microbial regime n_pool=300, colonization_base=0.10,
+        extinction_base=0.06, area_exponent=0.10). Positive and squarely inside
+        the empirical microbial band z ~ 0.02-0.1 (hornerdevine2004taxa salt-
+        marsh sediment; bell2005islands tree-hole bacteria).
+  requires_simulation: baseline
+- name: microbial-z-flatter
+  classification: primary
+  description: Microbial taxa-area slope must be flatter than the macro slope.
+  measure:
+    kind: derived_scalar
+    field: z_flatter_margin
+  pass_if:
+    op: '>'
+    value: 0.0
+    provenance:
+      kind: calibration
+      note: |
+        Measured z_micro = 0.0429 vs z_macro = 0.1227 over the identical area
+        gradient and seeds (6-seed ensemble), so z_flatter_margin =
+        z_macro - z_micro = 0.0798 > 0. z_macro reproduces the 0.12 slope the
+        species-area-and-isolation study measured in the macro regime. The
+        microbial slope is ~2.9x flatter, consistent with the observed microbe-
+        vs-macro contrast (hornerdevine2004taxa; hanson2012beyond). Gross
+        equilibrium turnover is ~20x higher in the microbial regime (25.99 vs
+        1.27 events · gen⁻¹ · island⁻¹), the fast-turnover signature.
+  requires_simulation: macro-comparison
+pipeline_gate:
+  prerequisites:
+  - species-area-and-isolation
+  enables: []
+  proceed_condition: |
+    With the microbial taxa-area relationship shown to hold and flatten relative
+    to the macro regime, the equilibrium model is validated against the microbial
+    island-biogeography literature and is ready for empirical calibration against
+    the Earth Microbiome Project and tree-hole bacterial datasets.
+canonical_runs:
+- name: default
+  script: studies/microbial-island-biogeography/sims/run.py
+  args: []
+  label: "Macro vs microbial taxa-area z + turnover (shared area gradient, 6-seed)"
+  default: true
+visualizations:
+- name: taxa-area-overlay
+  chart: viz/taxa_area_overlay.html
+  render: python sims/run.py
+- name: turnover-comparison
+  chart: viz/turnover_comparison.html
+  render: python sims/run.py
+- name: richness-distribution
+  chart: viz/richness_distribution.html
+  render: python sims/run.py
+conclusion: |
+  The taxa-area relationship holds for microbes and is markedly flatter than for
+  macro-organisms. Over an identical area gradient (6-seed ensemble), the
+  microbial regime gives a positive slope z_micro = 0.043 — inside the observed
+  microbial band z ~ 0.02-0.1 (Horner-Devine 2004; Bell 2005) — against a macro
+  slope z_macro = 0.123, a ~2.9x flattening. Gross equilibrium turnover is ~20x
+  higher in the microbial regime (25.99 vs 1.27 events per island per
+  generation), the fast-turnover signature a large pool and high dispersal
+  predict (Martiny 2006; Hanson 2012). The same equilibrium mechanism therefore
+  reproduces both the microbial and macro regimes with no new process; the Earth
+  Microbiome Project and tree-hole bacterial surveys are the next calibration
+  targets.
