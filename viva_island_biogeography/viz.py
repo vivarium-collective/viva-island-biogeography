@@ -15,6 +15,7 @@ installed ``plotly.py`` major version automatically.
 from __future__ import annotations
 
 import math
+from pathlib import Path
 from typing import Any
 
 import numpy as np
@@ -97,6 +98,21 @@ def write_html(fig: go.Figure, path, title: str = "") -> None:
         default_width="100%",
         config={"displayModeBar": True, "responsive": False},
     )
+    # Plotly's full_html ALWAYS injects `html, body {height: 100%;}`, which makes
+    # the body fill the embedding iframe instead of shrinking to the plot. The
+    # workbench sizes each chart iframe to its body's content height, so a
+    # viewport-filling body reports the iframe's own height — unbounded
+    # whitespace / a resize feedback loop. Override that one rule to height:auto
+    # so the body shrinks to the fixed-height plot wrapper (default_height above),
+    # giving the iframe a deterministic content height. (See the chart-embed
+    # contract check in scripts/lint-workspace.py.)
+    _p = Path(path)
+    html = _p.read_text()
+    html = html.replace(
+        "<style>html, body {height: 100%;}</style>",
+        "<style>html,body{height:auto;margin:0;padding:0;overflow:hidden}</style>",
+    )
+    _p.write_text(html)
 
 
 # --------------------------------------------------------------------------

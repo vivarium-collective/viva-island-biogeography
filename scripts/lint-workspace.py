@@ -408,6 +408,37 @@ def main() -> None:
         _fail("completed studies would render as 'pending evidence' (no run-linked "
               "outcomes for their behavior tests):\n" + "\n".join(pending_evidence_fails))
 
+    # Chart-embed contract (strengthened audit): the workbench sizes each study
+    # chart's iframe to its body's CONTENT height. Plotly's full_html injects
+    # `html, body {height: 100%;}`, which makes the body fill the iframe instead
+    # of the plot -> unbounded whitespace / a resize feedback loop. viz.write_html
+    # overrides that rule (height:auto) + sets responsive:false + a fixed-pixel
+    # wrapper. Fail if any generated chart ships the raw Plotly embed, so a chart
+    # written without write_html (or a Plotly default that re-introduces it) is
+    # caught before it ever renders.
+    chart_embed_fails: list[str] = []
+    for chart_path in sorted((_dir("studies")).glob("*/viz/*.html")):
+        try:
+            txt = chart_path.read_text(errors="ignore")
+        except OSError:
+            continue
+        if "plotly" not in txt.lower():
+            continue  # not a Plotly chart; the contract is Plotly-specific
+        rel = chart_path.relative_to(_dir("studies")).as_posix()
+        if "html, body {height: 100%;}" in txt:
+            chart_embed_fails.append(
+                f"  {rel}: ships Plotly's `html, body {{height: 100%;}}` — the body "
+                "will fill the iframe and grow unbounded whitespace. Render via "
+                "viz.write_html (which overrides it to height:auto).")
+        if '"responsive": true' in txt or '"responsive":true' in txt:
+            chart_embed_fails.append(
+                f"  {rel}: has Plotly `responsive: true` — autosize + the iframe's "
+                "content-sizing form a growth loop. write_html sets responsive:false.")
+    if chart_embed_fails:
+        _fail("study charts violate the whitespace-safe embed contract "
+              "(use viva_island_biogeography.viz.write_html):\n"
+              + "\n".join(chart_embed_fails))
+
     n_studies = len(study_names)
     status_counts = Counter(study_statuses)
     status_summary = ", ".join(f"{v} {k}" for k, v in sorted(status_counts.items()))
