@@ -73,7 +73,7 @@ def build_neutral_document(
         y = distance * float(np.sin(angle))
 
         # Seed the initial local community by drawing J immigrants (zero-sum).
-        seed_rng = random.Random((seed + idx, name, "seed_community").__hash__())
+        seed_rng = random.Random(str((seed + idx, name, "seed_community")))
         abundance_store[name] = draw_community(local_J, species_list, seed_rng)
         richness_store[name] = 0.0
         island_meta[name] = {

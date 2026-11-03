@@ -102,7 +102,7 @@ class RescueEffectProcess(Process):
         self.rescue_strength = float(self.config["rescue_strength"])
         # extinction probability for a present species that gets rescued this tick
         self.e_rescued = self.e * (1.0 - self.rescue_strength)
-        self._rng = random.Random((self.config["seed"], self.config["name"]).__hash__())
+        self._rng = random.Random(str((self.config["seed"], self.config["name"])))
         self._prev_richness = 0
 
     def inputs(self):

@@ -187,7 +187,7 @@ class IslandProcess(Process):
         self.capacity = self.config["area"] * self.config["individuals_per_area"]
         # Per-island RNG keyed by name+seed so introductions are reproducible
         # yet independent per island (reference draws from the global `random`).
-        self._rng = random.Random((self.config["seed"], self.config["name"]).__hash__())
+        self._rng = random.Random(str((self.config["seed"], self.config["name"])))
         self._prev_richness = 0
 
     def inputs(self):
@@ -287,7 +287,7 @@ class MigrationProcess(Process):
         super().__init__(config=config, core=core)
         self.island_names = list(self.config["island_names"])
         self.positions = [tuple(p) for p in self.config["positions"]]
-        self._rng = random.Random((self.config["seed"], "migration").__hash__())
+        self._rng = random.Random(str((self.config["seed"], "migration")))
         # Precompute pairwise migration rates (reference precomputes these once).
         n = len(self.island_names)
         self._migration_rates = np.zeros((n, n))
@@ -436,7 +436,7 @@ class MacArthurWilsonEquilibriumProcess(Process):
         self.e = extinction_prob(
             self.config["area"], self.config["extinction_base"],
             self.config["area_exponent"], self.config["ref_area"])
-        self._rng = random.Random((self.config["seed"], self.config["name"]).__hash__())
+        self._rng = random.Random(str((self.config["seed"], self.config["name"])))
         self._prev_richness = 0
 
     def inputs(self):
