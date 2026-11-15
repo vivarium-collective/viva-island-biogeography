@@ -37,6 +37,7 @@ from viva_island_biogeography.models_rescue import (
 from viva_island_biogeography.processes import (
     colonization_prob, extinction_prob, mw_equilibrium_richness)
 from viva_island_biogeography import viz
+from viva_island_biogeography.run_persistence import persist_observables_store
 from vivarium_workbench.lib.run_log import append_run_event
 from vivarium_workbench.lib.run_viz import mirror_viz_dir
 
@@ -83,7 +84,7 @@ def main() -> int:
     append_run_event(WORKSPACE_ROOT, {
         "run_id": run_id, "event": "started", "spec_id": SPEC_ID,
         "label": STUDY_SLUG, "started_at": time.time(), "status": "running",
-        "n_steps": STEPS, "emitter": "ram", "origin": "canonical_run",
+        "n_steps": STEPS, "emitter": "sqlite", "origin": "canonical_run",
         "study_slug": STUDY_SLUG, "investigation_slug": INVESTIGATION_SLUG,
         "params": params,
     })
@@ -162,6 +163,16 @@ def main() -> int:
         viz_paths = [viz_dir / "richness_vs_rescue.html",
                      viz_dir / "turnover_vs_rescue.html",
                      viz_dir / "rate_crossing.html"]
+
+        # Persist the real 8-seed ENSEMBLE per-island quantities the study's
+        # derived-scalar computers recompute the metrics from (not authored).
+        store_db = persist_observables_store(
+            STUDY_DIR, run_id,
+            {"S_obs": dict(zip(names, map(float, S_obs))),
+             "T_obs": dict(zip(names, map(float, T_obs))),
+             "rescue_strength": dict(zip(names, map(float, strengths))),
+             "mw_sstar": {"analytic": float(mw_sstar)}},
+            core=core, spec_id=SPEC_ID, params=params, n_steps=STEPS)
 
         outcomes = {
             "S_no_rescue": round(S_no, 3),

@@ -59,7 +59,7 @@ expected_behavior:
     Inter-island migration conserves individuals exactly: the net migration flux
     summed over all islands, species, and generations is zero.
   observable: net_migration_flux
-  condition: abs(total_net_migration) < 1e-9
+  condition: abs(total_net_migration) < 1e-9  # field total_net_migration is |net flux|
   rationale: |
     Every emigration (-1 at the source) is matched by an immigration (+1 at the
     destination), so the coupler is a pure exchange with no creation or
@@ -68,9 +68,8 @@ expected_behavior:
     kind: derived_scalar
     field: total_net_migration
   expect:
-    op: approx
-    value: 0.0
-    tol: 1e-9
+    op: '<'
+    value: 1.0e-09
 behavior_tests:
 - name: isolation-reduces-immigration
   classification: primary
@@ -94,9 +93,8 @@ behavior_tests:
     kind: derived_scalar
     field: total_net_migration
   pass_if:
-    op: approx
-    value: 0.0
-    tol: 1e-9
+    op: '<'
+    value: 1.0e-09
     provenance:
       kind: theory
       note: |
@@ -109,6 +107,11 @@ pipeline_gate:
   proceed_condition: |
     distance-immigration validates the migration coupler's kernel + conservation
     independently of the per-island LV dynamics.
+  gate_evaluator:
+    result: passed
+    blocked_by: []
+    evaluated_by: code
+    diverges_from_authored: false
 canonical_runs:
 - name: default
   script: studies/distance-immigration/sims/run.py
@@ -122,4 +125,96 @@ visualizations:
 - name: immigration-vs-distance
   chart: viz/immigration_vs_distance.html
   render: python sims/run.py
-conclusion: null
+conclusion:
+runs:
+- name: 6a46ea8cdf9540b4b87fb7fa5e91f242
+  status: completed
+  timestamp: 1794709297.18512
+  emitter:
+    kind: sqlite
+    store: workspace/studies/distance-immigration/_runstore/history.db
+  generations: 1
+  sim_minutes: 0
+  n_readouts: 1441
+  params: '{"n_islands": 8, "n_species": 30, "seeds": [0, 1, 2, 3, 4, 5], "ticks": 400}'
+  computed_outcomes:
+    isolation-reduces-immigration:
+      result: PASS
+      measured_value: -0.868162
+      evaluated_by: code
+      operator: derived_scalar/<
+      detail: -0.8682 < -0.3
+      axis:
+        id: isolation-reduces-immigration
+        label: Ensemble corr(immigration received, mean distance) must be below -0.3.
+        verdict: within_tol
+        value: -0.868162
+        meter: 1.0
+        detail:
+        expected:
+          kind: value
+          value: -0.3
+          low:
+          high:
+          op: <
+          tol: 0.05
+          statement:
+          units:
+        margin: 0.5681620000000001
+        severity: hard
+        units:
+        knob:
+        citation:
+      reconcile: no_authored
+    migration-conserves-individuals:
+      result: PASS
+      measured_value: 0.0
+      evaluated_by: code
+      operator: derived_scalar/<
+      detail: 0 < 1e-09
+      axis:
+        id: migration-conserves-individuals
+        label: Total net migration flux over the ensemble must be ~0 (|flux| < 1e-9).
+        verdict: within_tol
+        value: 0.0
+        meter: 1.0
+        detail:
+        expected:
+          kind: value
+          value: 1e-09
+          low:
+          high:
+          op: <
+          tol: 0.05
+          statement:
+          units:
+        margin: 1e-09
+        severity: hard
+        units:
+        knob:
+        citation:
+      reconcile: no_authored
+    _grader:
+      version: 3-freshness
+      graded_at: '2026-11-15T02:21:39.184205+00:00'
+      inputs_hash: 49344d9b5fc7f78c
+      store: resolved
+  canonical: true
+  outcomes:
+    isolation-reduces-immigration:
+      result: PASS
+      detail: measured -0.868162
+    migration-conserves-individuals:
+      result: PASS
+      detail: measured 0.0
+simulation_set:
+- name: baseline-baseline
+  kind: single
+  base_model: viva_island_biogeography.composites.archipelago.island_archipelago
+  is_baseline: true
+  status: ran
+  params:
+    n_islands: 8
+    n_species: 30
+    introduction_probability: 0.05
+    seed: 0

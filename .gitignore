@@ -21,3 +21,7 @@ investigations/*/.run.lock
 workspace/reports/assets/*
 !workspace/reports/assets/.keep
 .superpowers/brainstorm/
+
+# Regenerable run artifacts (study run stores + run registries)
+workspace/studies/*/_runstore/
+workspace/studies/*/runs.db

@@ -117,6 +117,11 @@ pipeline_gate:
     Establishing that the mw_equilibrium process reproduces the rate-crossing
     equilibrium and turnover licenses using it to measure the species-area and
     isolation laws.
+  gate_evaluator:
+    result: passed
+    blocked_by: []
+    evaluated_by: code
+    diverges_from_authored: false
 canonical_runs:
 - name: default
   script: studies/mw-equilibrium-reproduction/sims/run.py
@@ -142,23 +147,115 @@ conclusion: |
   slope on this gradient is z ~ 0.12, in the low end of the empirical 0.1-0.35
   band, partly because the large islands approach pool saturation.
 runs:
-- name: default-ensemble
+- name: 5484a949691f4bc296b729543c27d2db
   status: completed
-  kind: simulation
+  timestamp: 1794709154.40446
+  emitter:
+    kind: sqlite
+    store: workspace/studies/mw-equilibrium-reproduction/_runstore/history.db
+  generations: 1
+  sim_minutes: 0
+  n_readouts: 26
+  params: '{"area_exponent": 0.25, "area_max": 100.0, "area_min": 1.0, "n_islands": 12, "n_pool": 60, "seed": 1, "steps": 400}'
+  computed_outcomes:
+    equilibrium-tracks-theory:
+      result: PASS
+      measured_value: 0.997052
+      evaluated_by: code
+      operator: derived_scalar/>
+      detail: 0.9971 > 0.9
+      axis:
+        id: equilibrium-tracks-theory
+        label: Ensemble corr(observed equilibrium S, analytic S*) must exceed 0.9.
+        verdict: within_tol
+        value: 0.997052
+        meter: 0.5539177777777778
+        detail:
+        expected:
+          kind: value
+          value: 0.9
+          low:
+          high:
+          op: '>'
+          tol: 0.05
+          statement:
+          units:
+        margin: 0.09705200000000003
+        severity: hard
+        units:
+        knob:
+        citation:
+      reconcile: no_authored
+    turnover-at-equilibrium:
+      result: PASS
+      measured_value: 13.8889
+      evaluated_by: code
+      operator: derived_scalar/>
+      detail: 13.89 > 3.0
+      axis:
+        id: turnover-at-equilibrium
+        label: Gross equilibrium events must exceed net richness change by >3x.
+        verdict: within_tol
+        value: 13.8889
+        meter: 1.0
+        detail:
+        expected:
+          kind: value
+          value: 3.0
+          low:
+          high:
+          op: '>'
+          tol: 0.05
+          statement:
+          units:
+        margin: 10.8889
+        severity: hard
+        units:
+        knob:
+        citation:
+      reconcile: no_authored
+    _grader:
+      version: 3-freshness
+      graded_at: '2026-11-15T02:19:15.348576+00:00'
+      inputs_hash: 3f03db958bc09ced
+      store: resolved
   canonical: true
-  description: 12 islands over a log-spaced area gradient, 8-seed ensemble, 400 generations, tail 25%.
-  emitter: ram
-  result: PASS
   outcomes:
     equilibrium-tracks-theory:
       result: PASS
-      detail: ensemble corr(observed S, analytic S*) = 0.992 (> 0.9).
+      detail: measured 0.997052
     turnover-at-equilibrium:
       result: PASS
-      detail: turnover ratio = 15.5 on the representative island (> 3).
+      detail: measured 13.8889
 findings:
 - id: equilibrium-reproduced
   kind: computational
   status: confirms
-  statement: "The equilibrium model sits on MacArthur & Wilson's crossing rate curves: ensemble-mean richness tracks the analytic S* = P*c/(c+e) across the area gradient (corr 0.992), and species identity turns over ~15x the net change while richness holds."
+  statement: "The equilibrium model sits on MacArthur & Wilson's crossing rate curves: ensemble-mean richness tracks the analytic S* = P*c/(c+e) across the area gradient (corr 0.997), and species identity turns over ~14x the net change while richness holds."
+  evidence:
+    from_test: equilibrium-tracks-theory
+    observed: 0.997052
+  expected: {}
+  provenance:
+    run_ids:
+    - 5484a949691f4bc296b729543c27d2db
+    model_version: mv:6ea24f25e41a88ef
 verdict: supported
+simulation_set:
+- name: baseline-baseline
+  kind: single
+  base_model: viva_island_biogeography.composites.mw_equilibrium.mw_equilibrium
+  is_baseline: true
+  status: ran
+  params:
+    n_islands: 12
+    n_pool: 60
+    colonization_base: 0.02
+    extinction_base: 0.012
+    area_min: 1.0
+    area_max: 100.0
+    area_exponent: 0.25
+    seed: 1
+  pass_fail_tests:
+  - equilibrium-tracks-theory
+  - turnover-at-equilibrium

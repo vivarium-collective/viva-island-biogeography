@@ -116,7 +116,7 @@ behavior_tests:
     provenance:
       kind: calibration
       note: |
-        Measured S = 37.26 at r=0.8 vs 30.10 at r=0 (margin +7.16 species;
+        Measured S = 37.89 at r=0.8 vs 30.15 at r=0 (margin +7.74 species;
         9-island rescue gradient, 8-seed ensemble, 400 generations, tail 25%,
         c=e=0.5, P=60). The simulated gradient tracks the analytic
         S*(r)=P*c/(c+e(1-c*r)) across all levels (30.00 -> 37.50). 2.0 is a
@@ -134,8 +134,8 @@ behavior_tests:
     provenance:
       kind: calibration
       note: |
-        Measured equilibrium turnover 30.02 events/gen at r=0 vs 22.56 at r=0.8
-        (drop 7.45 events/gen; turnover ratio 0.752), same ensemble. Turnover
+        Measured equilibrium turnover 29.99 events/gen at r=0 vs 22.43 at r=0.8
+        (drop 7.56 events/gen; turnover ratio 0.748), same ensemble. Turnover
         falls monotonically along the rescue gradient. 2.0 is a conservative
         floor for a clear reduction.
   requires_simulation: baseline
@@ -153,8 +153,8 @@ behavior_tests:
     provenance:
       kind: calibration
       note: |
-        Measured S_obs(r=0) = 30.10 vs analytic MacArthur-Wilson S* = 30.00
-        (|err| = 0.10 species), confirming exact reduction to the baseline when
+        Measured S_obs(r=0) = 30.15 vs analytic MacArthur-Wilson S* = 30.00
+        (|err| = 0.15 species), confirming exact reduction to the baseline when
         rescue is off. 1.5 is the ensemble-noise tolerance.
   requires_simulation: baseline
 pipeline_gate:
@@ -166,6 +166,11 @@ pipeline_gate:
     (and to collapse onto the baseline when rescue is off), the coupled-curve
     extension is validated and available for the species-area/isolation
     flattening that Brown & Kodric-Brown (1977) attributed to rescue.
+  gate_evaluator:
+    result: passed
+    blocked_by: []
+    evaluated_by: code
+    diverges_from_authored: false
 canonical_runs:
 - name: default
   script: studies/rescue-effect/sims/run.py
@@ -185,35 +190,168 @@ visualizations:
 conclusion: |
   Coupling the two MacArthur-Wilson curves reproduces Brown & Kodric-Brown's
   (1977) rescue effect. As rescue strength rises from 0 to 0.8, the ensemble-mean
-  equilibrium richness climbs from 30.1 to 37.3 species (+7.2) while the
-  equilibrium turnover falls from 30.0 to 22.6 gross events per generation
+  equilibrium richness climbs from 30.1 to 37.9 species (+7.7) while the
+  equilibrium turnover falls from 30.0 to 22.4 gross events per generation
   (ratio 0.75) — richness up, turnover down, exactly as predicted. The simulated
   gradient sits on the analytic S*(r) = P*c/(c + e(1 - c*r)) at every level, and
   at r=0 it collapses onto the independent-curves MacArthur-Wilson S* = 30.0
-  (|err| 0.10), confirming the model is a faithful extension of the baseline
+  (|err| 0.15), confirming the model is a faithful extension of the baseline
   rather than a different model. Immigration lowering extinction is enough to
   raise equilibrium diversity and stabilize species identity.
 runs:
-- name: default-ensemble
+- name: d6e3fad8af074a8dadb32ebd238a4a9a
   status: completed
-  kind: simulation
+  timestamp: 1794709263.4076889
+  emitter:
+    kind: sqlite
+    store: workspace/studies/rescue-effect/_runstore/history.db
+  generations: 1
+  sim_minutes: 0
+  n_readouts: 28
+  params: '{"area": 100.0, "colonization_base": 0.5, "distance": 0.0, "extinction_base": 0.5, "n_islands": 9, "n_pool": 60, "rescue_max": 0.8, "rescue_min": 0.0, "seed": 1, "steps": 400}'
+  computed_outcomes:
+    rescue-raises-richness:
+      result: PASS
+      measured_value: 7.73886
+      evaluated_by: code
+      operator: derived_scalar/>
+      detail: 7.739 > 2.0
+      axis:
+        id: rescue-raises-richness
+        label: With-rescue equilibrium richness must exceed no-rescue by > 2 species.
+        verdict: within_tol
+        value: 7.73886
+        meter: 1.0
+        detail:
+        expected:
+          kind: value
+          value: 2.0
+          low:
+          high:
+          op: '>'
+          tol: 0.05
+          statement:
+          units:
+        margin: 5.73886
+        severity: hard
+        units:
+        knob:
+        citation:
+      reconcile: no_authored
+    rescue-lowers-turnover:
+      result: PASS
+      measured_value: 7.555
+      evaluated_by: code
+      operator: derived_scalar/>
+      detail: 7.555 > 2.0
+      axis:
+        id: rescue-lowers-turnover
+        label: No-rescue turnover must exceed with-rescue turnover by > 2 events/gen.
+        verdict: within_tol
+        value: 7.555
+        meter: 1.0
+        detail:
+        expected:
+          kind: value
+          value: 2.0
+          low:
+          high:
+          op: '>'
+          tol: 0.05
+          statement:
+          units:
+        margin: 5.555
+        severity: hard
+        units:
+        knob:
+        citation:
+      reconcile: no_authored
+    r0-matches-baseline:
+      result: PASS
+      measured_value: 0.15099
+      evaluated_by: code
+      operator: derived_scalar/<
+      detail: 0.151 < 1.5
+      axis:
+        id: r0-matches-baseline
+        label: "At rescue_strength=0 the process must reduce to the independent-curves\nMacArthur-Wilson equilibrium: simulated S must match analytic S*=P*c/(c+e).\n"
+        verdict: within_tol
+        value: 0.15099
+        meter: 0.94967
+        detail:
+        expected:
+          kind: value
+          value: 1.5
+          low:
+          high:
+          op: <
+          tol: 0.05
+          statement:
+          units:
+        margin: 1.34901
+        severity: hard
+        units:
+        knob:
+        citation:
+      reconcile: no_authored
+    _grader:
+      version: 3-freshness
+      graded_at: '2026-11-15T02:21:21.840846+00:00'
+      inputs_hash: 45df2ec6f12d0b63
+      store: resolved
   canonical: true
-  description: 9-island rescue_strength gradient (0->0.8), 8-seed ensemble, 400 generations.
-  emitter: ram
-  result: PASS
   outcomes:
     rescue-raises-richness:
       result: PASS
-      detail: S* 30.1 (no rescue) -> 37.3 (rescue 0.8), +7.2.
+      detail: measured 7.73886
     rescue-lowers-turnover:
       result: PASS
-      detail: turnover 30.0 -> 22.6 events/gen with rescue.
+      detail: measured 7.555
     r0-matches-baseline:
       result: PASS
-      detail: at rescue=0, S=30.10 vs analytic M-W S*=30.00 (|err|=0.10).
+      detail: measured 0.15099
 findings:
 - id: rescue-lifts-and-damps
   kind: biological
   status: confirms
-  statement: Coupling the curves via the rescue effect (immigration lowering extinction) raises equilibrium richness (30->37) and damps turnover (30->23 events/gen), reducing exactly to the independent-curves baseline at rescue=0 (Brown & Kodric-Brown 1977).
+  statement: Coupling the curves via the rescue effect (immigration lowering extinction) raises equilibrium richness (30.1->37.9, +7.7) and damps turnover (30.0->22.4 events/gen), reducing exactly to the independent-curves baseline at rescue=0 (Brown & Kodric-Brown 1977).
+  evidence:
+    from_test: rescue-raises-richness
 verdict: supported
+simulation_set:
+- name: baseline-baseline
+  kind: single
+  base_model: viva_island_biogeography.composites.rescue.rescue_effect
+  is_baseline: true
+  status: ran
+  params:
+    n_islands: 9
+    n_pool: 60
+    colonization_base: 0.5
+    extinction_base: 0.5
+    area: 100.0
+    distance: 0.0
+    area_exponent: 0.25
+    rescue_min: 0.0
+    rescue_max: 0.8
+    seed: 1
+  pass_fail_tests: &id001
+  - rescue-raises-richness
+  - rescue-lowers-turnover
+  - r0-matches-baseline
+- name: no-rescue
+  kind: single
+  base_model: viva_island_biogeography.composites.rescue.rescue_effect
+  perturbation:
+    n_islands: 9
+    n_pool: 60
+    colonization_base: 0.5
+    extinction_base: 0.5
+    area: 100.0
+    distance: 0.0
+    area_exponent: 0.25
+    rescue_min: 0.0
+    rescue_max: 0.0
+    seed: 1
+  status: ran
+  pass_fail_tests: *id001

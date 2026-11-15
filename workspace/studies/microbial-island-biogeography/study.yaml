@@ -151,6 +151,11 @@ pipeline_gate:
     to the macro regime, the equilibrium model is validated against the microbial
     island-biogeography literature and is ready for empirical calibration against
     the Earth Microbiome Project and tree-hole bacterial datasets.
+  gate_evaluator:
+    result: passed
+    blocked_by: []
+    evaluated_by: code
+    diverges_from_authored: false
 canonical_runs:
 - name: default
   script: studies/microbial-island-biogeography/sims/run.py
@@ -180,23 +185,123 @@ conclusion: |
   Microbiome Project and tree-hole bacterial surveys are the next calibration
   targets.
 runs:
-- name: default-ensemble
+- name: 035d0577904346c6a4d9c39cabd9232e
   status: completed
-  kind: simulation
+  timestamp: 1794708400.4197068
+  emitter:
+    kind: sqlite
+    store: workspace/studies/microbial-island-biogeography/_runstore/history.db
+  generations: 12
+  sim_minutes: 0
+  n_readouts: 805
+  params: '{"macro": {"area_exponent": 0.25, "colonization_base": 0.02, "extinction_base": 0.012, "n_pool": 60}, "micro": {"area_exponent": 0.1, "colonization_base": 0.1, "extinction_base": 0.06, "n_pool": 300}, "n_islands": 12, "n_seeds": 6, "steps": 400}'
+  computed_outcomes:
+    microbial-sar-holds:
+      result: PASS
+      measured_value: 0.0411906
+      evaluated_by: code
+      operator: derived_scalar/>
+      detail: 0.04119 > 0.0
+      axis:
+        id: microbial-sar-holds
+        label: Microbial log-log taxa-area slope z must be positive.
+        verdict: within_tol
+        value: 0.0411906
+        meter: 0.5205953
+        detail:
+        expected:
+          kind: value
+          value: 0.0
+          low:
+          high:
+          op: '>'
+          tol: 0.05
+          statement:
+          units:
+        margin: 0.0411906
+        severity: hard
+        units:
+        knob:
+        citation:
+      reconcile: no_authored
+    microbial-z-flatter:
+      result: PASS
+      measured_value: 0.0759593
+      evaluated_by: code
+      operator: derived_scalar/>
+      detail: 0.07596 > 0.0
+      axis:
+        id: microbial-z-flatter
+        label: Microbial taxa-area slope must be flatter than the macro slope.
+        verdict: within_tol
+        value: 0.0759593
+        meter: 0.53797965
+        detail:
+        expected:
+          kind: value
+          value: 0.0
+          low:
+          high:
+          op: '>'
+          tol: 0.05
+          statement:
+          units:
+        margin: 0.0759593
+        severity: hard
+        units:
+        knob:
+        citation:
+      reconcile: no_authored
+    _grader:
+      version: 3-freshness
+      graded_at: '2026-11-15T02:20:31.243679+00:00'
+      inputs_hash: 04aadb787e06b7f2
+      store: resolved
   canonical: true
-  description: Macro + microbial regimes over the same area gradient, 6-seed ensemble.
-  emitter: ram
-  result: PASS
   outcomes:
     microbial-sar-holds:
       result: PASS
-      detail: microbial taxa-area z = 0.043 (> 0).
+      detail: measured 0.0411906
     microbial-z-flatter:
       result: PASS
-      detail: z_micro 0.043 < z_macro 0.123 (~3x flatter).
+      detail: measured 0.0759593
 findings:
 - id: microbial-taxa-area-flattens
   kind: biological
   status: confirms
-  statement: The taxa-area relationship holds for microbes but is flatter (z ~ 0.04 vs macro 0.12, ~3x) with ~20x faster turnover, consistent with the empirical microbial taxa-area literature (Horner-Devine 2004; Bell 2005).
+  evidence:
+    from_test: microbial-z-flatter
+  statement: The taxa-area relationship holds for microbes but is flatter (z ~ 0.04 vs macro 0.13, ~3x) with ~20x faster turnover, consistent with the empirical microbial taxa-area literature (Horner-Devine 2004; Bell 2005).
 verdict: supported
+simulation_set:
+- name: baseline-baseline
+  kind: single
+  base_model: viva_island_biogeography.composites.microbial.microbial_island
+  is_baseline: true
+  status: ran
+  params:
+    n_islands: 12
+    n_pool: 300
+    colonization_base: 0.1
+    extinction_base: 0.06
+    area_min: 1.0
+    area_max: 100.0
+    area_exponent: 0.1
+    seed: 1
+  pass_fail_tests: &id001
+  - microbial-sar-holds
+  - microbial-z-flatter
+- name: macro-comparison
+  kind: single
+  base_model: viva_island_biogeography.composites.mw_equilibrium.mw_equilibrium
+  perturbation:
+    n_islands: 12
+    n_pool: 60
+    colonization_base: 0.02
+    extinction_base: 0.012
+    area_min: 1.0
+    area_max: 100.0
+    area_exponent: 0.25
+    seed: 1
+  status: ran
+  pass_fail_tests: *id001

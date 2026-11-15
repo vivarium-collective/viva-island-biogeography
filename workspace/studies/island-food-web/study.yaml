@@ -54,7 +54,7 @@ expected_behavior:
     species rather than just more individuals of a winner.
   measure:
     kind: derived_scalar
-    field: richness_area_corr
+    field: fw_richness_area_corr
   expect:
     op: '>'
     value: 0.2
@@ -80,7 +80,7 @@ behavior_tests:
   description: Ensemble across-island corr(richness, log area) must exceed 0.2.
   measure:
     kind: derived_scalar
-    field: richness_area_corr
+    field: fw_richness_area_corr
   pass_if:
     op: '>'
     value: 0.2
@@ -116,6 +116,11 @@ pipeline_gate:
   proceed_condition: |
     island-food-web is the investigation's capstone contrast; it depends on the
     random-competition baseline established by island-archipelago.
+  gate_evaluator:
+    result: passed
+    blocked_by: []
+    evaluated_by: code
+    diverges_from_authored: false
 canonical_runs:
 - name: default
   script: studies/island-food-web/sims/run.py
@@ -132,4 +137,98 @@ visualizations:
 - name: food-web-spatial-map
   chart: viz/spatial_map.html
   render: python sims/run.py
-conclusion: null
+conclusion:
+runs:
+- name: 22b426af19dc4dc6acca2836ee80e7b3
+  status: completed
+  timestamp: 1794709355.7304451
+  emitter:
+    kind: sqlite
+    store: workspace/studies/island-food-web/_runstore/history.db
+  generations: 12
+  sim_minutes: 0
+  n_readouts: 249
+  params: '{"n_islands": 8, "n_species": 30, "seeds": [0, 1, 2, 3, 4, 5], "steps": 150}'
+  computed_outcomes:
+    food-web-recovers-species-area:
+      result: PASS
+      measured_value: 0.580929
+      evaluated_by: code
+      operator: derived_scalar/>
+      detail: 0.5809 > 0.2
+      axis:
+        id: food-web-recovers-species-area
+        label: Ensemble across-island corr(richness, log area) must exceed 0.2.
+        verdict: within_tol
+        value: 0.580929
+        meter: 1.0
+        detail:
+        expected:
+          kind: value
+          value: 0.2
+          low:
+          high:
+          op: '>'
+          tol: 0.05
+          statement:
+          units:
+        margin: 0.380929
+        severity: hard
+        units:
+        knob:
+        citation:
+      reconcile: no_authored
+    trophic-coexistence-exceeds-random:
+      result: PASS
+      measured_value: 1.8225
+      evaluated_by: code
+      operator: derived_scalar/>
+      detail: 1.823 > 0.5
+      axis:
+        id: trophic-coexistence-exceeds-random
+        label: "Ensemble mean equilibrium richness of the food-web variant minus that of the\nmatched random-matrix archipelago must exceed 0.5 species.\n"
+        verdict: within_tol
+        value: 1.8225
+        meter: 1.0
+        detail:
+        expected:
+          kind: value
+          value: 0.5
+          low:
+          high:
+          op: '>'
+          tol: 0.05
+          statement:
+          units:
+        margin: 1.3225
+        severity: hard
+        units:
+        knob:
+        citation:
+      reconcile: no_authored
+    _grader:
+      version: 3-freshness
+      graded_at: '2026-11-15T02:26:37.397379+00:00'
+      inputs_hash: c4cb9826b108d2cf
+      store: resolved
+  canonical: true
+  outcomes:
+    food-web-recovers-species-area:
+      result: PASS
+      detail: measured 0.580929
+    trophic-coexistence-exceeds-random:
+      result: PASS
+      detail: measured 1.8225
+simulation_set:
+- name: baseline-baseline
+  kind: single
+  base_model: viva_island_biogeography.composites.food_web.island_food_web
+  is_baseline: true
+  status: ran
+  params:
+    n_islands: 8
+    n_species: 30
+    growth_rate: 0.03
+    predator_prey_interaction: 0.1
+    introduction_probability: 0.05
+    seed: 0

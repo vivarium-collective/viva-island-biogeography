@@ -28,6 +28,7 @@ WORKSPACE_ROOT = STUDY_DIR.parents[2]
 from viva_island_biogeography.core import build_core
 from viva_island_biogeography.composites.mw_equilibrium import build_mw_document
 from viva_island_biogeography import viz
+from viva_island_biogeography.run_persistence import persist_observables_store
 from vivarium_workbench.lib.run_log import append_run_event
 from vivarium_workbench.lib.run_viz import mirror_viz_dir
 
@@ -90,7 +91,7 @@ def main() -> int:
     append_run_event(WORKSPACE_ROOT, {
         "run_id": run_id, "event": "started", "spec_id": SPEC_ID,
         "label": STUDY_SLUG, "started_at": time.time(), "status": "running",
-        "n_steps": STEPS, "emitter": "ram", "origin": "canonical_run",
+        "n_steps": STEPS, "emitter": "sqlite", "origin": "canonical_run",
         "study_slug": STUDY_SLUG, "investigation_slug": INVESTIGATION_SLUG,
         "params": dict(n_islands=N_ISLANDS, n_pool=N_POOL, n_seeds=N_SEEDS, steps=STEPS),
     })
@@ -112,6 +113,18 @@ def main() -> int:
         D = np.array([dist_rows[-1]["island_meta"][n]["distance"] for n in names])
         isolation_corr = _spearman(D, S_dist)            # monotonic decline
         isolation_corr_pearson = float(np.corrcoef(D, S_dist)[0, 1])
+
+        # Persist the REAL 8-seed ensemble arrays for both gradients so the grader
+        # recomputes sar_z / isolation_corr_spearman by code (not authored values).
+        persist_observables_store(
+            STUDY_DIR, run_id,
+            {"S_obs_area": {n: float(S_area[i]) for i, n in enumerate(names)},
+             "area": {n: float(A[i]) for i, n in enumerate(names)},
+             "S_obs_iso": {n: float(S_dist[i]) for i, n in enumerate(names)},
+             "distance": {n: float(D[i]) for i, n in enumerate(names)}},
+            core=core, spec_id=SPEC_ID,
+            params=dict(n_islands=N_ISLANDS, n_pool=N_POOL, n_seeds=N_SEEDS, steps=STEPS),
+            n_steps=STEPS)
 
         # --- visualizations: swap ensemble-mean S into the last row for charts
         for r in [area_rows[-1]]:
