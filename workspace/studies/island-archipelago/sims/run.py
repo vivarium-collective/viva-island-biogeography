@@ -30,6 +30,8 @@ from viva_island_biogeography.core import build_core
 from viva_island_biogeography.composites.archipelago import island_archipelago
 from viva_island_biogeography.composites._common import island_specs
 from viva_island_biogeography import viz
+from viva_island_biogeography.run_persistence import (
+    attach_sqlite_emitter, register_study_run)
 from vivarium_workbench.lib.run_log import append_run_event
 from vivarium_workbench.lib.run_viz import mirror_viz_dir
 
@@ -53,7 +55,7 @@ def main() -> int:
     append_run_event(WORKSPACE_ROOT, {
         "run_id": run_id, "event": "started", "spec_id": SPEC_ID,
         "label": STUDY_SLUG, "started_at": time.time(), "status": "running",
-        "n_steps": STEPS, "emitter": "ram", "origin": "canonical_run",
+        "n_steps": STEPS, "emitter": "sqlite", "origin": "canonical_run",
         "study_slug": STUDY_SLUG, "investigation_slug": INVESTIGATION_SLUG,
         "params": params,
     })
@@ -62,6 +64,7 @@ def main() -> int:
         doc = island_archipelago(
             core, n_islands=N_ISLANDS, n_species=N_SPECIES, growth_rate=0.03,
             interaction_weight=0.1, introduction_probability=0.05, seed=SEED)
+        store_db = attach_sqlite_emitter(doc, STUDY_DIR, run_id)
         sim = Composite({"state": doc}, core=core)
         sim.run(float(STEPS))
         rows = gather_emitter_results(sim)[("emitter",)]
@@ -123,6 +126,11 @@ def main() -> int:
             "n_steps": 0, "status": "failed"})
         raise
 
+    # Register the persisted run so the discovery-engine grader reads this
+    # store and grades the behavior tests by CODE (derived-scalar computers in
+    # viva_island_biogeography.evaluators_archipelago).
+    register_study_run(STUDY_DIR, run_id, spec_id=SPEC_ID, params=params,
+                       n_steps=STEPS, emitter_path=store_db)
     # Carry the figures into the Runs-tab "📊 Viz" action (.pbg/runs/<id>/viz.json).
     mirror_viz_dir(WORKSPACE_ROOT, run_id, viz_paths)
     append_run_event(WORKSPACE_ROOT, {

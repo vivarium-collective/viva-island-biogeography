@@ -119,6 +119,11 @@ pipeline_gate:
     island-archipelago establishes the carrying-capacity baseline and the
     "no species-area law under random competition" result that island-food-web
     is contrasted against.
+  gate_evaluator:
+    result: passed
+    blocked_by: []
+    evaluated_by: code
+    diverges_from_authored: false
 canonical_runs:
 - name: default
   script: studies/island-archipelago/sims/run.py
@@ -135,4 +140,90 @@ visualizations:
 - name: mainland-abundance-dynamics
   chart: viz/mainland_abundance.html
   render: python sims/run.py
-conclusion: null
+conclusion:
+runs:
+- name: 23b9dadf0f71460595aba6fcfab68920
+  status: complete
+  timestamp: 1794707926.933373
+  emitter:
+    kind: sqlite
+    store: /Users/eranagmon/code/viva-island-biogeography--run-earned/workspace/studies/island-archipelago/_runstore/history.db
+  generations: 1
+  sim_minutes: 0
+  n_readouts: 187
+  params: '{"n_islands": 6, "n_species": 30, "seed": 0, "steps": 150}'
+  computed_outcomes:
+    abundance-scales-with-area:
+      result: PASS
+      measured_value: 1.0
+      evaluated_by: code
+      operator: derived_scalar/>
+      detail: 1 > 0.95
+      axis:
+        id: abundance-scales-with-area
+        label: Pearson corr of per-island equilibrium total abundance vs area must exceed 0.95.
+        verdict: within_tol
+        value: 1.0
+        meter: 0.5263157894736843
+        detail:
+        expected:
+          kind: value
+          value: 0.95
+          low:
+          high:
+          op: '>'
+          tol: 0.05
+          statement:
+          units:
+        margin: 0.050000000000000044
+        severity: hard
+        units:
+        knob:
+        citation:
+      reconcile: no_authored
+    richness-not-set-by-area:
+      result: PASS
+      measured_value: -0.582959
+      evaluated_by: code
+      operator: derived_scalar/<
+      detail: -0.583 < 0.35
+      axis:
+        id: richness-not-set-by-area
+        label: Pearson corr of per-island equilibrium richness vs log-area must stay below 0.35.
+        verdict: within_tol
+        value: -0.582959
+        meter: 1.0
+        detail:
+        expected:
+          kind: value
+          value: 0.35
+          low:
+          high:
+          op: <
+          tol: 0.05
+          statement:
+          units:
+        margin: 0.932959
+        severity: hard
+        units:
+        knob:
+        citation:
+      reconcile: no_authored
+    _grader:
+      version: 3-freshness
+      graded_at: '2026-11-15T01:58:56.570843+00:00'
+      inputs_hash: 855bb27400f94ade
+      store: resolved
+simulation_set:
+- name: baseline-baseline
+  kind: single
+  base_model: viva_island_biogeography.composites.archipelago.island_archipelago
+  is_baseline: true
+  status: ran
+  params:
+    n_islands: 6
+    n_species: 30
+    growth_rate: 0.03
+    interaction_weight: 0.1
+    introduction_probability: 0.05
+    seed: 0
