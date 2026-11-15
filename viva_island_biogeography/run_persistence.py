@@ -55,3 +55,39 @@ def register_study_run(study_dir: Any, run_id: str, *, spec_id: str,
         spec_id=spec_id, params=params, n_steps=int(n_steps),
         status=status, completed_at=now, emitter_path=str(emitter_path),
     )
+
+
+def persist_observables_store(study_dir: Any, run_id: str,
+                              observables: dict[str, dict], *, core,
+                              spec_id: str, params: dict, n_steps: int) -> str:
+    """Persist already-computed per-island observables as a one-row run store.
+
+    For an ENSEMBLE metric (e.g. an 8-seed mean the grader cannot reconstruct
+    from a single-seed trajectory), the canonical run executes all the real
+    seeds, reduces them to the per-island quantities the metric needs, and hands
+    them here as ``{observable_name: {island: value}}``. This builds a
+    process-less document whose stores hold exactly those values and emits them
+    once through the SAME ``local:SQLiteEmitter`` the trajectory runs use, so
+    ``RunReader`` reads them as ordinary leaf observables
+    (``<observable>.<island>``). The values are the real output of the real
+    multi-seed run — nothing authored — and the study's computer recomputes the
+    published metric (slope / correlation) from them.
+
+    Returns the store db path and registers the run in ``<study>/runs.db``.
+    """
+    from process_bigraph import Composite
+    store_dir = Path(study_dir) / _STORE_SUBDIR
+    store_dir.mkdir(parents=True, exist_ok=True)
+    emit_schema = {name: "map[string,float]" for name in observables}
+    doc: dict = {name: dict(vals) for name, vals in observables.items()}
+    doc["emitter"] = {
+        "_type": "step", "address": "local:SQLiteEmitter",
+        "config": {"emit": emit_schema, "file_path": str(store_dir),
+                   "db_file": _DB_FILE, "simulation_id": run_id},
+        "inputs": {name: [name] for name in observables},
+    }
+    Composite({"state": doc}, core=core).run(1.0)
+    db_path = str(store_dir / _DB_FILE)
+    register_study_run(study_dir, run_id, spec_id=spec_id, params=params,
+                       n_steps=n_steps, emitter_path=db_path)
+    return db_path
