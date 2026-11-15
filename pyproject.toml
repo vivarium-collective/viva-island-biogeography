@@ -27,6 +27,11 @@ dependencies = [
     "pypdf>=4.0",
     "matplotlib",
     "vivarium-workbench",
+    # Imported directly by viva_island_biogeography.evaluators* and
+    # run_persistence (register_derived_scalars computers + register_run). Pinned
+    # to git main below for the #83 run_readiness fix (field-based derived
+    # measures), which is merged but not yet in a tagged release.
+    "viva-discovery-engine",
 ]
 
 [project.optional-dependencies]
@@ -41,3 +46,12 @@ packages = ["viva_island_biogeography"]
 
 [tool.uv.sources]
 vivarium-workbench = { git = "https://github.com/vivarium-collective/vivarium-workbench.git", branch = "main" }
+viva-discovery-engine = { git = "https://github.com/vivarium-collective/discovery-engine.git", branch = "main" }
+
+[tool.uv]
+# vivarium-workbench pins viva-discovery-engine>=0.3,<0.4 by SEMVER POLICY (not a
+# known incompatibility). The #83 run_readiness fix is only on DE main (0.6.0),
+# so override that cap to resolve DE from git main until a release carries #83.
+override-dependencies = [
+    "viva-discovery-engine @ git+https://github.com/vivarium-collective/discovery-engine.git@main",
+]
