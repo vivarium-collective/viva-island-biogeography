@@ -624,6 +624,20 @@ of Study 1 at matched parameters.
       <p class="ctr-text" data-edit-kind="study" data-edit-field="result" data-edit-value="" data-edit-multiline data-edit-label="Result"></p>
       
       
+      <div class="ov-metrics">
+        
+        <div class="ov-metric ov-metric-pass">
+          <div class="ov-metric-v">PASS</div>
+          <div class="ov-metric-k">food-web-recovers-species-area</div>
+        </div>
+        
+        <div class="ov-metric ov-metric-pass">
+          <div class="ov-metric-v">PASS</div>
+          <div class="ov-metric-k">trophic-coexistence-exceeds-random</div>
+        </div>
+        
+      </div>
+      
       
       
       
@@ -721,6 +735,13 @@ of Study 1 at matched parameters.
         <div class="viv-loading"><span class="viv-loading-spin" aria-hidden="true"></span><span>Loading configuration…</span></div></div>
       
       
+      
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;font-size:0.8em">
+        
+        
+        
+        <span class="cond-pill"><span class="cond-pill-k">status</span>=completed</span>
+      </div>
       
     </div>
     
@@ -916,12 +937,12 @@ of Study 1 at matched parameters.
         
         data-pytest-node="food-web-recovers-species-area"
         data-classification="primary"
-        data-result="pending"
+        data-result="PASS"
         style="margin: 0 0 10px 0; padding: 10px 12px; border-left: 4px solid #10b981; background: #f8fafc; border-radius: 4px;">
       
         
       <div style="display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;">
-        <span class="bt-result" style="font-size: 0.75em; font-family: monospace; padding: 2px 8px; border-radius: 9999px; background: #f1f5f9; color: #475569">⏳ pending</span>
+        <span class="bt-result" style="font-size: 0.75em; font-family: monospace; padding: 2px 8px; border-radius: 9999px; background: #d1fae5; color: #065f46">✓ PASS</span>
         <span class="classification-pill classification-primary">primary</span>
         <strong style="font-size: 0.9em;">food-web-recovers-species-area</strong>
         
@@ -930,11 +951,21 @@ of Study 1 at matched parameters.
       </div>
       <div style="margin-top: 6px; font-size: 0.95em;">Ensemble across-island corr(richness, log area) must exceed 0.2.</div>
       
+      <div style="margin-top:6px;font-size:0.85em;padding:6px 10px;background:#fff;border:1px solid #e2e8f0;border-radius:3px">
+        <strong>Latest result:</strong>
+        
+        
+          
+          <code style="font-family:ui-monospace,monospace;color:#475569;margin-right:8px">detail: measured 0.580929</code>
+          
+        
+      </div>
+      
       
       <details style="margin-top: 6px; font-size: 0.82em;">
         <summary class="muted" style="cursor: pointer;">Assertion</summary>
         
-        <pre style="background:#fff; padding:8px; margin:4px 0 0 0; border:1px solid #e2e8f0; border-radius:3px; overflow-x:auto;">measure: {"field": "richness_area_corr", "kind": "derived_scalar"}
+        <pre style="background:#fff; padding:8px; margin:4px 0 0 0; border:1px solid #e2e8f0; border-radius:3px; overflow-x:auto;">measure: {"field": "fw_richness_area_corr", "kind": "derived_scalar"}
 pass_if: {"op": "\u003e", "provenance": {"kind": "calibration", "note": "Measured ~ +0.50 (8-island, 30-species, 6-seed ensemble, 150\ngenerations). 0.2 is a conservative positive floor that still fails if\nthe species-area signal collapsed.\n"}, "value": 0.2}</pre>
       </details>
       
@@ -955,12 +986,12 @@ pass_if: {"op": "\u003e", "provenance": {"kind": "calibration", "note": "Measure
         
         data-pytest-node="trophic-coexistence-exceeds-random"
         data-classification="primary"
-        data-result="pending"
+        data-result="PASS"
         style="margin: 0 0 10px 0; padding: 10px 12px; border-left: 4px solid #10b981; background: #f8fafc; border-radius: 4px;">
       
         
       <div style="display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;">
-        <span class="bt-result" style="font-size: 0.75em; font-family: monospace; padding: 2px 8px; border-radius: 9999px; background: #f1f5f9; color: #475569">⏳ pending</span>
+        <span class="bt-result" style="font-size: 0.75em; font-family: monospace; padding: 2px 8px; border-radius: 9999px; background: #d1fae5; color: #065f46">✓ PASS</span>
         <span class="classification-pill classification-primary">primary</span>
         <strong style="font-size: 0.9em;">trophic-coexistence-exceeds-random</strong>
         
@@ -970,6 +1001,16 @@ pass_if: {"op": "\u003e", "provenance": {"kind": "calibration", "note": "Measure
       <div style="margin-top: 6px; font-size: 0.95em;">Ensemble mean equilibrium richness of the food-web variant minus that of the
 matched random-matrix archipelago must exceed 0.5 species.
 </div>
+      
+      <div style="margin-top:6px;font-size:0.85em;padding:6px 10px;background:#fff;border:1px solid #e2e8f0;border-radius:3px">
+        <strong>Latest result:</strong>
+        
+        
+          
+          <code style="font-family:ui-monospace,monospace;color:#475569;margin-right:8px">detail: measured 1.8225</code>
+          
+        
+      </div>
       
       
       <details style="margin-top: 6px; font-size: 0.82em;">
@@ -1026,7 +1067,7 @@ pass_if: {"op": "\u003e", "provenance": {"kind": "theory", "note": "Measured gai
         <span class="gate-current-tag">you are here</span>
       </span>
       
-      <span class="status-step  gate-status-not-assessed">
+      <span class="status-step set gate-status-passed">
         <span class="dot"></span>2 · Execution
         
         
@@ -1044,7 +1085,7 @@ pass_if: {"op": "\u003e", "provenance": {"kind": "theory", "note": "Measured gai
         
       </span>
       
-      <span class="status-step  gate-status-not-assessed">
+      <span class="status-step set gate-status-passed">
         <span class="dot"></span>5 · Decision
         
         
@@ -1139,9 +1180,9 @@ pass_if: {"op": "\u003e", "provenance": {"kind": "theory", "note": "Measured gai
         evaluator's result from the behavior-test outcomes — the evaluation the
         conclusion rests on.</p>
       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-        <span class="gate-status-not_started" style="padding:2px 12px;border-radius:9999px;font-weight:700;font-size:0.85em">not_started</span>
+        <span class="gate-status-passed" style="padding:2px 12px;border-radius:9999px;font-weight:700;font-size:0.85em">passed</span>
         <span class="muted small">evaluated by code</span>
-        <span class="muted small">0/2 passed</span>
+        <span class="muted small">2/2 passed</span>
       </div>
       
     </div>
@@ -1195,6 +1236,27 @@ random-competition baseline established by island-archipelago.
     
     
     
+    <div class="decide-section">
+      <h3 class="overview-label">Latest run outcomes</h3>
+      <div style="font-size:0.88em;color:#64748b;margin-bottom:8px">
+        baseline · seed ? ·
+        ?s simulated ·
+        ? history rows ·
+        started 1794709355.7304451
+      </div>
+      
+      
+      
+      <p class="muted" style="margin:0;font-size:0.9em">
+        <strong>2</strong> test outcomes
+        — <span style="color:#065f46;font-weight:600">2 PASS</span> ·
+        <span style="color:#991b1b;font-weight:600">0 FAIL</span>.
+        Per-test outcomes (measured value · evaluator · band) are canonical on the
+        <a onclick="_setStudyTab('audit')" style="cursor:pointer;color:#3b82f6;text-decoration:underline">Tests (in Audit) →</a>.
+      </p>
+      
+    </div>
+    
     
 
   </div>
@@ -1221,7 +1283,7 @@ random-competition baseline established by island-archipelago.
 </section>
 
 </main>
-<script>window.__DASH_CONFIG__ = { mode: "snapshot", interactiveUrl: "https://github.com/vivarium-collective/viva-island-biogeography", basePath: "/viva-island-biogeography/workbench", inputsDownloadBase: "https://github.com/vivarium-collective/viva-island-biogeography/raw/main", provenance: {"repo_slug": "vivarium-collective/viva-island-biogeography", "repo_url": "https://github.com/vivarium-collective/viva-island-biogeography", "commit": "6ea452d82d8431491a109ccab464382a02d41e0d", "commit_url": "https://github.com/vivarium-collective/viva-island-biogeography/commit/6ea452d82d8431491a109ccab464382a02d41e0d", "branch": "main", "lockfile": "uv.lock@c7d21bf47307", "generated_at": "2026-11-15 03:37 UTC"} };</script>
+<script>window.__DASH_CONFIG__ = { mode: "snapshot", interactiveUrl: "https://github.com/vivarium-collective/viva-island-biogeography", basePath: "/viva-island-biogeography/workbench", inputsDownloadBase: "https://github.com/vivarium-collective/viva-island-biogeography/raw/main", provenance: {"repo_slug": "vivarium-collective/viva-island-biogeography", "repo_url": "https://github.com/vivarium-collective/viva-island-biogeography", "commit": "6cde3389e2852e532f560321ee88abbb96a4b230", "commit_url": "https://github.com/vivarium-collective/viva-island-biogeography/commit/6cde3389e2852e532f560321ee88abbb96a4b230", "branch": "main", "lockfile": "uv.lock@c7d21bf47307", "generated_at": "2026-11-15 03:38 UTC"} };</script>
 <script src="/viva-island-biogeography/workbench/assets/data-source.js"></script>
 <script src="/viva-island-biogeography/workbench/assets/toast.js"></script>
 <script>

@@ -478,7 +478,7 @@ _save_viz('species-area-and-isolation', 'species-distance', _render_one('', {}, 
 # | test | measures | passes if |
 # | --- | --- | --- |
 # | species-area-law _(primary)_ | kind=derived_scalar field=sar_z | op > value 0.08 provenance {'kind': 'calibration', 'note': 'Measured z = 0.12 (area gradient 1-100, isolation 0, 8-seed ensemble).\nWithin the low end of the empirical 0.1-0.35 band; large islands approach\npool saturation, which flattens the slope.\n'} |
-# | isolation-declines _(primary)_ | kind=derived_scalar field=isolation_corr_spearman | op < value -0.9 provenance {'kind': 'calibration', 'note': 'Measured Spearman = -0.97 (distance gradient 0-30 at fixed area 30,\n8-seed ensemble). Pearson is only -0.79 because the c=c0/(1+d) decline is\nhyperbolic; rank correlation captures the monotonicity.\n'} |
+# | isolation-declines _(primary)_ | kind=derived_scalar field=isolation_corr_spearman | op < value -0.9 provenance {'kind': 'calibration', 'note': 'Measured Spearman = -0.94 (distance gradient 0-30 at fixed area 30,\n8-seed ensemble). Pearson is only -0.79 because the c=c0/(1+d) decline is\nhyperbolic; rank correlation captures the monotonicity.\n'} |
 
 # ## Study: Neutral vs equilibrium: do dispersal-drift and colonization-extinction predict the same macroecology? (`neutral-vs-equilibrium`)
 #
@@ -828,7 +828,7 @@ _save_viz('general-dynamic-model', 'ensemble-richness', _render_one('', {}, RUNS
 #
 # | test | measures | passes if |
 # | --- | --- | --- |
-# | richness-is-humped _(primary)_ | kind=derived_scalar field=richness-is-humped | op == value PASS provenance {'kind': 'calibration', 'note': 'Measured on the focal mid-age island (island_01, t_peak=150), 10-seed\nensemble, 500 model-time units (run length 501 ticks; middle third =\nticks 167-334). Ensemble-mean richness peaks at S = 51.8 at t = 195\n(well inside the middle third), rising from an early-run mean of 18.5\n(first 10%) and falling to a late-run mean of 26.7 (last 10%) — a\npeak/late ratio of 1.94 and peak/early of 2.80. Both ends clear the\n0.75*peak = 38.9 margin, so the hump gate passes with room to spare. The\n0.75 margin and middle-third window are conservative floors for a visible\novershoot-then-decline.\n'} |
+# | richness-is-humped _(primary)_ | kind=derived_scalar field=richness-is-humped | op == value 1.0 provenance {'kind': 'calibration', 'note': 'Measured on the focal mid-age island (island_01, t_peak=150), 10-seed\nensemble, 500 model-time units (run length 501 ticks; middle third =\nticks 167-334). Ensemble-mean richness peaks at S = 51.8 at t = 195\n(well inside the middle third), rising from an early-run mean of 18.5\n(first 10%) and falling to a late-run mean of 26.7 (last 10%) — a\npeak/late ratio of 1.94 and peak/early of 2.80. Both ends clear the\n0.75*peak = 38.9 margin, so the hump gate passes with room to spare. The\n0.75 margin and middle-third window are conservative floors for a visible\novershoot-then-decline.\n'} |
 
 # ## Study: The rescue effect: immigration lowers extinction (Brown & Kodric-Brown 1977) (`rescue-effect`)
 #
@@ -947,9 +947,9 @@ _save_viz('rescue-effect', 'rate-crossing', _render_one('', {}, RUNS_DB, STUDY_Y
 #
 # | test | measures | passes if |
 # | --- | --- | --- |
-# | rescue-raises-richness _(primary)_ | kind=derived_scalar field=richness_margin | op > value 2.0 provenance {'kind': 'calibration', 'note': 'Measured S = 37.26 at r=0.8 vs 30.10 at r=0 (margin +7.16 species;\n9-island rescue gradient, 8-seed ensemble, 400 generations, tail 25%,\nc=e=0.5, P=60). The simulated gradient tracks the analytic\nS*(r)=P*c/(c+e(1-c*r)) across all levels (30.00 -> 37.50). 2.0 is a\nconservative floor for "clearly more species".\n'} |
-# | rescue-lowers-turnover _(primary)_ | kind=derived_scalar field=turnover_drop | op > value 2.0 provenance {'kind': 'calibration', 'note': 'Measured equilibrium turnover 30.02 events/gen at r=0 vs 22.56 at r=0.8\n(drop 7.45 events/gen; turnover ratio 0.752), same ensemble. Turnover\nfalls monotonically along the rescue gradient. 2.0 is a conservative\nfloor for a clear reduction.\n'} |
-# | r0-matches-baseline _(supporting)_ | kind=derived_scalar field=sanity_err_r0 | op < value 1.5 provenance {'kind': 'calibration', 'note': 'Measured S_obs(r=0) = 30.10 vs analytic MacArthur-Wilson S* = 30.00\n(|err| = 0.10 species), confirming exact reduction to the baseline when\nrescue is off. 1.5 is the ensemble-noise tolerance.\n'} |
+# | rescue-raises-richness _(primary)_ | kind=derived_scalar field=richness_margin | op > value 2.0 provenance {'kind': 'calibration', 'note': 'Measured S = 37.89 at r=0.8 vs 30.15 at r=0 (margin +7.74 species;\n9-island rescue gradient, 8-seed ensemble, 400 generations, tail 25%,\nc=e=0.5, P=60). The simulated gradient tracks the analytic\nS*(r)=P*c/(c+e(1-c*r)) across all levels (30.00 -> 37.50). 2.0 is a\nconservative floor for "clearly more species".\n'} |
+# | rescue-lowers-turnover _(primary)_ | kind=derived_scalar field=turnover_drop | op > value 2.0 provenance {'kind': 'calibration', 'note': 'Measured equilibrium turnover 29.99 events/gen at r=0 vs 22.43 at r=0.8\n(drop 7.56 events/gen; turnover ratio 0.748), same ensemble. Turnover\nfalls monotonically along the rescue gradient. 2.0 is a conservative\nfloor for a clear reduction.\n'} |
+# | r0-matches-baseline _(supporting)_ | kind=derived_scalar field=sanity_err_r0 | op < value 1.5 provenance {'kind': 'calibration', 'note': 'Measured S_obs(r=0) = 30.15 vs analytic MacArthur-Wilson S* = 30.00\n(|err| = 0.15 species), confirming exact reduction to the baseline when\nrescue is off. 1.5 is the ensemble-noise tolerance.\n'} |
 
 # ## Study: Carrying capacity sets abundance, not richness (`island-archipelago`)
 #
@@ -1149,7 +1149,7 @@ _save_viz('distance-immigration', 'immigration-vs-distance', _render_one('', {},
 # | test | measures | passes if |
 # | --- | --- | --- |
 # | isolation-reduces-immigration _(primary)_ | kind=derived_scalar field=immigration_distance_corr | op < value -0.3 provenance {'kind': 'calibration', 'note': 'Measured ~ -0.7 to -0.74 (8-island geometry, full-occupancy tally,\nseed ensemble). -0.3 is a conservative negative ceiling.\n'} |
-# | migration-conserves-individuals _(primary)_ | kind=derived_scalar field=total_net_migration | op approx value 0.0 tol 1e-9 provenance {'kind': 'theory', 'note': 'Conservation is exact by construction: each migration event writes -1 to\nthe source and +1 to the destination of the same species.\n'} |
+# | migration-conserves-individuals _(primary)_ | kind=derived_scalar field=total_net_migration | op < value 1e-09 provenance {'kind': 'theory', 'note': 'Conservation is exact by construction: each migration event writes -1 to\nthe source and +1 to the destination of the same species.\n'} |
 
 # ## Study: Trophic structure restores the species-area law (`island-food-web`)
 #
@@ -1252,7 +1252,7 @@ _save_viz('island-food-web', 'food-web-spatial-map', _render_one('', {}, RUNS_DB
 #
 # | test | measures | passes if |
 # | --- | --- | --- |
-# | food-web-recovers-species-area _(primary)_ | kind=derived_scalar field=richness_area_corr | op > value 0.2 provenance {'kind': 'calibration', 'note': 'Measured ~ +0.50 (8-island, 30-species, 6-seed ensemble, 150\ngenerations). 0.2 is a conservative positive floor that still fails if\nthe species-area signal collapsed.\n'} |
+# | food-web-recovers-species-area _(primary)_ | kind=derived_scalar field=fw_richness_area_corr | op > value 0.2 provenance {'kind': 'calibration', 'note': 'Measured ~ +0.50 (8-island, 30-species, 6-seed ensemble, 150\ngenerations). 0.2 is a conservative positive floor that still fails if\nthe species-area signal collapsed.\n'} |
 # | trophic-coexistence-exceeds-random _(primary)_ | kind=derived_scalar field=richness_gain_over_random | op > value 0.5 provenance {'kind': 'theory', 'note': 'Measured gain ~ +1.8 species (food web ~3.8 vs random ~1.95, matched\nparams). The ordering — not an exact gap — is the falsifiable signature.\n'} |
 
 # ## Open decisions

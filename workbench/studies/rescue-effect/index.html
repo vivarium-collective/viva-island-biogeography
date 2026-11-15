@@ -646,7 +646,7 @@ and coupled rate-crossing figures.
     <div class="ctr-block">
       <h2 class="overview-label ctr-h">Result</h2>
       
-      <p class="ctr-text" data-edit-kind="study" data-edit-field="result" data-edit-value="" data-edit-multiline data-edit-label="Result">Coupling the curves via the rescue effect (immigration lowering extinction) raises equilibrium richness (30-&gt;37) and damps turnover (30-&gt;23 events/gen), reducing exactly to the independent-curves baseline at rescue=0 (Brown &amp; Kodric-Brown 1977).</p>
+      <p class="ctr-text" data-edit-kind="study" data-edit-field="result" data-edit-value="" data-edit-multiline data-edit-label="Result">Coupling the curves via the rescue effect (immigration lowering extinction) raises equilibrium richness (30.1-&gt;37.9, +7.7) and damps turnover (30.0-&gt;22.4 events/gen), reducing exactly to the independent-curves baseline at rescue=0 (Brown &amp; Kodric-Brown 1977).</p>
       
       
       <div class="ov-metrics">
@@ -685,7 +685,9 @@ and coupled rate-crossing figures.
         <details class="finding-details">
           <summary class="finding-row">
             <span class="finding-status-glyph">✓</span>
-            <span class="finding-claim finding-statement" data-edit-kind="study" data-edit-field="findings[rescue-lifts-and-damps].statement" data-edit-value="Coupling the curves via the rescue effect (immigration lowering extinction) raises equilibrium richness (30-&gt;37) and damps turnover (30-&gt;23 events/gen), reducing exactly to the independent-curves baseline at rescue=0 (Brown &amp; Kodric-Brown 1977)." data-edit-multiline data-edit-label="Finding rescue-lifts-and-damps">Coupling the curves via the rescue effect (immigration lowering extinction) raises equilibrium richness (30-&gt;37) and damps turnover (30-&gt;23 events/gen), reducing exactly to the independent-curves baseline at rescue=0 (Brown &amp; Kodric-Brown 1977).</span>
+            <span class="finding-claim finding-statement" data-edit-kind="study" data-edit-field="findings[rescue-lifts-and-damps].statement" data-edit-value="Coupling the curves via the rescue effect (immigration lowering extinction) raises equilibrium richness (30.1-&gt;37.9, +7.7) and damps turnover (30.0-&gt;22.4 events/gen), reducing exactly to the independent-curves baseline at rescue=0 (Brown &amp; Kodric-Brown 1977)." data-edit-multiline data-edit-label="Finding rescue-lifts-and-damps">Coupling the curves via the rescue effect (immigration lowering extinction) raises equilibrium richness (30.1-&gt;37.9, +7.7) and damps turnover (30.0-&gt;22.4 events/gen), reducing exactly to the independent-curves baseline at rescue=0 (Brown &amp; Kodric-Brown 1977).</span>
+            
+            <span class="finding-chip">via <code>rescue-raises-richness</code></span>
             
           </summary>
           <div class="finding-drawer">
@@ -694,6 +696,22 @@ and coupled rate-crossing figures.
               <span class="finding-kind">biological</span>
               <span class="finding-status-text">confirms literature</span>
             </div>
+            
+            
+            <div class="finding-evidence">
+              
+              
+              via test <a href="#bt-rescue-raises-richness" onclick="_gotoStudyTab('audit','bt-rescue-raises-richness');return false;"><code>rescue-raises-richness</code></a> · 
+              
+              
+              
+            </div>
+            
+            
+            
+            
+            <div class="pass_if-band muted small" style="font-size:0.82em;padding:2px 10px">judged against <code>pass_if: &gt; 2.0</code></div>
+            
             
             
             
@@ -1021,7 +1039,7 @@ and coupled rate-crossing figures.
         
         
           
-          <code style="font-family:ui-monospace,monospace;color:#475569;margin-right:8px">detail: S* 30.1 (no rescue) -&gt; 37.3 (rescue 0.8), +7.2.</code>
+          <code style="font-family:ui-monospace,monospace;color:#475569;margin-right:8px">detail: measured 7.73886</code>
           
         
       </div>
@@ -1031,7 +1049,7 @@ and coupled rate-crossing figures.
         <summary class="muted" style="cursor: pointer;">Assertion</summary>
         
         <pre style="background:#fff; padding:8px; margin:4px 0 0 0; border:1px solid #e2e8f0; border-radius:3px; overflow-x:auto;">measure: {"field": "richness_margin", "kind": "derived_scalar"}
-pass_if: {"op": "\u003e", "provenance": {"kind": "calibration", "note": "Measured S = 37.26 at r=0.8 vs 30.10 at r=0 (margin +7.16 species;\n9-island rescue gradient, 8-seed ensemble, 400 generations, tail 25%,\nc=e=0.5, P=60). The simulated gradient tracks the analytic\nS*(r)=P*c/(c+e(1-c*r)) across all levels (30.00 -\u003e 37.50). 2.0 is a\nconservative floor for \"clearly more species\".\n"}, "value": 2.0}</pre>
+pass_if: {"op": "\u003e", "provenance": {"kind": "calibration", "note": "Measured S = 37.89 at r=0.8 vs 30.15 at r=0 (margin +7.74 species;\n9-island rescue gradient, 8-seed ensemble, 400 generations, tail 25%,\nc=e=0.5, P=60). The simulated gradient tracks the analytic\nS*(r)=P*c/(c+e(1-c*r)) across all levels (30.00 -\u003e 37.50). 2.0 is a\nconservative floor for \"clearly more species\".\n"}, "value": 2.0}</pre>
       </details>
       
       
@@ -1070,7 +1088,7 @@ pass_if: {"op": "\u003e", "provenance": {"kind": "calibration", "note": "Measure
         
         
           
-          <code style="font-family:ui-monospace,monospace;color:#475569;margin-right:8px">detail: turnover 30.0 -&gt; 22.6 events/gen with rescue.</code>
+          <code style="font-family:ui-monospace,monospace;color:#475569;margin-right:8px">detail: measured 7.555</code>
           
         
       </div>
@@ -1080,7 +1098,7 @@ pass_if: {"op": "\u003e", "provenance": {"kind": "calibration", "note": "Measure
         <summary class="muted" style="cursor: pointer;">Assertion</summary>
         
         <pre style="background:#fff; padding:8px; margin:4px 0 0 0; border:1px solid #e2e8f0; border-radius:3px; overflow-x:auto;">measure: {"field": "turnover_drop", "kind": "derived_scalar"}
-pass_if: {"op": "\u003e", "provenance": {"kind": "calibration", "note": "Measured equilibrium turnover 30.02 events/gen at r=0 vs 22.56 at r=0.8\n(drop 7.45 events/gen; turnover ratio 0.752), same ensemble. Turnover\nfalls monotonically along the rescue gradient. 2.0 is a conservative\nfloor for a clear reduction.\n"}, "value": 2.0}</pre>
+pass_if: {"op": "\u003e", "provenance": {"kind": "calibration", "note": "Measured equilibrium turnover 29.99 events/gen at r=0 vs 22.43 at r=0.8\n(drop 7.56 events/gen; turnover ratio 0.748), same ensemble. Turnover\nfalls monotonically along the rescue gradient. 2.0 is a conservative\nfloor for a clear reduction.\n"}, "value": 2.0}</pre>
       </details>
       
       
@@ -1121,7 +1139,7 @@ MacArthur-Wilson equilibrium: simulated S must match analytic S*=P*c/(c+e).
         
         
           
-          <code style="font-family:ui-monospace,monospace;color:#475569;margin-right:8px">detail: at rescue=0, S=30.10 vs analytic M-W S*=30.00 (|err|=0.10).</code>
+          <code style="font-family:ui-monospace,monospace;color:#475569;margin-right:8px">detail: measured 0.15099</code>
           
         
       </div>
@@ -1131,7 +1149,7 @@ MacArthur-Wilson equilibrium: simulated S must match analytic S*=P*c/(c+e).
         <summary class="muted" style="cursor: pointer;">Assertion</summary>
         
         <pre style="background:#fff; padding:8px; margin:4px 0 0 0; border:1px solid #e2e8f0; border-radius:3px; overflow-x:auto;">measure: {"field": "sanity_err_r0", "kind": "derived_scalar"}
-pass_if: {"op": "\u003c", "provenance": {"kind": "calibration", "note": "Measured S_obs(r=0) = 30.10 vs analytic MacArthur-Wilson S* = 30.00\n(|err| = 0.10 species), confirming exact reduction to the baseline when\nrescue is off. 1.5 is the ensemble-noise tolerance.\n"}, "value": 1.5}</pre>
+pass_if: {"op": "\u003c", "provenance": {"kind": "calibration", "note": "Measured S_obs(r=0) = 30.15 vs analytic MacArthur-Wilson S* = 30.00\n(|err| = 0.15 species), confirming exact reduction to the baseline when\nrescue is off. 1.5 is the ensemble-noise tolerance.\n"}, "value": 1.5}</pre>
       </details>
       
       
@@ -1312,22 +1330,22 @@ pass_if: {"op": "\u003c", "provenance": {"kind": "calibration", "note": "Measure
       <h3 class="overview-label">Conclusion</h3>
       <div class="conclusion-md" style="background:#f8fafc;padding:12px;border-left:3px solid #94a3b8;border-radius:3px;font-size:0.9em;line-height:1.5" data-edit-kind="study" data-edit-field="conclusion" data-edit-value="Coupling the two MacArthur-Wilson curves reproduces Brown &amp; Kodric-Brown&#39;s
 (1977) rescue effect. As rescue strength rises from 0 to 0.8, the ensemble-mean
-equilibrium richness climbs from 30.1 to 37.3 species (+7.2) while the
-equilibrium turnover falls from 30.0 to 22.6 gross events per generation
+equilibrium richness climbs from 30.1 to 37.9 species (+7.7) while the
+equilibrium turnover falls from 30.0 to 22.4 gross events per generation
 (ratio 0.75) — richness up, turnover down, exactly as predicted. The simulated
 gradient sits on the analytic S*(r) = P*c/(c + e(1 - c*r)) at every level, and
 at r=0 it collapses onto the independent-curves MacArthur-Wilson S* = 30.0
-(|err| 0.10), confirming the model is a faithful extension of the baseline
+(|err| 0.15), confirming the model is a faithful extension of the baseline
 rather than a different model. Immigration lowering extinction is enough to
 raise equilibrium diversity and stabilize species identity.
 " data-edit-multiline data-edit-label="Conclusion"><p>Coupling the two MacArthur-Wilson curves reproduces Brown &amp; Kodric-Brown's
 (1977) rescue effect. As rescue strength rises from 0 to 0.8, the ensemble-mean
-equilibrium richness climbs from 30.1 to 37.3 species (+7.2) while the
-equilibrium turnover falls from 30.0 to 22.6 gross events per generation
+equilibrium richness climbs from 30.1 to 37.9 species (+7.7) while the
+equilibrium turnover falls from 30.0 to 22.4 gross events per generation
 (ratio 0.75) — richness up, turnover down, exactly as predicted. The simulated
 gradient sits on the analytic S*(r) = P<em>c/(c + e(1 - c</em>r)) at every level, and
 at r=0 it collapses onto the independent-curves MacArthur-Wilson S* = 30.0
-(|err| 0.10), confirming the model is a faithful extension of the baseline
+(|err| 0.15), confirming the model is a faithful extension of the baseline
 rather than a different model. Immigration lowering extinction is enough to
 raise equilibrium diversity and stabilize species identity.</p>
 </div>
@@ -1383,7 +1401,7 @@ flattening that Brown &amp; Kodric-Brown (1977) attributed to rescue.
         baseline · seed ? ·
         ?s simulated ·
         ? history rows ·
-        started ?
+        started 1794709263.4076889
       </div>
       
       
@@ -1424,7 +1442,7 @@ flattening that Brown &amp; Kodric-Brown (1977) attributed to rescue.
 </section>
 
 </main>
-<script>window.__DASH_CONFIG__ = { mode: "snapshot", interactiveUrl: "https://github.com/vivarium-collective/viva-island-biogeography", basePath: "/viva-island-biogeography/workbench", inputsDownloadBase: "https://github.com/vivarium-collective/viva-island-biogeography/raw/main", provenance: {"repo_slug": "vivarium-collective/viva-island-biogeography", "repo_url": "https://github.com/vivarium-collective/viva-island-biogeography", "commit": "6ea452d82d8431491a109ccab464382a02d41e0d", "commit_url": "https://github.com/vivarium-collective/viva-island-biogeography/commit/6ea452d82d8431491a109ccab464382a02d41e0d", "branch": "main", "lockfile": "uv.lock@c7d21bf47307", "generated_at": "2026-11-15 03:37 UTC"} };</script>
+<script>window.__DASH_CONFIG__ = { mode: "snapshot", interactiveUrl: "https://github.com/vivarium-collective/viva-island-biogeography", basePath: "/viva-island-biogeography/workbench", inputsDownloadBase: "https://github.com/vivarium-collective/viva-island-biogeography/raw/main", provenance: {"repo_slug": "vivarium-collective/viva-island-biogeography", "repo_url": "https://github.com/vivarium-collective/viva-island-biogeography", "commit": "6cde3389e2852e532f560321ee88abbb96a4b230", "commit_url": "https://github.com/vivarium-collective/viva-island-biogeography/commit/6cde3389e2852e532f560321ee88abbb96a4b230", "branch": "main", "lockfile": "uv.lock@c7d21bf47307", "generated_at": "2026-11-15 03:38 UTC"} };</script>
 <script src="/viva-island-biogeography/workbench/assets/data-source.js"></script>
 <script src="/viva-island-biogeography/workbench/assets/toast.js"></script>
 <script>

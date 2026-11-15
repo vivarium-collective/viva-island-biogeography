@@ -620,6 +620,20 @@ migration flux summed over all islands and generations.
       <p class="ctr-text" data-edit-kind="study" data-edit-field="result" data-edit-value="" data-edit-multiline data-edit-label="Result"></p>
       
       
+      <div class="ov-metrics">
+        
+        <div class="ov-metric ov-metric-pass">
+          <div class="ov-metric-v">PASS</div>
+          <div class="ov-metric-k">isolation-reduces-immigration</div>
+        </div>
+        
+        <div class="ov-metric ov-metric-pass">
+          <div class="ov-metric-v">PASS</div>
+          <div class="ov-metric-k">migration-conserves-individuals</div>
+        </div>
+        
+      </div>
+      
       
       
       
@@ -717,6 +731,13 @@ migration flux summed over all islands and generations.
         <div class="viv-loading"><span class="viv-loading-spin" aria-hidden="true"></span><span>Loading configuration…</span></div></div>
       
       
+      
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;font-size:0.8em">
+        
+        
+        
+        <span class="cond-pill"><span class="cond-pill-k">status</span>=completed</span>
+      </div>
       
     </div>
     
@@ -912,12 +933,12 @@ migration flux summed over all islands and generations.
         
         data-pytest-node="isolation-reduces-immigration"
         data-classification="primary"
-        data-result="pending"
+        data-result="PASS"
         style="margin: 0 0 10px 0; padding: 10px 12px; border-left: 4px solid #10b981; background: #f8fafc; border-radius: 4px;">
       
         
       <div style="display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;">
-        <span class="bt-result" style="font-size: 0.75em; font-family: monospace; padding: 2px 8px; border-radius: 9999px; background: #f1f5f9; color: #475569">⏳ pending</span>
+        <span class="bt-result" style="font-size: 0.75em; font-family: monospace; padding: 2px 8px; border-radius: 9999px; background: #d1fae5; color: #065f46">✓ PASS</span>
         <span class="classification-pill classification-primary">primary</span>
         <strong style="font-size: 0.9em;">isolation-reduces-immigration</strong>
         
@@ -925,6 +946,16 @@ migration flux summed over all islands and generations.
         
       </div>
       <div style="margin-top: 6px; font-size: 0.95em;">Ensemble corr(immigration received, mean distance) must be below -0.3.</div>
+      
+      <div style="margin-top:6px;font-size:0.85em;padding:6px 10px;background:#fff;border:1px solid #e2e8f0;border-radius:3px">
+        <strong>Latest result:</strong>
+        
+        
+          
+          <code style="font-family:ui-monospace,monospace;color:#475569;margin-right:8px">detail: measured -0.868162</code>
+          
+        
+      </div>
       
       
       <details style="margin-top: 6px; font-size: 0.82em;">
@@ -951,12 +982,12 @@ pass_if: {"op": "\u003c", "provenance": {"kind": "calibration", "note": "Measure
         
         data-pytest-node="migration-conserves-individuals"
         data-classification="primary"
-        data-result="pending"
+        data-result="PASS"
         style="margin: 0 0 10px 0; padding: 10px 12px; border-left: 4px solid #10b981; background: #f8fafc; border-radius: 4px;">
       
         
       <div style="display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;">
-        <span class="bt-result" style="font-size: 0.75em; font-family: monospace; padding: 2px 8px; border-radius: 9999px; background: #f1f5f9; color: #475569">⏳ pending</span>
+        <span class="bt-result" style="font-size: 0.75em; font-family: monospace; padding: 2px 8px; border-radius: 9999px; background: #d1fae5; color: #065f46">✓ PASS</span>
         <span class="classification-pill classification-primary">primary</span>
         <strong style="font-size: 0.9em;">migration-conserves-individuals</strong>
         
@@ -965,12 +996,22 @@ pass_if: {"op": "\u003c", "provenance": {"kind": "calibration", "note": "Measure
       </div>
       <div style="margin-top: 6px; font-size: 0.95em;">Total net migration flux over the ensemble must be ~0 (|flux| &lt; 1e-9).</div>
       
+      <div style="margin-top:6px;font-size:0.85em;padding:6px 10px;background:#fff;border:1px solid #e2e8f0;border-radius:3px">
+        <strong>Latest result:</strong>
+        
+        
+          
+          <code style="font-family:ui-monospace,monospace;color:#475569;margin-right:8px">detail: measured 0.0</code>
+          
+        
+      </div>
+      
       
       <details style="margin-top: 6px; font-size: 0.82em;">
         <summary class="muted" style="cursor: pointer;">Assertion</summary>
         
         <pre style="background:#fff; padding:8px; margin:4px 0 0 0; border:1px solid #e2e8f0; border-radius:3px; overflow-x:auto;">measure: {"field": "total_net_migration", "kind": "derived_scalar"}
-pass_if: {"op": "approx", "provenance": {"kind": "theory", "note": "Conservation is exact by construction: each migration event writes -1 to\nthe source and +1 to the destination of the same species.\n"}, "tol": "1e-9", "value": 0.0}</pre>
+pass_if: {"op": "\u003c", "provenance": {"kind": "theory", "note": "Conservation is exact by construction: each migration event writes -1 to\nthe source and +1 to the destination of the same species.\n"}, "value": 1e-09}</pre>
       </details>
       
       
@@ -1020,7 +1061,7 @@ pass_if: {"op": "approx", "provenance": {"kind": "theory", "note": "Conservation
         <span class="gate-current-tag">you are here</span>
       </span>
       
-      <span class="status-step  gate-status-not-assessed">
+      <span class="status-step set gate-status-passed">
         <span class="dot"></span>2 · Execution
         
         
@@ -1038,7 +1079,7 @@ pass_if: {"op": "approx", "provenance": {"kind": "theory", "note": "Conservation
         
       </span>
       
-      <span class="status-step  gate-status-not-assessed">
+      <span class="status-step set gate-status-passed">
         <span class="dot"></span>5 · Decision
         
         
@@ -1133,9 +1174,9 @@ pass_if: {"op": "approx", "provenance": {"kind": "theory", "note": "Conservation
         evaluator's result from the behavior-test outcomes — the evaluation the
         conclusion rests on.</p>
       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-        <span class="gate-status-not_started" style="padding:2px 12px;border-radius:9999px;font-weight:700;font-size:0.85em">not_started</span>
+        <span class="gate-status-passed" style="padding:2px 12px;border-radius:9999px;font-weight:700;font-size:0.85em">passed</span>
         <span class="muted small">evaluated by code</span>
-        <span class="muted small">0/2 passed</span>
+        <span class="muted small">2/2 passed</span>
       </div>
       
     </div>
@@ -1187,6 +1228,27 @@ independently of the per-island LV dynamics.
     
     
     
+    <div class="decide-section">
+      <h3 class="overview-label">Latest run outcomes</h3>
+      <div style="font-size:0.88em;color:#64748b;margin-bottom:8px">
+        baseline · seed ? ·
+        ?s simulated ·
+        ? history rows ·
+        started 1794709297.18512
+      </div>
+      
+      
+      
+      <p class="muted" style="margin:0;font-size:0.9em">
+        <strong>2</strong> test outcomes
+        — <span style="color:#065f46;font-weight:600">2 PASS</span> ·
+        <span style="color:#991b1b;font-weight:600">0 FAIL</span>.
+        Per-test outcomes (measured value · evaluator · band) are canonical on the
+        <a onclick="_setStudyTab('audit')" style="cursor:pointer;color:#3b82f6;text-decoration:underline">Tests (in Audit) →</a>.
+      </p>
+      
+    </div>
+    
     
 
   </div>
@@ -1213,7 +1275,7 @@ independently of the per-island LV dynamics.
 </section>
 
 </main>
-<script>window.__DASH_CONFIG__ = { mode: "snapshot", interactiveUrl: "https://github.com/vivarium-collective/viva-island-biogeography", basePath: "/viva-island-biogeography/workbench", inputsDownloadBase: "https://github.com/vivarium-collective/viva-island-biogeography/raw/main", provenance: {"repo_slug": "vivarium-collective/viva-island-biogeography", "repo_url": "https://github.com/vivarium-collective/viva-island-biogeography", "commit": "6ea452d82d8431491a109ccab464382a02d41e0d", "commit_url": "https://github.com/vivarium-collective/viva-island-biogeography/commit/6ea452d82d8431491a109ccab464382a02d41e0d", "branch": "main", "lockfile": "uv.lock@c7d21bf47307", "generated_at": "2026-11-15 03:37 UTC"} };</script>
+<script>window.__DASH_CONFIG__ = { mode: "snapshot", interactiveUrl: "https://github.com/vivarium-collective/viva-island-biogeography", basePath: "/viva-island-biogeography/workbench", inputsDownloadBase: "https://github.com/vivarium-collective/viva-island-biogeography/raw/main", provenance: {"repo_slug": "vivarium-collective/viva-island-biogeography", "repo_url": "https://github.com/vivarium-collective/viva-island-biogeography", "commit": "6cde3389e2852e532f560321ee88abbb96a4b230", "commit_url": "https://github.com/vivarium-collective/viva-island-biogeography/commit/6cde3389e2852e532f560321ee88abbb96a4b230", "branch": "main", "lockfile": "uv.lock@c7d21bf47307", "generated_at": "2026-11-15 03:38 UTC"} };</script>
 <script src="/viva-island-biogeography/workbench/assets/data-source.js"></script>
 <script src="/viva-island-biogeography/workbench/assets/toast.js"></script>
 <script>

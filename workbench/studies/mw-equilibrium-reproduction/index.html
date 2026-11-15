@@ -633,7 +633,7 @@ diagram, the approach-to-equilibrium trajectories, and the turnover curves.
     <div class="ctr-block">
       <h2 class="overview-label ctr-h">Result</h2>
       
-      <p class="ctr-text" data-edit-kind="study" data-edit-field="result" data-edit-value="" data-edit-multiline data-edit-label="Result">The equilibrium model sits on MacArthur &amp; Wilson&#39;s crossing rate curves: ensemble-mean richness tracks the analytic S* = P*c/(c+e) across the area gradient (corr 0.992), and species identity turns over ~15x the net change while richness holds.</p>
+      <p class="ctr-text" data-edit-kind="study" data-edit-field="result" data-edit-value="" data-edit-multiline data-edit-label="Result">The equilibrium model sits on MacArthur &amp; Wilson&#39;s crossing rate curves: ensemble-mean richness tracks the analytic S* = P*c/(c+e) across the area gradient (corr 0.997), and species identity turns over ~14x the net change while richness holds.</p>
       
       
       <div class="ov-metrics">
@@ -667,7 +667,9 @@ diagram, the approach-to-equilibrium trajectories, and the turnover curves.
         <details class="finding-details">
           <summary class="finding-row">
             <span class="finding-status-glyph">✓</span>
-            <span class="finding-claim finding-statement" data-edit-kind="study" data-edit-field="findings[equilibrium-reproduced].statement" data-edit-value="The equilibrium model sits on MacArthur &amp; Wilson&#39;s crossing rate curves: ensemble-mean richness tracks the analytic S* = P*c/(c+e) across the area gradient (corr 0.992), and species identity turns over ~15x the net change while richness holds." data-edit-multiline data-edit-label="Finding equilibrium-reproduced">The equilibrium model sits on MacArthur &amp; Wilson&#39;s crossing rate curves: ensemble-mean richness tracks the analytic S* = P*c/(c+e) across the area gradient (corr 0.992), and species identity turns over ~15x the net change while richness holds.</span>
+            <span class="finding-claim finding-statement" data-edit-kind="study" data-edit-field="findings[equilibrium-reproduced].statement" data-edit-value="The equilibrium model sits on MacArthur &amp; Wilson&#39;s crossing rate curves: ensemble-mean richness tracks the analytic S* = P*c/(c+e) across the area gradient (corr 0.997), and species identity turns over ~14x the net change while richness holds." data-edit-multiline data-edit-label="Finding equilibrium-reproduced">The equilibrium model sits on MacArthur &amp; Wilson&#39;s crossing rate curves: ensemble-mean richness tracks the analytic S* = P*c/(c+e) across the area gradient (corr 0.997), and species identity turns over ~14x the net change while richness holds.</span>
+            
+            <span class="finding-chip">via <code>equilibrium-tracks-theory</code></span>
             
           </summary>
           <div class="finding-drawer">
@@ -676,6 +678,28 @@ diagram, the approach-to-equilibrium trajectories, and the turnover curves.
               <span class="finding-kind">computational</span>
               <span class="finding-status-text">confirms literature</span>
             </div>
+            
+            
+            <div class="finding-evidence">
+              <strong>observed:</strong> 0.997052 · 
+              
+              via test <a href="#bt-equilibrium-tracks-theory" onclick="_gotoStudyTab('audit','bt-equilibrium-tracks-theory');return false;"><code>equilibrium-tracks-theory</code></a> · 
+              
+              
+              
+            </div>
+            
+            
+            <div class="finding-traceability" style="font-size:0.84em;color:#475569;padding:4px 10px;margin:4px 0">
+              
+              
+              runs: <a href="#run-5484a949691f4bc296b729543c27d2db"><code>5484a949691f4bc296b729543c27d2db</code></a>
+            </div>
+            
+            
+            
+            <div class="pass_if-band muted small" style="font-size:0.82em;padding:2px 10px">judged against <code>pass_if: &gt; 0.9</code></div>
+            
             
             
             
@@ -1003,7 +1027,7 @@ diagram, the approach-to-equilibrium trajectories, and the turnover curves.
         
         
           
-          <code style="font-family:ui-monospace,monospace;color:#475569;margin-right:8px">detail: ensemble corr(observed S, analytic S*) = 0.992 (&gt; 0.9).</code>
+          <code style="font-family:ui-monospace,monospace;color:#475569;margin-right:8px">detail: measured 0.997052</code>
           
         
       </div>
@@ -1052,7 +1076,7 @@ pass_if: {"op": "\u003e", "provenance": {"kind": "calibration", "note": "Measure
         
         
           
-          <code style="font-family:ui-monospace,monospace;color:#475569;margin-right:8px">detail: turnover ratio = 15.5 on the representative island (&gt; 3).</code>
+          <code style="font-family:ui-monospace,monospace;color:#475569;margin-right:8px">detail: measured 13.8889</code>
           
         
       </div>
@@ -1309,7 +1333,7 @@ isolation laws.
         baseline · seed ? ·
         ?s simulated ·
         ? history rows ·
-        started ?
+        started 1794709154.40446
       </div>
       
       
@@ -1350,7 +1374,7 @@ isolation laws.
 </section>
 
 </main>
-<script>window.__DASH_CONFIG__ = { mode: "snapshot", interactiveUrl: "https://github.com/vivarium-collective/viva-island-biogeography", basePath: "/viva-island-biogeography/workbench", inputsDownloadBase: "https://github.com/vivarium-collective/viva-island-biogeography/raw/main", provenance: {"repo_slug": "vivarium-collective/viva-island-biogeography", "repo_url": "https://github.com/vivarium-collective/viva-island-biogeography", "commit": "6ea452d82d8431491a109ccab464382a02d41e0d", "commit_url": "https://github.com/vivarium-collective/viva-island-biogeography/commit/6ea452d82d8431491a109ccab464382a02d41e0d", "branch": "main", "lockfile": "uv.lock@c7d21bf47307", "generated_at": "2026-11-15 03:37 UTC"} };</script>
+<script>window.__DASH_CONFIG__ = { mode: "snapshot", interactiveUrl: "https://github.com/vivarium-collective/viva-island-biogeography", basePath: "/viva-island-biogeography/workbench", inputsDownloadBase: "https://github.com/vivarium-collective/viva-island-biogeography/raw/main", provenance: {"repo_slug": "vivarium-collective/viva-island-biogeography", "repo_url": "https://github.com/vivarium-collective/viva-island-biogeography", "commit": "6cde3389e2852e532f560321ee88abbb96a4b230", "commit_url": "https://github.com/vivarium-collective/viva-island-biogeography/commit/6cde3389e2852e532f560321ee88abbb96a4b230", "branch": "main", "lockfile": "uv.lock@c7d21bf47307", "generated_at": "2026-11-15 03:38 UTC"} };</script>
 <script src="/viva-island-biogeography/workbench/assets/data-source.js"></script>
 <script src="/viva-island-biogeography/workbench/assets/toast.js"></script>
 <script>
