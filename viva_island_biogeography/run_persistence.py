@@ -46,7 +46,7 @@ def attach_sqlite_emitter(doc: dict, study_dir: Any, run_id: str,
 
 def register_study_run(study_dir: Any, run_id: str, *, spec_id: str,
                        params: dict, n_steps: int, emitter_path: str,
-                       status: str = "complete") -> None:
+                       status: str = "completed") -> None:
     """Record the completed run in ``<study>/runs.db`` so the engine can grade it."""
     from discovery_engine.study.run_registry import register_run
     now = time.time()

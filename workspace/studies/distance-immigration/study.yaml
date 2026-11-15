@@ -128,7 +128,7 @@ visualizations:
 conclusion:
 runs:
 - name: 6a46ea8cdf9540b4b87fb7fa5e91f242
-  status: complete
+  status: completed
   timestamp: 1794709297.18512
   emitter:
     kind: sqlite
@@ -200,6 +200,13 @@ runs:
       inputs_hash: 49344d9b5fc7f78c
       store: resolved
   canonical: true
+  outcomes:
+    isolation-reduces-immigration:
+      result: PASS
+      detail: measured -0.868162
+    migration-conserves-individuals:
+      result: PASS
+      detail: measured 0.0
 simulation_set:
 - name: baseline-baseline
   kind: single

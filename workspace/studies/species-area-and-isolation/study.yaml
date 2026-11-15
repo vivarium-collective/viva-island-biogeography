@@ -148,7 +148,7 @@ conclusion: |
   two-curve theory predicts.
 runs:
 - name: 17c3463722184dbd80be235f39d82cba
-  status: complete
+  status: completed
   timestamp: 1794709252.929781
   emitter:
     kind: sqlite
@@ -220,6 +220,13 @@ runs:
       inputs_hash: 8564e712ceb65198
       store: resolved
   canonical: true
+  outcomes:
+    species-area-law:
+      result: PASS
+      detail: measured 0.124162
+    isolation-declines:
+      result: PASS
+      detail: measured -0.937063
 findings:
 - id: two-laws-emerge
   kind: computational

@@ -200,7 +200,7 @@ conclusion: |
   raise equilibrium diversity and stabilize species identity.
 runs:
 - name: d6e3fad8af074a8dadb32ebd238a4a9a
-  status: complete
+  status: completed
   timestamp: 1794709263.4076889
   emitter:
     kind: sqlite
@@ -300,6 +300,16 @@ runs:
       inputs_hash: 45df2ec6f12d0b63
       store: resolved
   canonical: true
+  outcomes:
+    rescue-raises-richness:
+      result: PASS
+      detail: measured 7.73886
+    rescue-lowers-turnover:
+      result: PASS
+      detail: measured 7.555
+    r0-matches-baseline:
+      result: PASS
+      detail: measured 0.15099
 findings:
 - id: rescue-lifts-and-damps
   kind: biological

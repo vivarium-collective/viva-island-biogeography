@@ -148,7 +148,7 @@ conclusion: |
   band, partly because the large islands approach pool saturation.
 runs:
 - name: 5484a949691f4bc296b729543c27d2db
-  status: complete
+  status: completed
   timestamp: 1794709154.40446
   emitter:
     kind: sqlite
@@ -220,6 +220,13 @@ runs:
       inputs_hash: 3f03db958bc09ced
       store: resolved
   canonical: true
+  outcomes:
+    equilibrium-tracks-theory:
+      result: PASS
+      detail: measured 0.997052
+    turnover-at-equilibrium:
+      result: PASS
+      detail: measured 13.8889
 findings:
 - id: equilibrium-reproduced
   kind: computational

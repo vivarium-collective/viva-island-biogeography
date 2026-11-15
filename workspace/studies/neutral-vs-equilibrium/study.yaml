@@ -179,7 +179,7 @@ conclusion: |
   drift under a uniform metacommunity.
 runs:
 - name: 8acfbdb853f54192bf24e2de6805a7a3
-  status: complete
+  status: completed
   timestamp: 1794709258.391361
   emitter:
     kind: sqlite
@@ -251,6 +251,13 @@ runs:
       inputs_hash: 19e6c0db501d1148
       store: resolved
   canonical: true
+  outcomes:
+    neutral-produces-sar:
+      result: PASS
+      detail: measured 0.765457
+    both-models-show-sar:
+      result: PASS
+      detail: measured 1.0
 findings:
 - id: sar-mechanism-agnostic
   kind: computational

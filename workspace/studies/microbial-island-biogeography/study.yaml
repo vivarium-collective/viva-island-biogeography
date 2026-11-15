@@ -186,7 +186,7 @@ conclusion: |
   targets.
 runs:
 - name: 035d0577904346c6a4d9c39cabd9232e
-  status: complete
+  status: completed
   timestamp: 1794708400.4197068
   emitter:
     kind: sqlite
@@ -258,6 +258,13 @@ runs:
       inputs_hash: 04aadb787e06b7f2
       store: resolved
   canonical: true
+  outcomes:
+    microbial-sar-holds:
+      result: PASS
+      detail: measured 0.0411906
+    microbial-z-flatter:
+      result: PASS
+      detail: measured 0.0759593
 findings:
 - id: microbial-taxa-area-flattens
   kind: biological

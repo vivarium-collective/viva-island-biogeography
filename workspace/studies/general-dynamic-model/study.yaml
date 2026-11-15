@@ -154,7 +154,7 @@ conclusion: |
   trajectory.
 runs:
 - name: 22f3212b8d36465183949817b0e08408
-  status: complete
+  status: completed
   timestamp: 1794708241.2665758
   emitter:
     kind: sqlite
@@ -198,6 +198,10 @@ runs:
       inputs_hash: 08dd33a011a3390d
       store: resolved
   canonical: true
+  outcomes:
+    richness-is-humped:
+      result: PASS
+      detail: measured 1.0
 findings:
 - id: richness-is-transient
   kind: biological

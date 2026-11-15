@@ -143,7 +143,7 @@ visualizations:
 conclusion:
 runs:
 - name: 23b9dadf0f71460595aba6fcfab68920
-  status: complete
+  status: completed
   timestamp: 1794707926.933373
   emitter:
     kind: sqlite
@@ -215,6 +215,13 @@ runs:
       inputs_hash: 855bb27400f94ade
       store: resolved
   canonical: true
+  outcomes:
+    abundance-scales-with-area:
+      result: PASS
+      detail: measured 1.0
+    richness-not-set-by-area:
+      result: PASS
+      detail: measured -0.582959
 simulation_set:
 - name: baseline-baseline
   kind: single

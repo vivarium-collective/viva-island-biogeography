@@ -140,7 +140,7 @@ visualizations:
 conclusion:
 runs:
 - name: 22b426af19dc4dc6acca2836ee80e7b3
-  status: complete
+  status: completed
   timestamp: 1794709355.7304451
   emitter:
     kind: sqlite
@@ -212,6 +212,13 @@ runs:
       inputs_hash: c4cb9826b108d2cf
       store: resolved
   canonical: true
+  outcomes:
+    food-web-recovers-species-area:
+      result: PASS
+      detail: measured 0.580929
+    trophic-coexistence-exceeds-random:
+      result: PASS
+      detail: measured 1.8225
 simulation_set:
 - name: baseline-baseline
   kind: single
