@@ -132,7 +132,7 @@ runs:
   timestamp: 1794709297.18512
   emitter:
     kind: sqlite
-    store: /Users/eranagmon/code/viva-island-biogeography--run-earned/workspace/studies/distance-immigration/_runstore/history.db
+    store: workspace/studies/distance-immigration/_runstore/history.db
   generations: 1
   sim_minutes: 0
   n_readouts: 1441
@@ -199,6 +199,7 @@ runs:
       graded_at: '2026-11-15T02:21:39.184205+00:00'
       inputs_hash: 49344d9b5fc7f78c
       store: resolved
+  canonical: true
 simulation_set:
 - name: baseline-baseline
   kind: single

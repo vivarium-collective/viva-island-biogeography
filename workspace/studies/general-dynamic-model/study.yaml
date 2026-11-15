@@ -153,30 +153,12 @@ conclusion: |
   alone is sufficient to turn the equilibrium plateau into a humped life-cycle
   trajectory.
 runs:
-- name: default-ensemble
-  status: completed
-  kind: simulation
-  canonical: true
-  description: 3 islands on a t_peak age gradient, 10-seed ensemble, 500 steps.
-  emitter: ram
-  result: PASS
-  outcomes:
-    richness-is-humped:
-      result: PASS
-      detail: peak S=51.8 at t=195 (mid-run); early 18.5, late 26.7 -> clear hump.
-  computed_outcomes:
-    _status: store_unresolved
-    _grader:
-      version: 3-freshness
-      graded_at: '2026-11-15T02:07:11.390128+00:00'
-      inputs_hash: 692cd68e15501766
-      store: unresolved
 - name: 22f3212b8d36465183949817b0e08408
   status: complete
   timestamp: 1794708241.2665758
   emitter:
     kind: sqlite
-    store: /Users/eranagmon/code/viva-island-biogeography--run-earned/workspace/studies/general-dynamic-model/_runstore/history.db
+    store: workspace/studies/general-dynamic-model/_runstore/history.db
   generations: 10
   sim_minutes: 0
   n_readouts: 208
@@ -215,6 +197,7 @@ runs:
       graded_at: '2026-11-15T02:07:11.782106+00:00'
       inputs_hash: 08dd33a011a3390d
       store: resolved
+  canonical: true
 findings:
 - id: richness-is-transient
   kind: biological

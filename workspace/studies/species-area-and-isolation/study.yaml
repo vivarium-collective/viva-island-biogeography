@@ -109,7 +109,7 @@ behavior_tests:
     provenance:
       kind: calibration
       note: |
-        Measured Spearman = -0.97 (distance gradient 0-30 at fixed area 30,
+        Measured Spearman = -0.94 (distance gradient 0-30 at fixed area 30,
         8-seed ensemble). Pearson is only -0.79 because the c=c0/(1+d) decline is
         hyperbolic; rank correlation captures the monotonicity.
   requires_simulation: isolation-gradient
@@ -142,38 +142,17 @@ visualizations:
 conclusion: |
   Both canonical predictions emerge as measured laws. Richness grows with area
   as S ~ A^z with z = 0.12 (area gradient, isolation fixed), and declines
-  monotonically with isolation (Spearman -0.97; the hyperbolic colonization
+  monotonically with isolation (Spearman -0.94; the hyperbolic colonization
   kernel makes the decline sharp-then-plateau, which Pearson -0.79 understates).
   Area acts through extinction and isolation through colonization, exactly as the
   two-curve theory predicts.
 runs:
-- name: default-ensemble
-  status: completed
-  kind: simulation
-  canonical: true
-  description: Area gradient (isolation fixed) + distance gradient (area fixed), 8-seed ensemble.
-  emitter: ram
-  result: PASS
-  outcomes:
-    species-area-law:
-      result: PASS
-      detail: log-log slope z = 0.12 (> 0.08).
-    isolation-declines:
-      result: PASS
-      detail: Spearman corr(distance, S) = -0.97 (< -0.9); Pearson -0.79.
-  computed_outcomes:
-    _status: store_unresolved
-    _grader:
-      version: 3-freshness
-      graded_at: '2026-11-15T02:20:53.888601+00:00'
-      inputs_hash: ef60d6bb598431cf
-      store: unresolved
 - name: 17c3463722184dbd80be235f39d82cba
   status: complete
   timestamp: 1794709252.929781
   emitter:
     kind: sqlite
-    store: /Users/eranagmon/code/viva-island-biogeography--run-earned/workspace/studies/species-area-and-isolation/_runstore/history.db
+    store: workspace/studies/species-area-and-isolation/_runstore/history.db
   generations: 1
   sim_minutes: 0
   n_readouts: 48
@@ -240,6 +219,7 @@ runs:
       graded_at: '2026-11-15T02:20:53.953092+00:00'
       inputs_hash: 8564e712ceb65198
       store: resolved
+  canonical: true
 findings:
 - id: two-laws-emerge
   kind: computational

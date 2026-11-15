@@ -199,36 +199,12 @@ conclusion: |
   rather than a different model. Immigration lowering extinction is enough to
   raise equilibrium diversity and stabilize species identity.
 runs:
-- name: default-ensemble
-  status: completed
-  kind: simulation
-  canonical: true
-  description: 9-island rescue_strength gradient (0->0.8), 8-seed ensemble, 400 generations.
-  emitter: ram
-  result: PASS
-  outcomes:
-    rescue-raises-richness:
-      result: PASS
-      detail: S* 30.1 (no rescue) -> 37.9 (rescue 0.8), +7.7.
-    rescue-lowers-turnover:
-      result: PASS
-      detail: turnover 30.0 -> 22.4 events/gen with rescue.
-    r0-matches-baseline:
-      result: PASS
-      detail: at rescue=0, S=30.15 vs analytic M-W S*=30.00 (|err|=0.15).
-  computed_outcomes:
-    _status: store_unresolved
-    _grader:
-      version: 3-freshness
-      graded_at: '2026-11-15T02:21:21.765404+00:00'
-      inputs_hash: fe0c79a9577c635d
-      store: unresolved
 - name: d6e3fad8af074a8dadb32ebd238a4a9a
   status: complete
   timestamp: 1794709263.4076889
   emitter:
     kind: sqlite
-    store: /Users/eranagmon/code/viva-island-biogeography--run-earned/workspace/studies/rescue-effect/_runstore/history.db
+    store: workspace/studies/rescue-effect/_runstore/history.db
   generations: 1
   sim_minutes: 0
   n_readouts: 28
@@ -323,6 +299,7 @@ runs:
       graded_at: '2026-11-15T02:21:21.840846+00:00'
       inputs_hash: 45df2ec6f12d0b63
       store: resolved
+  canonical: true
 findings:
 - id: rescue-lifts-and-damps
   kind: biological

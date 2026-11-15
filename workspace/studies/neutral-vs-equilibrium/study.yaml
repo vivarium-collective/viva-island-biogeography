@@ -178,33 +178,12 @@ conclusion: |
   largest island (~46 species of J = 200), the zero-sum-multinomial signature of
   drift under a uniform metacommunity.
 runs:
-- name: default-ensemble
-  status: completed
-  kind: simulation
-  canonical: true
-  description: Neutral + equilibrium composites over the same area gradient, 8-seed ensemble.
-  emitter: ram
-  result: PASS
-  outcomes:
-    neutral-produces-sar:
-      result: PASS
-      detail: neutral SAR slope z = 0.76 (> 0.05).
-    both-models-show-sar:
-      result: PASS
-      detail: neutral z=0.76 and equilibrium z=0.13, both > 0.05.
-  computed_outcomes:
-    _status: store_unresolved
-    _grader:
-      version: 3-freshness
-      graded_at: '2026-11-15T02:20:59.335264+00:00'
-      inputs_hash: 7b863d101fd1d05e
-      store: unresolved
 - name: 8acfbdb853f54192bf24e2de6805a7a3
   status: complete
   timestamp: 1794709258.391361
   emitter:
     kind: sqlite
-    store: /Users/eranagmon/code/viva-island-biogeography--run-earned/workspace/studies/neutral-vs-equilibrium/_runstore/history.db
+    store: workspace/studies/neutral-vs-equilibrium/_runstore/history.db
   generations: 1
   sim_minutes: 0
   n_readouts: 48
@@ -271,6 +250,7 @@ runs:
       graded_at: '2026-11-15T02:20:59.429096+00:00'
       inputs_hash: 19e6c0db501d1148
       store: resolved
+  canonical: true
 findings:
 - id: sar-mechanism-agnostic
   kind: computational

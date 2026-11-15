@@ -185,33 +185,12 @@ conclusion: |
   Microbiome Project and tree-hole bacterial surveys are the next calibration
   targets.
 runs:
-- name: default-ensemble
-  status: completed
-  kind: simulation
-  canonical: true
-  description: Macro + microbial regimes over the same area gradient, 6-seed ensemble.
-  emitter: ram
-  result: PASS
-  outcomes:
-    microbial-sar-holds:
-      result: PASS
-      detail: microbial taxa-area z = 0.043 (> 0).
-    microbial-z-flatter:
-      result: PASS
-      detail: z_micro 0.043 < z_macro 0.123 (~3x flatter).
-  computed_outcomes:
-    _status: store_unresolved
-    _grader:
-      version: 3-freshness
-      graded_at: '2026-11-15T02:19:15.363052+00:00'
-      inputs_hash: 0f553545048797d4
-      store: unresolved
 - name: 035d0577904346c6a4d9c39cabd9232e
   status: complete
   timestamp: 1794708400.4197068
   emitter:
     kind: sqlite
-    store: /Users/eranagmon/code/viva-island-biogeography--run-earned/workspace/studies/microbial-island-biogeography/_runstore/history.db
+    store: workspace/studies/microbial-island-biogeography/_runstore/history.db
   generations: 12
   sim_minutes: 0
   n_readouts: 805
@@ -278,6 +257,7 @@ runs:
       graded_at: '2026-11-15T02:20:31.243679+00:00'
       inputs_hash: 04aadb787e06b7f2
       store: resolved
+  canonical: true
 findings:
 - id: microbial-taxa-area-flattens
   kind: biological

@@ -147,7 +147,7 @@ runs:
   timestamp: 1794707926.933373
   emitter:
     kind: sqlite
-    store: /Users/eranagmon/code/viva-island-biogeography--run-earned/workspace/studies/island-archipelago/_runstore/history.db
+    store: workspace/studies/island-archipelago/_runstore/history.db
   generations: 1
   sim_minutes: 0
   n_readouts: 187
@@ -214,6 +214,7 @@ runs:
       graded_at: '2026-11-15T01:58:56.570843+00:00'
       inputs_hash: 855bb27400f94ade
       store: resolved
+  canonical: true
 simulation_set:
 - name: baseline-baseline
   kind: single

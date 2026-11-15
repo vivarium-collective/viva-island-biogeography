@@ -147,33 +147,12 @@ conclusion: |
   slope on this gradient is z ~ 0.12, in the low end of the empirical 0.1-0.35
   band, partly because the large islands approach pool saturation.
 runs:
-- name: default-ensemble
-  status: completed
-  kind: simulation
-  canonical: true
-  description: 12 islands over a log-spaced area gradient, 8-seed ensemble, 400 generations, tail 25%.
-  emitter: ram
-  result: PASS
-  outcomes:
-    equilibrium-tracks-theory:
-      result: PASS
-      detail: ensemble corr(observed S, analytic S*) = 0.992 (> 0.9).
-    turnover-at-equilibrium:
-      result: PASS
-      detail: turnover ratio = 15.5 on the representative island (> 3).
-  computed_outcomes:
-    _status: store_unresolved
-    _grader:
-      version: 3-freshness
-      graded_at: '2026-11-15T02:19:15.294688+00:00'
-      inputs_hash: 8b40d89d49da80e3
-      store: unresolved
 - name: 5484a949691f4bc296b729543c27d2db
   status: complete
   timestamp: 1794709154.40446
   emitter:
     kind: sqlite
-    store: /Users/eranagmon/code/viva-island-biogeography--run-earned/workspace/studies/mw-equilibrium-reproduction/_runstore/history.db
+    store: workspace/studies/mw-equilibrium-reproduction/_runstore/history.db
   generations: 1
   sim_minutes: 0
   n_readouts: 26
@@ -240,6 +219,7 @@ runs:
       graded_at: '2026-11-15T02:19:15.348576+00:00'
       inputs_hash: 3f03db958bc09ced
       store: resolved
+  canonical: true
 findings:
 - id: equilibrium-reproduced
   kind: computational
@@ -247,6 +227,12 @@ findings:
   statement: "The equilibrium model sits on MacArthur & Wilson's crossing rate curves: ensemble-mean richness tracks the analytic S* = P*c/(c+e) across the area gradient (corr 0.997), and species identity turns over ~14x the net change while richness holds."
   evidence:
     from_test: equilibrium-tracks-theory
+    observed: 0.997052
+  expected: {}
+  provenance:
+    run_ids:
+    - 5484a949691f4bc296b729543c27d2db
+    model_version: mv:6ea24f25e41a88ef
 verdict: supported
 simulation_set:
 - name: baseline-baseline
