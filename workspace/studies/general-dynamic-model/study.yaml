@@ -94,7 +94,7 @@ behavior_tests:
     field: richness-is-humped
   pass_if:
     op: '=='
-    value: PASS
+    value: 1.0  # hump-gate indicator: 1.0 = PASS, 0.0 = FAIL
     provenance:
       kind: calibration
       note: |
@@ -117,6 +117,11 @@ pipeline_gate:
     rate-crossing equilibrium and turnover, adding island ontogeny (time-varying
     area) and observing an emergent humped richness trajectory demonstrates the
     General Dynamic Model's qualitative departure from the static equilibrium.
+  gate_evaluator:
+    result: passed
+    blocked_by: []
+    evaluated_by: code
+    diverges_from_authored: false
 canonical_runs:
 - name: default
   script: studies/general-dynamic-model/sims/run.py
@@ -159,9 +164,82 @@ runs:
     richness-is-humped:
       result: PASS
       detail: peak S=51.8 at t=195 (mid-run); early 18.5, late 26.7 -> clear hump.
+  computed_outcomes:
+    _status: store_unresolved
+    _grader:
+      version: 3-freshness
+      graded_at: '2026-11-15T02:07:11.390128+00:00'
+      inputs_hash: 692cd68e15501766
+      store: unresolved
+- name: 22f3212b8d36465183949817b0e08408
+  status: complete
+  timestamp: 1794708241.2665758
+  emitter:
+    kind: sqlite
+    store: /Users/eranagmon/code/viva-island-biogeography--run-earned/workspace/studies/general-dynamic-model/_runstore/history.db
+  generations: 10
+  sim_minutes: 0
+  n_readouts: 208
+  params: '{"area_exponent": 1.0, "area_max": 100.0, "n_islands": 3, "n_pool": 60, "n_seeds": 10, "ontogeny_shape": 2.0, "seed": 1, "steps": 500, "t_peak_max": 180.0, "t_peak_min": 120.0}'
+  computed_outcomes:
+    richness-is-humped:
+      result: PASS
+      measured_value: 1.0
+      evaluated_by: code
+      operator: derived_scalar/==
+      detail: 1 == 1.0
+      axis:
+        id: richness-is-humped
+        label: "Ensemble-mean richness on the focal island must be humped: peak inside the\nmiddle third of the run, and both the early and late richness below 0.75x the\npeak.\n"
+        verdict: within_tol
+        value: 1.0
+        meter: 0.5
+        detail:
+        expected:
+          kind: value
+          value: 1.0
+          low:
+          high:
+          op: ==
+          tol: 0.05
+          statement:
+          units:
+        margin: -0.0
+        severity: hard
+        units:
+        knob:
+        citation:
+      reconcile: no_authored
+    _grader:
+      version: 3-freshness
+      graded_at: '2026-11-15T02:07:11.782106+00:00'
+      inputs_hash: 08dd33a011a3390d
+      store: resolved
 findings:
 - id: richness-is-transient
   kind: biological
   status: confirms
-  statement: 'Under island ontogeny (area rises then erodes), richness overshoots and then declines (peak ~52 at mid-age, falling to ~27): the MacArthur-Wilson equilibrium is transient over geological time, as the General Dynamic Model predicts (Whittaker 2008).'
+  evidence:
+    from_test: richness-is-humped
+  statement: 'Under island ontogeny (area rises then erodes), richness overshoots and then declines (peak ~50 at mid-age, falling to ~25): the MacArthur-Wilson equilibrium is transient over geological time, as the General Dynamic Model predicts (Whittaker 2008).'
 verdict: supported
+simulation_set:
+- name: baseline-baseline
+  kind: single
+  base_model: viva_island_biogeography.composites.gdm.general_dynamic_model
+  is_baseline: true
+  status: ran
+  params:
+    n_islands: 3
+    n_pool: 60
+    colonization_base: 0.05
+    extinction_base: 0.01
+    area_max: 100.0
+    t_peak_min: 120.0
+    t_peak_max: 180.0
+    ontogeny_shape: 2.0
+    area_exponent: 1.0
+    ref_area: 100.0
+    seed: 1
+  pass_fail_tests:
+  - richness-is-humped

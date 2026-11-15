@@ -38,6 +38,8 @@ from viva_island_biogeography.core import build_core
 from viva_island_biogeography.composites.mw_equilibrium import build_mw_document
 from viva_island_biogeography.composites import microbial as mviz
 from viva_island_biogeography import viz
+from viva_island_biogeography.run_persistence import (
+    attach_sqlite_emitter, register_study_run)
 from vivarium_workbench.lib.run_log import append_run_event
 from vivarium_workbench.lib.run_viz import mirror_viz_dir
 
@@ -66,13 +68,20 @@ MICRO = dict(n_pool=300, colonization_base=0.10, extinction_base=0.06,
 SAR_Z_MIN = 0.0  # microbial taxa-area relationship holds (positive slope)
 
 
-def _run(core, *, n_pool, colonization_base, extinction_base, area_exponent, seed):
+def _run(core, *, n_pool, colonization_base, extinction_base, area_exponent, seed,
+         persist=None):
     doc = build_mw_document(
         n_islands=N_ISLANDS, n_pool=n_pool,
         colonization_base=colonization_base, extinction_base=extinction_base,
         area_min=AREA_MIN, area_max=AREA_MAX,
         distance_min=0.0, distance_max=0.0,
         area_exponent=area_exponent, seed=seed)
+    if persist is not None:
+        # All regimes/seeds persist into ONE store; each is a distinct
+        # simulation_id with a ``gen=<k>`` suffix so RunReader splits them.
+        run_id, k = persist
+        attach_sqlite_emitter(doc, STUDY_DIR, run_id)
+        doc["emitter"]["config"]["simulation_id"] = f"{run_id}-gen={k}"
     sim = Composite({"state": doc}, core=core)
     sim.run(float(STEPS))
     return gather_emitter_results(sim)[("emitter",)]
@@ -98,13 +107,13 @@ def _tail_turnover(rows, names):
             "extinction": float(np.mean(ext_rate))}
 
 
-def _ensemble(core, names, cfg):
+def _ensemble(core, names, cfg, run_id=None, k0=0):
     """Return (first-run rows, ensemble-mean tail richness, mean turnover)."""
-    rows0 = _run(core, seed=SEED, **cfg)
+    rows0 = _run(core, seed=SEED, persist=(run_id, k0) if run_id else None, **cfg)
     S_ens = [_tail_mean_S(rows0, names)]
     turn = [_tail_turnover(rows0, names)]
     for s in range(SEED + 1, SEED + N_SEEDS):
-        rows = _run(core, seed=s, **cfg)
+        rows = _run(core, seed=s, persist=(run_id, k0 + s - SEED) if run_id else None, **cfg)
         S_ens.append(_tail_mean_S(rows, names))
         turn.append(_tail_turnover(rows, names))
     S = np.mean(np.vstack(S_ens), axis=0)
@@ -119,20 +128,24 @@ def _fit_z(A, S):
 
 def main() -> int:
     run_id = uuid.uuid4().hex
+    params = dict(n_islands=N_ISLANDS, n_seeds=N_SEEDS, steps=STEPS,
+                  macro=MACRO, micro=MICRO)
     append_run_event(WORKSPACE_ROOT, {
         "run_id": run_id, "event": "started", "spec_id": SPEC_ID,
         "label": STUDY_SLUG, "started_at": time.time(), "status": "running",
-        "n_steps": STEPS, "emitter": "ram", "origin": "canonical_run",
+        "n_steps": STEPS, "emitter": "sqlite", "origin": "canonical_run",
         "study_slug": STUDY_SLUG, "investigation_slug": INVESTIGATION_SLUG,
-        "params": dict(n_islands=N_ISLANDS, n_seeds=N_SEEDS, steps=STEPS,
-                       macro=MACRO, micro=MICRO),
+        "params": params,
     })
     try:
         core = build_core()
         names = [f"island_{i:02d}" for i in range(N_ISLANDS)]
 
-        macro_rows, S_macro, turn_macro = _ensemble(core, names, MACRO)
-        micro_rows, S_micro, turn_micro = _ensemble(core, names, MICRO)
+        store_db = STUDY_DIR / "_runstore" / "history.db"
+        store_db.unlink(missing_ok=True)  # regenerable; reader reads all sims
+        # gen index: macro seeds 0..N_SEEDS-1, microbial seeds N_SEEDS..2N-1
+        macro_rows, S_macro, turn_macro = _ensemble(core, names, MACRO, run_id, 0)
+        micro_rows, S_micro, turn_micro = _ensemble(core, names, MICRO, run_id, N_SEEDS)
 
         A = np.array([macro_rows[-1]["island_meta"][n]["area"] for n in names])
         z_macro = _fit_z(A, S_macro)
@@ -187,6 +200,8 @@ def main() -> int:
             "n_steps": 0, "status": "failed"})
         raise
 
+    register_study_run(STUDY_DIR, run_id, spec_id=SPEC_ID, params=params,
+                       n_steps=STEPS, emitter_path=str(store_db))
     mirror_viz_dir(WORKSPACE_ROOT, run_id, viz_paths)
     append_run_event(WORKSPACE_ROOT, {
         "run_id": run_id, "event": "completed", "completed_at": time.time(),

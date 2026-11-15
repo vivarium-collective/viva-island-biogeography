@@ -121,6 +121,11 @@ pipeline_gate:
     With both laws reproduced, the model is validated against the two canonical
     MacArthur-Wilson predictions and is ready to be extended (neutral theory,
     microbial regimes, trophic / general-dynamic-model follow-ups).
+  gate_evaluator:
+    result: passed
+    blocked_by: []
+    evaluated_by: code
+    diverges_from_authored: false
 canonical_runs:
 - name: default
   script: studies/species-area-and-isolation/sims/run.py
@@ -156,9 +161,119 @@ runs:
     isolation-declines:
       result: PASS
       detail: Spearman corr(distance, S) = -0.97 (< -0.9); Pearson -0.79.
+  computed_outcomes:
+    _status: store_unresolved
+    _grader:
+      version: 3-freshness
+      graded_at: '2026-11-15T02:20:53.888601+00:00'
+      inputs_hash: ef60d6bb598431cf
+      store: unresolved
+- name: 17c3463722184dbd80be235f39d82cba
+  status: complete
+  timestamp: 1794709252.929781
+  emitter:
+    kind: sqlite
+    store: /Users/eranagmon/code/viva-island-biogeography--run-earned/workspace/studies/species-area-and-isolation/_runstore/history.db
+  generations: 1
+  sim_minutes: 0
+  n_readouts: 48
+  params: '{"n_islands": 12, "n_pool": 60, "n_seeds": 8, "steps": 400}'
+  computed_outcomes:
+    species-area-law:
+      result: PASS
+      measured_value: 0.124162
+      evaluated_by: code
+      operator: derived_scalar/>
+      detail: 0.1242 > 0.08
+      axis:
+        id: species-area-law
+        label: Log-log species-area slope z must be clearly positive (> 0.08).
+        verdict: within_tol
+        value: 0.124162
+        meter: 0.7760125
+        detail:
+        expected:
+          kind: value
+          value: 0.08
+          low:
+          high:
+          op: '>'
+          tol: 0.05
+          statement:
+          units:
+        margin: 0.04416199999999999
+        severity: hard
+        units:
+        knob:
+        citation:
+      reconcile: no_authored
+    isolation-declines:
+      result: PASS
+      measured_value: -0.937063
+      evaluated_by: code
+      operator: derived_scalar/<
+      detail: -0.9371 < -0.9
+      axis:
+        id: isolation-declines
+        label: Spearman rank corr(distance, richness) must be below -0.9.
+        verdict: within_tol
+        value: -0.937063
+        meter: 0.5205905555555556
+        detail:
+        expected:
+          kind: value
+          value: -0.9
+          low:
+          high:
+          op: <
+          tol: 0.05
+          statement:
+          units:
+        margin: 0.03706299999999996
+        severity: hard
+        units:
+        knob:
+        citation:
+      reconcile: no_authored
+    _grader:
+      version: 3-freshness
+      graded_at: '2026-11-15T02:20:53.953092+00:00'
+      inputs_hash: 8564e712ceb65198
+      store: resolved
 findings:
 - id: two-laws-emerge
   kind: computational
   status: confirms
-  statement: 'Both canonical predictions emerge as laws: richness grows with area as a power law S ~ A^z (z = 0.12) and declines monotonically with isolation (Spearman -0.97) - area acting through extinction, isolation through colonization.'
+  statement: 'Both canonical predictions emerge as laws: richness grows with area as a power law S ~ A^z (z = 0.124) and declines monotonically with isolation (Spearman -0.937) - area acting through extinction, isolation through colonization.'
+  evidence:
+    from_test: species-area-law
 verdict: supported
+simulation_set:
+- name: baseline-baseline
+  kind: single
+  base_model: viva_island_biogeography.composites.mw_equilibrium.mw_equilibrium
+  is_baseline: true
+  status: ran
+  params:
+    n_islands: 12
+    n_pool: 60
+    colonization_base: 0.02
+    extinction_base: 0.012
+    area_exponent: 0.25
+    seed: 1
+  pass_fail_tests: &id001
+  - species-area-law
+  - isolation-declines
+- name: isolation-gradient
+  kind: single
+  base_model: viva_island_biogeography.composites.mw_equilibrium.mw_equilibrium
+  perturbation:
+    n_islands: 12
+    n_pool: 60
+    area_min: 30.0
+    area_max: 30.0
+    distance_min: 0.0
+    distance_max: 30.0
+    seed: 1
+  status: ran
+  pass_fail_tests: *id001

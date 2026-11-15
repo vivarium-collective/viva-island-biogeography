@@ -139,6 +139,11 @@ pipeline_gate:
     using its composite as the equilibrium comparator here; establishing that the
     neutral model independently produces a positive SAR closes the
     neutral-vs-equilibrium comparison.
+  gate_evaluator:
+    result: passed
+    blocked_by: []
+    evaluated_by: code
+    diverges_from_authored: false
 canonical_runs:
 - name: default
   script: studies/neutral-vs-equilibrium/sims/run.py
@@ -187,9 +192,109 @@ runs:
     both-models-show-sar:
       result: PASS
       detail: neutral z=0.76 and equilibrium z=0.13, both > 0.05.
+  computed_outcomes:
+    _status: store_unresolved
+    _grader:
+      version: 3-freshness
+      graded_at: '2026-11-15T02:20:59.335264+00:00'
+      inputs_hash: 7b863d101fd1d05e
+      store: unresolved
+- name: 8acfbdb853f54192bf24e2de6805a7a3
+  status: complete
+  timestamp: 1794709258.391361
+  emitter:
+    kind: sqlite
+    store: /Users/eranagmon/code/viva-island-biogeography--run-earned/workspace/studies/neutral-vs-equilibrium/_runstore/history.db
+  generations: 1
+  sim_minutes: 0
+  n_readouts: 48
+  params: '{"area_max": 100.0, "area_min": 1.0, "density": 2.0, "immigration_base": 0.2, "n_islands": 12, "n_pool": 64, "n_seeds": 8, "seed": 1, "steps": 300}'
+  computed_outcomes:
+    neutral-produces-sar:
+      result: PASS
+      measured_value: 0.765457
+      evaluated_by: code
+      operator: derived_scalar/>
+      detail: 0.7655 > 0.05
+      axis:
+        id: neutral-produces-sar
+        label: The neutral model's fitted species-area slope z must exceed 0.05.
+        verdict: within_tol
+        value: 0.765457
+        meter: 1.0
+        detail:
+        expected:
+          kind: value
+          value: 0.05
+          low:
+          high:
+          op: '>'
+          tol: 0.05
+          statement:
+          units:
+        margin: 0.715457
+        severity: hard
+        units:
+        knob:
+        citation:
+      reconcile: no_authored
+    both-models-show-sar:
+      result: PASS
+      measured_value: 1.0
+      evaluated_by: code
+      operator: derived_scalar/==
+      detail: 1 == 1.0
+      axis:
+        id: both-models-show-sar
+        label: Both the neutral and the equilibrium model must show z > 0.05.
+        verdict: within_tol
+        value: 1.0
+        meter: 0.5
+        detail:
+        expected:
+          kind: value
+          value: 1.0
+          low:
+          high:
+          op: ==
+          tol: 0.05
+          statement:
+          units:
+        margin: -0.0
+        severity: hard
+        units:
+        knob:
+        citation:
+      reconcile: no_authored
+    _grader:
+      version: 3-freshness
+      graded_at: '2026-11-15T02:20:59.429096+00:00'
+      inputs_hash: 19e6c0db501d1148
+      store: resolved
 findings:
 - id: sar-mechanism-agnostic
   kind: computational
   status: novel
   statement: Hubbell neutral drift also produces a positive species-area relationship (z ~ 0.76 vs equilibrium z ~ 0.13), so the SAR alone cannot discriminate neutral drift from niche-based colonization/extinction - two unrelated mechanisms converge on the same qualitative law.
+  evidence:
+    from_test: both-models-show-sar
 verdict: qualified
+simulation_set:
+- name: baseline-baseline
+  kind: single
+  base_model: viva_island_biogeography.composites.neutral.neutral_metacommunity
+  is_baseline: true
+  status: ran
+  params:
+    n_islands: 12
+    n_pool: 64
+    density: 2.0
+    immigration_base: 0.2
+    area_min: 1.0
+    area_max: 100.0
+    distance_min: 0.0
+    distance_max: 0.0
+    seed: 1
+  pass_fail_tests:
+  - neutral-produces-sar
+  - both-models-show-sar

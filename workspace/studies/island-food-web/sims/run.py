@@ -30,6 +30,8 @@ from viva_island_biogeography.composites.archipelago import island_archipelago
 from viva_island_biogeography.composites.food_web import island_food_web
 from viva_island_biogeography.composites._common import island_specs
 from viva_island_biogeography import viz
+from viva_island_biogeography.run_persistence import (
+    attach_sqlite_emitter, register_study_run)
 from vivarium_workbench.lib.run_log import append_run_event
 from vivarium_workbench.lib.run_viz import mirror_viz_dir
 
@@ -47,12 +49,16 @@ RICHNESS_CORR_MIN = 0.2
 RICHNESS_GAIN_MIN = 0.5
 
 
-def _ensemble_richness(gen, names, **kw):
+def _ensemble_richness(gen, names, run_id, tag, **kw):
     rich_runs = []
     last_rows = None
     for seed in SEEDS:
         core = build_core()
         doc = gen(core, n_islands=N_ISLANDS, n_species=N_SPECIES, seed=seed, **kw)
+        # every ensemble member persists into the one store under its own
+        # simulation_id ``<run_id>-<tag>-s<seed>`` (tag: fw = food web, rand = random)
+        global _STORE_DB
+        _STORE_DB = attach_sqlite_emitter(doc, STUDY_DIR, f"{run_id}-{tag}-s{seed}")
         sim = Composite({"state": doc}, core=core)
         sim.run(float(STEPS))
         rows = gather_emitter_results(sim)[("emitter",)]
@@ -64,6 +70,9 @@ def _ensemble_richness(gen, names, **kw):
     return np.mean(rich_runs, axis=0), last_rows
 
 
+_STORE_DB = None
+
+
 def main() -> int:
     run_id = uuid.uuid4().hex
     params = dict(n_islands=N_ISLANDS, n_species=N_SPECIES, steps=STEPS,
@@ -71,21 +80,22 @@ def main() -> int:
     append_run_event(WORKSPACE_ROOT, {
         "run_id": run_id, "event": "started", "spec_id": SPEC_ID,
         "label": STUDY_SLUG, "started_at": time.time(), "status": "running",
-        "n_steps": STEPS, "emitter": "ram", "origin": "canonical_run",
+        "n_steps": STEPS, "emitter": "sqlite", "origin": "canonical_run",
         "study_slug": STUDY_SLUG, "investigation_slug": INVESTIGATION_SLUG,
         "params": params,
     })
     try:
+        (STUDY_DIR / "_runstore" / "history.db").unlink(missing_ok=True)  # one run per store
         specs = island_specs(N_ISLANDS, N_SPECIES, random.Random(0))
         meta = {s["name"]: {"x": s["x"], "y": s["y"], "area": s["area"]} for s in specs}
         names = [s["name"] for s in specs]
         area = np.array([meta[n]["area"] for n in names])
 
         fw_rich, fw_rows = _ensemble_richness(
-            island_food_web, names, growth_rate=0.03,
+            island_food_web, names, run_id, "fw", growth_rate=0.03,
             predator_prey_interaction=0.1, introduction_probability=0.05)
         rand_rich, _ = _ensemble_richness(
-            island_archipelago, names, growth_rate=0.03,
+            island_archipelago, names, run_id, "rand", growth_rate=0.03,
             interaction_weight=0.1, introduction_probability=0.05)
 
         richness_area_corr = float(np.corrcoef(fw_rich, np.log(area))[0, 1])
@@ -142,6 +152,8 @@ def main() -> int:
             "n_steps": 0, "status": "failed"})
         raise
 
+    register_study_run(STUDY_DIR, run_id, spec_id=SPEC_ID, params=params,
+                       n_steps=STEPS, emitter_path=_STORE_DB)
     # Carry the figures into the Runs-tab "📊 Viz" action (.pbg/runs/<id>/viz.json).
     mirror_viz_dir(WORKSPACE_ROOT, run_id, viz_paths)
     append_run_event(WORKSPACE_ROOT, {

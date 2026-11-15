@@ -33,6 +33,8 @@ from viva_island_biogeography.models_gdm import (
     gdm_ensemble_richness)
 from viva_island_biogeography.composites.gdm import build_gdm_document
 from viva_island_biogeography import viz
+from viva_island_biogeography.run_persistence import (
+    attach_sqlite_emitter, register_study_run)
 from vivarium_workbench.lib.run_log import append_run_event
 from vivarium_workbench.lib.run_viz import mirror_viz_dir
 
@@ -64,13 +66,18 @@ MARGIN_FRAC = 0.75
 EDGE_FRAC = 0.10     # first/last 10% of the run define "early"/"late"
 
 
-def _run_once(core, seed):
+def _run_once(core, seed, run_id=None, k=0):
     doc = build_gdm_document(
         n_islands=N_ISLANDS, n_pool=N_POOL,
         colonization_base=COLONIZATION_BASE, extinction_base=EXTINCTION_BASE,
         area_max=AREA_MAX, t_peak_min=T_PEAK_MIN, t_peak_max=T_PEAK_MAX,
         ontogeny_shape=ONTOGENY_SHAPE, area_exponent=AREA_EXPONENT,
         ref_area=REF_AREA, seed=seed)
+    if run_id is not None:
+        # All ensemble seeds persist into ONE store; each seed is a distinct
+        # simulation_id with a ``gen=<k>`` suffix so RunReader splits them.
+        attach_sqlite_emitter(doc, STUDY_DIR, run_id)
+        doc["emitter"]["config"]["simulation_id"] = f"{run_id}-gen={k}"
     sim = Composite({"state": doc}, core=core)
     sim.run(float(STEPS))
     return gather_emitter_results(sim)[("emitter",)]
@@ -94,16 +101,18 @@ def main() -> int:
     append_run_event(WORKSPACE_ROOT, {
         "run_id": run_id, "event": "started", "spec_id": SPEC_ID,
         "label": STUDY_SLUG, "started_at": time.time(), "status": "running",
-        "n_steps": STEPS, "emitter": "ram", "origin": "canonical_run",
+        "n_steps": STEPS, "emitter": "sqlite", "origin": "canonical_run",
         "study_slug": STUDY_SLUG, "investigation_slug": INVESTIGATION_SLUG,
         "params": params,
     })
     try:
         core = build_core()
         register_gdm(core)
+        store_db = STUDY_DIR / "_runstore" / "history.db"
+        store_db.unlink(missing_ok=True)  # regenerable; reader reads all sims
 
         # Primary run (seed=SEED) backs the overlay + hysteresis figures.
-        rows = _run_once(core, SEED)
+        rows = _run_once(core, SEED, run_id, 0)
         times = viz.history_times(rows)
         meta = rows[-1]["island_meta"]
 
@@ -113,7 +122,7 @@ def main() -> int:
         # Ensemble richness trajectory on the focal island.
         ens = [rich_focal]
         for s in range(SEED + 1, SEED + N_SEEDS):
-            r2 = _run_once(core, s)
+            r2 = _run_once(core, s, run_id, s - SEED)
             ens.append(np.array([r["richness"][FOCAL] for r in r2], dtype=float))
         L = min(len(e) for e in ens)
         M = np.vstack([e[:L] for e in ens])      # (n_seeds, n_times)
@@ -181,6 +190,8 @@ def main() -> int:
             "n_steps": 0, "status": "failed"})
         raise
 
+    register_study_run(STUDY_DIR, run_id, spec_id=SPEC_ID, params=params,
+                       n_steps=STEPS, emitter_path=str(store_db))
     mirror_viz_dir(WORKSPACE_ROOT, run_id, viz_paths)
     append_run_event(WORKSPACE_ROOT, {
         "run_id": run_id, "event": "completed", "completed_at": time.time(),

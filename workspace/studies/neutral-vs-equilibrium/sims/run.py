@@ -35,6 +35,7 @@ from viva_island_biogeography.models_neutral import (
 )
 from viva_island_biogeography.composites.neutral import build_neutral_document
 from viva_island_biogeography.composites.mw_equilibrium import build_mw_document
+from viva_island_biogeography.run_persistence import persist_observables_store
 from vivarium_workbench.lib.run_log import append_run_event
 from vivarium_workbench.lib.run_viz import mirror_viz_dir
 
@@ -114,7 +115,7 @@ def main() -> int:
     append_run_event(WORKSPACE_ROOT, {
         "run_id": run_id, "event": "started", "spec_id": SPEC_ID,
         "label": STUDY_SLUG, "started_at": time.time(), "status": "running",
-        "n_steps": STEPS, "emitter": "ram", "origin": "canonical_run",
+        "n_steps": STEPS, "emitter": "sqlite", "origin": "canonical_run",
         "study_slug": STUDY_SLUG, "investigation_slug": INVESTIGATION_SLUG,
         "params": params,
     })
@@ -135,6 +136,16 @@ def main() -> int:
         mw_names = sorted(mw_rows[-1]["island_meta"])
         S_equilibrium = _ensemble_S(_run_mw, core, mw_names)
         z_equilibrium = _sar_z(S_equilibrium, A)
+
+        # Persist the REAL 8-seed ensemble arrays for both composites so the grader
+        # recomputes z_neutral / both_sar by code (not authored values).
+        persist_observables_store(
+            STUDY_DIR, run_id,
+            {"S_obs_neutral": {n: float(S_neutral[i]) for i, n in enumerate(names)},
+             "area_neutral": {n: float(A[i]) for i, n in enumerate(names)},
+             "S_obs_eq": {n: float(S_equilibrium[i]) for i, n in enumerate(names)},
+             "area_eq": {n: float(A[i]) for i, n in enumerate(names)}},
+            core=core, spec_id=SPEC_ID, params=params, n_steps=STEPS)
 
         # Representative neutral island for the species-abundance distribution:
         # the largest (richest, longest-tailed) island of the primary seed.
