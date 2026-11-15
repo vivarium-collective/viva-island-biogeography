@@ -20,7 +20,7 @@
   <div style="display:flex; align-items:center; gap:14px; justify-content:space-between;">
   <div style="display:flex; align-items:center; gap:12px; min-width:0; flex-wrap:wrap">
   <h1 class="study-title" style="margin:0">
-    <span class="study-name" id="study-name" data-slug="distance-immigration" data-study-kind="computational" title="distance-immigration">Isolation reduces colonization; migration conserves individuals</span>
+    <span class="study-name" id="study-name" data-slug="distance-immigration" data-study-kind="computational" title="distance-immigration" data-edit-kind="study" data-edit-field="title" data-edit-value="Isolation reduces colonization; migration conserves individuals" data-edit-label="Title">Isolation reduces colonization; migration conserves individuals</span>
     
   </h1>
     
@@ -50,11 +50,15 @@
 
 
 
-<p id="study-question-headline" class="study-question-headline"><span class="q-glyph">Q</span> Does the distance-decaying migration kernel (migration_rate = 1/(1+distance))
+<p id="study-question-headline" class="study-question-headline"><span class="q-glyph">Q</span> <span class="study-question-headline-text" data-edit-kind="study" data-edit-field="question" data-edit-value="Does the distance-decaying migration kernel (migration_rate = 1/(1+distance))
 reproduce the immigration side of MacArthur-Wilson theory — more isolated
 islands receive fewer colonists — and does inter-island migration conserve
 individuals exactly?
-</p>
+" data-edit-multiline data-edit-label="Question">Does the distance-decaying migration kernel (migration_rate = 1/(1+distance))
+reproduce the immigration side of MacArthur-Wilson theory — more isolated
+islands receive fewer colonists — and does inter-island migration conserve
+individuals exactly?
+</span></p>
 
 <nav class="study-tabs" aria-label="Study sections">
   
@@ -239,6 +243,9 @@ individuals exactly?
 /* findings */
 .findings-section{padding:14px 16px;background:#fafbff;border:1px solid #c7d2fe;border-radius:8px}
 .finding-card{padding:12px 14px;margin:10px 0;border:1px solid #e2e8f0;border-left:5px solid #6366f1;border-radius:6px;background:#fff}
+/* Brief highlight when an item is reached via a ?ev= evidence deep-link. */
+.ev-flash{animation:ev-flash-kf 1.9s ease-out;scroll-margin-top:12px}
+@keyframes ev-flash-kf{0%{box-shadow:0 0 0 3px #fbbf24}70%{box-shadow:0 0 0 3px rgba(251,191,36,0.45)}100%{box-shadow:0 0 0 0 rgba(251,191,36,0)}}
 .finding-card.finding-status-confirms{border-left-color:#10b981}
 .finding-card.finding-status-partial{border-left-color:#f59e0b}
 .finding-card.finding-status-contradicts{border-left-color:#dc2626}
@@ -547,7 +554,7 @@ individuals exactly?
 
     <div class="ctr-block">
       <h2 class="overview-label ctr-h">Claim</h2>
-      <p class="ctr-text">Does the distance-decaying migration kernel (migration_rate = 1/(1+distance))
+      <p class="ctr-text" data-edit-kind="study" data-edit-field="claim" data-edit-value="" data-edit-multiline data-edit-label="Claim">Does the distance-decaying migration kernel (migration_rate = 1/(1+distance))
 reproduce the immigration side of MacArthur-Wilson theory — more isolated
 islands receive fewer colonists — and does inter-island migration conserve
 individuals exactly?
@@ -559,12 +566,22 @@ individuals exactly?
     <div class="ctr-block">
       <h2 class="overview-label ctr-h">Background</h2>
       <div class="ctr-meta">
-        <div class="ctr-meta-row"><span class="ctr-meta-k">Question</span> <span class="ctr-meta-item">Does the distance-decaying migration kernel (migration_rate = 1/(1+distance))
+        <div class="ctr-meta-row"><span class="ctr-meta-k">Question</span> <span class="ctr-meta-item" data-edit-kind="study" data-edit-field="question" data-edit-value="Does the distance-decaying migration kernel (migration_rate = 1/(1+distance))
+reproduce the immigration side of MacArthur-Wilson theory — more isolated
+islands receive fewer colonists — and does inter-island migration conserve
+individuals exactly?
+" data-edit-multiline data-edit-label="Question">Does the distance-decaying migration kernel (migration_rate = 1/(1+distance))
 reproduce the immigration side of MacArthur-Wilson theory — more isolated
 islands receive fewer colonists — and does inter-island migration conserve
 individuals exactly?
 </span></div>
-        <div class="ctr-meta-row"><span class="ctr-meta-k">Hypothesis</span> <span class="ctr-meta-item">Because the per-pair migration probability falls as 1/(1+distance), an island
+        <div class="ctr-meta-row"><span class="ctr-meta-k">Hypothesis</span> <span class="ctr-meta-item" data-edit-kind="study" data-edit-field="hypothesis" data-edit-value="Because the per-pair migration probability falls as 1/(1+distance), an island
+that is on average farther from the others should receive fewer immigrants per
+generation, so immigration received should correlate negatively with mean
+distance. Separately, every emigration moves exactly one individual to exactly
+one other island, so the archipelago-wide net migration flux must be exactly
+zero (individuals are conserved by the coupler).
+" data-edit-multiline data-edit-label="Hypothesis">Because the per-pair migration probability falls as 1/(1+distance), an island
 that is on average farther from the others should receive fewer immigrants per
 generation, so immigration received should correlate negatively with mean
 distance. Separately, every emigration moves exactly one individual to exactly
@@ -577,7 +594,10 @@ zero (individuals are conserved by the coupler).
 
     <div class="ctr-block">
       <h2 class="overview-label ctr-h">Model &amp; approach</h2>
-      <p class="ctr-text">Over a seed ensemble, measure (a) the across-island correlation of immigration
+      <p class="ctr-text" data-edit-kind="study" data-edit-field="objective" data-edit-value="Over a seed ensemble, measure (a) the across-island correlation of immigration
+received with mean distance to the other islands, and (b) the total net
+migration flux summed over all islands and generations.
+" data-edit-multiline data-edit-label="Objective">Over a seed ensemble, measure (a) the across-island correlation of immigration
 received with mean distance to the other islands, and (b) the total net
 migration flux summed over all islands and generations.
 </p>
@@ -596,7 +616,8 @@ migration flux summed over all islands and generations.
 
     <div class="ctr-block">
       <h2 class="overview-label ctr-h">Result</h2>
-      <p class="ctr-text"></p>
+      
+      <p class="ctr-text" data-edit-kind="study" data-edit-field="result" data-edit-value="" data-edit-multiline data-edit-label="Result"></p>
       
       
       
@@ -778,6 +799,12 @@ migration flux summed over all islands and generations.
 <div class="overview-section" id="results-section">
   
   <div id="results-summary" data-study="distance-immigration" style="margin:0 0 16px"></div>
+
+  
+  <div id="gate-results-section" data-study="distance-immigration" style="margin:0 0 22px" hidden>
+    <h4>Gate results <span class="muted" style="font-size:0.8em;font-weight:normal">— each acceptance test's value, graded from run data</span></h4>
+    <div id="gate-results"></div>
+  </div>
 
   <h4>Latest run preview <span class="muted" style="font-size:0.8em;font-weight:normal">— downsampled sparkline + first/last/min/max per store</span></h4>
   <div id="results-preview" data-study="distance-immigration">
@@ -1186,11 +1213,12 @@ independently of the per-island LV dynamics.
 </section>
 
 </main>
-<script>window.__DASH_CONFIG__ = { mode: "snapshot", interactiveUrl: "https://github.com/vivarium-collective/viva-island-biogeography", basePath: "/viva-island-biogeography/workbench", inputsDownloadBase: "https://github.com/vivarium-collective/viva-island-biogeography/raw/main", provenance: {"repo_slug": "vivarium-collective/viva-island-biogeography", "repo_url": "https://github.com/vivarium-collective/viva-island-biogeography", "commit": "8d85544f6c4696187b70c1e1bf5e8491c79ddd1d", "commit_url": "https://github.com/vivarium-collective/viva-island-biogeography/commit/8d85544f6c4696187b70c1e1bf5e8491c79ddd1d", "branch": "main", "lockfile": "uv.lock@5b8c7a31b1fb", "generated_at": "2026-10-28 01:23 UTC"} };</script>
+<script>window.__DASH_CONFIG__ = { mode: "snapshot", interactiveUrl: "https://github.com/vivarium-collective/viva-island-biogeography", basePath: "/viva-island-biogeography/workbench", inputsDownloadBase: "https://github.com/vivarium-collective/viva-island-biogeography/raw/main", provenance: {"repo_slug": "vivarium-collective/viva-island-biogeography", "repo_url": "https://github.com/vivarium-collective/viva-island-biogeography", "commit": "6ea452d82d8431491a109ccab464382a02d41e0d", "commit_url": "https://github.com/vivarium-collective/viva-island-biogeography/commit/6ea452d82d8431491a109ccab464382a02d41e0d", "branch": "main", "lockfile": "uv.lock@c7d21bf47307", "generated_at": "2026-11-15 03:37 UTC"} };</script>
 <script src="/viva-island-biogeography/workbench/assets/data-source.js"></script>
 <script src="/viva-island-biogeography/workbench/assets/toast.js"></script>
 <script>
 window._studyName = "distance-immigration";
+window.__STUDY_INVESTIGATION__ = "island-biogeography";  // owning investigation (feedback save routing)
 window._study = null;  // populated by _bootstrapStudy() in study-detail.js
 
 // Save handler for the Conditions → Model settings editable rows.
@@ -1319,6 +1347,8 @@ window._seedFollowupProposal = _seedFollowupProposal;
 <script src="/viva-island-biogeography/workbench/assets/progress-track.js"></script>
 <script src="/viva-island-biogeography/workbench/assets/comparison-view.js"></script>
 <script src="/viva-island-biogeography/workbench/assets/study-detail.js"></script>
+<script src="/viva-island-biogeography/workbench/assets/study-feedback.js"></script>
+<script src="/viva-island-biogeography/workbench/assets/inline-edit.js"></script>
 <script>
 // Re-assert the refresh-aware seed handlers AFTER study-detail.js (which
 // defines its own navigate-away _seedFollowupStudy). The embedded

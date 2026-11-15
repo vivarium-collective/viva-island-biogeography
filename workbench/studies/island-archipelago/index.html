@@ -20,7 +20,7 @@
   <div style="display:flex; align-items:center; gap:14px; justify-content:space-between;">
   <div style="display:flex; align-items:center; gap:12px; min-width:0; flex-wrap:wrap">
   <h1 class="study-title" style="margin:0">
-    <span class="study-name" id="study-name" data-slug="island-archipelago" data-study-kind="computational" title="island-archipelago">Carrying capacity sets abundance, not richness</span>
+    <span class="study-name" id="study-name" data-slug="island-archipelago" data-study-kind="computational" title="island-archipelago" data-edit-kind="study" data-edit-field="title" data-edit-value="Carrying capacity sets abundance, not richness" data-edit-label="Title">Carrying capacity sets abundance, not richness</span>
     
   </h1>
     
@@ -50,9 +50,11 @@
 
 
 
-<p id="study-question-headline" class="study-question-headline"><span class="q-glyph">Q</span> In the Lotka-Volterra island model, does island area control the equilibrium
+<p id="study-question-headline" class="study-question-headline"><span class="q-glyph">Q</span> <span class="study-question-headline-text" data-edit-kind="study" data-edit-field="question" data-edit-value="In the Lotka-Volterra island model, does island area control the equilibrium
 state — and if so, which quantity: total abundance, species richness, or both?
-</p>
+" data-edit-multiline data-edit-label="Question">In the Lotka-Volterra island model, does island area control the equilibrium
+state — and if so, which quantity: total abundance, species richness, or both?
+</span></p>
 
 <nav class="study-tabs" aria-label="Study sections">
   
@@ -237,6 +239,9 @@ state — and if so, which quantity: total abundance, species richness, or both?
 /* findings */
 .findings-section{padding:14px 16px;background:#fafbff;border:1px solid #c7d2fe;border-radius:8px}
 .finding-card{padding:12px 14px;margin:10px 0;border:1px solid #e2e8f0;border-left:5px solid #6366f1;border-radius:6px;background:#fff}
+/* Brief highlight when an item is reached via a ?ev= evidence deep-link. */
+.ev-flash{animation:ev-flash-kf 1.9s ease-out;scroll-margin-top:12px}
+@keyframes ev-flash-kf{0%{box-shadow:0 0 0 3px #fbbf24}70%{box-shadow:0 0 0 3px rgba(251,191,36,0.45)}100%{box-shadow:0 0 0 0 rgba(251,191,36,0)}}
 .finding-card.finding-status-confirms{border-left-color:#10b981}
 .finding-card.finding-status-partial{border-left-color:#f59e0b}
 .finding-card.finding-status-contradicts{border-left-color:#dc2626}
@@ -545,7 +550,7 @@ state — and if so, which quantity: total abundance, species richness, or both?
 
     <div class="ctr-block">
       <h2 class="overview-label ctr-h">Claim</h2>
-      <p class="ctr-text">In the Lotka-Volterra island model, does island area control the equilibrium
+      <p class="ctr-text" data-edit-kind="study" data-edit-field="claim" data-edit-value="" data-edit-multiline data-edit-label="Claim">In the Lotka-Volterra island model, does island area control the equilibrium
 state — and if so, which quantity: total abundance, species richness, or both?
 </p>
       
@@ -555,10 +560,20 @@ state — and if so, which quantity: total abundance, species richness, or both?
     <div class="ctr-block">
       <h2 class="overview-label ctr-h">Background</h2>
       <div class="ctr-meta">
-        <div class="ctr-meta-row"><span class="ctr-meta-k">Question</span> <span class="ctr-meta-item">In the Lotka-Volterra island model, does island area control the equilibrium
+        <div class="ctr-meta-row"><span class="ctr-meta-k">Question</span> <span class="ctr-meta-item" data-edit-kind="study" data-edit-field="question" data-edit-value="In the Lotka-Volterra island model, does island area control the equilibrium
+state — and if so, which quantity: total abundance, species richness, or both?
+" data-edit-multiline data-edit-label="Question">In the Lotka-Volterra island model, does island area control the equilibrium
 state — and if so, which quantity: total abundance, species richness, or both?
 </span></div>
-        <div class="ctr-meta-row"><span class="ctr-meta-k">Hypothesis</span> <span class="ctr-meta-item">Area enters the model only through the carrying capacity
+        <div class="ctr-meta-row"><span class="ctr-meta-k">Hypothesis</span> <span class="ctr-meta-item" data-edit-kind="study" data-edit-field="hypothesis" data-edit-value="Area enters the model only through the carrying capacity
+(max_individuals_capacity = area * individuals_per_area), which caps TOTAL
+individuals. With a random (non-trophic) interaction matrix, Lotka-Volterra
+competition drives strong competitive exclusion on every island regardless of
+size, so equilibrium TOTAL ABUNDANCE should scale tightly with area while
+equilibrium SPECIES RICHNESS should be low and essentially independent of area
+— i.e. this model does NOT reproduce the classic MacArthur-Wilson species-area
+law under random competition.
+" data-edit-multiline data-edit-label="Hypothesis">Area enters the model only through the carrying capacity
 (max_individuals_capacity = area * individuals_per_area), which caps TOTAL
 individuals. With a random (non-trophic) interaction matrix, Lotka-Volterra
 competition drives strong competitive exclusion on every island regardless of
@@ -573,7 +588,11 @@ law under random competition.
 
     <div class="ctr-block">
       <h2 class="overview-label ctr-h">Model &amp; approach</h2>
-      <p class="ctr-text">Run the `island_archipelago` composite (a mainland + 5 smaller islands, each
+      <p class="ctr-text" data-edit-kind="study" data-edit-field="objective" data-edit-value="Run the `island_archipelago` composite (a mainland + 5 smaller islands, each
+an IslandProcess coupled by one MigrationProcess) to equilibrium and measure,
+across islands, the correlation of (a) equilibrium total abundance with area
+and (b) equilibrium species richness with log-area.
+" data-edit-multiline data-edit-label="Objective">Run the `island_archipelago` composite (a mainland + 5 smaller islands, each
 an IslandProcess coupled by one MigrationProcess) to equilibrium and measure,
 across islands, the correlation of (a) equilibrium total abundance with area
 and (b) equilibrium species richness with log-area.
@@ -593,7 +612,8 @@ and (b) equilibrium species richness with log-area.
 
     <div class="ctr-block">
       <h2 class="overview-label ctr-h">Result</h2>
-      <p class="ctr-text"></p>
+      
+      <p class="ctr-text" data-edit-kind="study" data-edit-field="result" data-edit-value="" data-edit-multiline data-edit-label="Result"></p>
       
       
       
@@ -775,6 +795,12 @@ and (b) equilibrium species richness with log-area.
 <div class="overview-section" id="results-section">
   
   <div id="results-summary" data-study="island-archipelago" style="margin:0 0 16px"></div>
+
+  
+  <div id="gate-results-section" data-study="island-archipelago" style="margin:0 0 22px" hidden>
+    <h4>Gate results <span class="muted" style="font-size:0.8em;font-weight:normal">— each acceptance test's value, graded from run data</span></h4>
+    <div id="gate-results"></div>
+  </div>
 
   <h4>Latest run preview <span class="muted" style="font-size:0.8em;font-weight:normal">— downsampled sparkline + first/last/min/max per store</span></h4>
   <div id="results-preview" data-study="island-archipelago">
@@ -1188,11 +1214,12 @@ is contrasted against.
 </section>
 
 </main>
-<script>window.__DASH_CONFIG__ = { mode: "snapshot", interactiveUrl: "https://github.com/vivarium-collective/viva-island-biogeography", basePath: "/viva-island-biogeography/workbench", inputsDownloadBase: "https://github.com/vivarium-collective/viva-island-biogeography/raw/main", provenance: {"repo_slug": "vivarium-collective/viva-island-biogeography", "repo_url": "https://github.com/vivarium-collective/viva-island-biogeography", "commit": "8d85544f6c4696187b70c1e1bf5e8491c79ddd1d", "commit_url": "https://github.com/vivarium-collective/viva-island-biogeography/commit/8d85544f6c4696187b70c1e1bf5e8491c79ddd1d", "branch": "main", "lockfile": "uv.lock@5b8c7a31b1fb", "generated_at": "2026-10-28 01:23 UTC"} };</script>
+<script>window.__DASH_CONFIG__ = { mode: "snapshot", interactiveUrl: "https://github.com/vivarium-collective/viva-island-biogeography", basePath: "/viva-island-biogeography/workbench", inputsDownloadBase: "https://github.com/vivarium-collective/viva-island-biogeography/raw/main", provenance: {"repo_slug": "vivarium-collective/viva-island-biogeography", "repo_url": "https://github.com/vivarium-collective/viva-island-biogeography", "commit": "6ea452d82d8431491a109ccab464382a02d41e0d", "commit_url": "https://github.com/vivarium-collective/viva-island-biogeography/commit/6ea452d82d8431491a109ccab464382a02d41e0d", "branch": "main", "lockfile": "uv.lock@c7d21bf47307", "generated_at": "2026-11-15 03:37 UTC"} };</script>
 <script src="/viva-island-biogeography/workbench/assets/data-source.js"></script>
 <script src="/viva-island-biogeography/workbench/assets/toast.js"></script>
 <script>
 window._studyName = "island-archipelago";
+window.__STUDY_INVESTIGATION__ = "island-biogeography";  // owning investigation (feedback save routing)
 window._study = null;  // populated by _bootstrapStudy() in study-detail.js
 
 // Save handler for the Conditions → Model settings editable rows.
@@ -1321,6 +1348,8 @@ window._seedFollowupProposal = _seedFollowupProposal;
 <script src="/viva-island-biogeography/workbench/assets/progress-track.js"></script>
 <script src="/viva-island-biogeography/workbench/assets/comparison-view.js"></script>
 <script src="/viva-island-biogeography/workbench/assets/study-detail.js"></script>
+<script src="/viva-island-biogeography/workbench/assets/study-feedback.js"></script>
+<script src="/viva-island-biogeography/workbench/assets/inline-edit.js"></script>
 <script>
 // Re-assert the refresh-aware seed handlers AFTER study-detail.js (which
 // defines its own navigate-away _seedFollowupStudy). The embedded

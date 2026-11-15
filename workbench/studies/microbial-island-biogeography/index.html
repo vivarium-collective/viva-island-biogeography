@@ -20,7 +20,7 @@
   <div style="display:flex; align-items:center; gap:14px; justify-content:space-between;">
   <div style="display:flex; align-items:center; gap:12px; min-width:0; flex-wrap:wrap">
   <h1 class="study-title" style="margin:0">
-    <span class="study-name" id="study-name" data-slug="microbial-island-biogeography" data-study-kind="biological" title="microbial-island-biogeography">Does the taxa-area relationship hold for microbes — and flatten?</span>
+    <span class="study-name" id="study-name" data-slug="microbial-island-biogeography" data-study-kind="biological" title="microbial-island-biogeography" data-edit-kind="study" data-edit-field="title" data-edit-value="Does the taxa-area relationship hold for microbes — and flatten?" data-edit-label="Title">Does the taxa-area relationship hold for microbes — and flatten?</span>
     
   </h1>
     
@@ -50,10 +50,13 @@
 
 
 
-<p id="study-question-headline" class="study-question-headline"><span class="q-glyph">Q</span> Does the taxa-area relationship — the microbial analogue of the species-area
+<p id="study-question-headline" class="study-question-headline"><span class="q-glyph">Q</span> <span class="study-question-headline-text" data-edit-kind="study" data-edit-field="question" data-edit-value="Does the taxa-area relationship — the microbial analogue of the species-area
 law — hold under the MacArthur-Wilson equilibrium model when it is run in a
 microbial regime, and is its slope z flatter than for macro-organisms?
-</p>
+" data-edit-multiline data-edit-label="Question">Does the taxa-area relationship — the microbial analogue of the species-area
+law — hold under the MacArthur-Wilson equilibrium model when it is run in a
+microbial regime, and is its slope z flatter than for macro-organisms?
+</span></p>
 
 <nav class="study-tabs" aria-label="Study sections">
   
@@ -238,6 +241,9 @@ microbial regime, and is its slope z flatter than for macro-organisms?
 /* findings */
 .findings-section{padding:14px 16px;background:#fafbff;border:1px solid #c7d2fe;border-radius:8px}
 .finding-card{padding:12px 14px;margin:10px 0;border:1px solid #e2e8f0;border-left:5px solid #6366f1;border-radius:6px;background:#fff}
+/* Brief highlight when an item is reached via a ?ev= evidence deep-link. */
+.ev-flash{animation:ev-flash-kf 1.9s ease-out;scroll-margin-top:12px}
+@keyframes ev-flash-kf{0%{box-shadow:0 0 0 3px #fbbf24}70%{box-shadow:0 0 0 3px rgba(251,191,36,0.45)}100%{box-shadow:0 0 0 0 rgba(251,191,36,0)}}
 .finding-card.finding-status-confirms{border-left-color:#10b981}
 .finding-card.finding-status-partial{border-left-color:#f59e0b}
 .finding-card.finding-status-contradicts{border-left-color:#dc2626}
@@ -546,7 +552,7 @@ microbial regime, and is its slope z flatter than for macro-organisms?
 
     <div class="ctr-block">
       <h2 class="overview-label ctr-h">Claim</h2>
-      <p class="ctr-text">Does the taxa-area relationship — the microbial analogue of the species-area
+      <p class="ctr-text" data-edit-kind="study" data-edit-field="claim" data-edit-value="" data-edit-multiline data-edit-label="Claim">Does the taxa-area relationship — the microbial analogue of the species-area
 law — hold under the MacArthur-Wilson equilibrium model when it is run in a
 microbial regime, and is its slope z flatter than for macro-organisms?
 </p>
@@ -557,11 +563,23 @@ microbial regime, and is its slope z flatter than for macro-organisms?
     <div class="ctr-block">
       <h2 class="overview-label ctr-h">Background</h2>
       <div class="ctr-meta">
-        <div class="ctr-meta-row"><span class="ctr-meta-k">Question</span> <span class="ctr-meta-item">Does the taxa-area relationship — the microbial analogue of the species-area
+        <div class="ctr-meta-row"><span class="ctr-meta-k">Question</span> <span class="ctr-meta-item" data-edit-kind="study" data-edit-field="question" data-edit-value="Does the taxa-area relationship — the microbial analogue of the species-area
+law — hold under the MacArthur-Wilson equilibrium model when it is run in a
+microbial regime, and is its slope z flatter than for macro-organisms?
+" data-edit-multiline data-edit-label="Question">Does the taxa-area relationship — the microbial analogue of the species-area
 law — hold under the MacArthur-Wilson equilibrium model when it is run in a
 microbial regime, and is its slope z flatter than for macro-organisms?
 </span></div>
-        <div class="ctr-meta-row"><span class="ctr-meta-k">Hypothesis</span> <span class="ctr-meta-item">Microbial communities obey the same equilibrium logic as macro-organisms
+        <div class="ctr-meta-row"><span class="ctr-meta-k">Hypothesis</span> <span class="ctr-meta-item" data-edit-kind="study" data-edit-field="hypothesis" data-edit-value="Microbial communities obey the same equilibrium logic as macro-organisms
+(richness set by the crossing of area-driven extinction against isolation-
+driven colonization), so a microbial regime should still give a positive
+taxa-area slope (z &gt; 0). But because microbes draw on an enormous taxa pool
+(so islands rarely saturate), disperse widely, and turn over fast locally
+(martiny2006microbial; hanson2012beyond), the area effect on extinction is
+weaker and the measured slope should be *flatter* than the macro slope —
+consistent with the observed microbial band z ~ 0.02-0.1 (hornerdevine2004taxa;
+bell2005islands) versus the classic macro z ~ 0.15-0.35.
+" data-edit-multiline data-edit-label="Hypothesis">Microbial communities obey the same equilibrium logic as macro-organisms
 (richness set by the crossing of area-driven extinction against isolation-
 driven colonization), so a microbial regime should still give a positive
 taxa-area slope (z &gt; 0). But because microbes draw on an enormous taxa pool
@@ -577,7 +595,13 @@ bell2005islands) versus the classic macro z ~ 0.15-0.35.
 
     <div class="ctr-block">
       <h2 class="overview-label ctr-h">Model &amp; approach</h2>
-      <p class="ctr-text">Reusing the MacArthur-Wilson equilibrium process (no new process), run two
+      <p class="ctr-text" data-edit-kind="study" data-edit-field="objective" data-edit-value="Reusing the MacArthur-Wilson equilibrium process (no new process), run two
+regimes over the same log-spaced area gradient (isolation fixed): a MACRO
+regime (n_pool=60, area_exponent=0.25) and a MICROBIAL regime (n_pool=300,
+shallow area_exponent=0.10, high colonization+extinction). Measure the log-log
+taxa-area slope z for each on a 6-seed ensemble mean, measure the gross
+equilibrium turnover rate, and render the macro-vs-microbe overlay.
+" data-edit-multiline data-edit-label="Objective">Reusing the MacArthur-Wilson equilibrium process (no new process), run two
 regimes over the same log-spaced area gradient (isolation fixed): a MACRO
 regime (n_pool=60, area_exponent=0.25) and a MICROBIAL regime (n_pool=300,
 shallow area_exponent=0.10, high colonization+extinction). Measure the log-log
@@ -599,7 +623,8 @@ equilibrium turnover rate, and render the macro-vs-microbe overlay.
 
     <div class="ctr-block">
       <h2 class="overview-label ctr-h">Result</h2>
-      <p class="ctr-text">The taxa-area relationship holds for microbes but is flatter (z ~ 0.04 vs macro 0.12, ~3x) with ~20x faster turnover, consistent with the empirical microbial taxa-area literature (Horner-Devine 2004; Bell 2005).</p>
+      
+      <p class="ctr-text" data-edit-kind="study" data-edit-field="result" data-edit-value="" data-edit-multiline data-edit-label="Result">The taxa-area relationship holds for microbes but is flatter (z ~ 0.04 vs macro 0.12, ~3x) with ~20x faster turnover, consistent with the empirical microbial taxa-area literature (Horner-Devine 2004; Bell 2005).</p>
       
       
       <div class="ov-metrics">
@@ -629,11 +654,11 @@ equilibrium turnover rate, and render the macro-vs-microbe overlay.
       
       
       
-      <div class="finding-card finding-kind-biological finding-status-confirms">
+      <div class="finding-card finding-kind-biological finding-status-confirms" id="finding-microbial-taxa-area-flattens">
         <details class="finding-details">
           <summary class="finding-row">
             <span class="finding-status-glyph">✓</span>
-            <span class="finding-claim finding-statement">The taxa-area relationship holds for microbes but is flatter (z ~ 0.04 vs macro 0.12, ~3x) with ~20x faster turnover, consistent with the empirical microbial taxa-area literature (Horner-Devine 2004; Bell 2005).</span>
+            <span class="finding-claim finding-statement" data-edit-kind="study" data-edit-field="findings[microbial-taxa-area-flattens].statement" data-edit-value="The taxa-area relationship holds for microbes but is flatter (z ~ 0.04 vs macro 0.12, ~3x) with ~20x faster turnover, consistent with the empirical microbial taxa-area literature (Horner-Devine 2004; Bell 2005)." data-edit-multiline data-edit-label="Finding microbial-taxa-area-flattens">The taxa-area relationship holds for microbes but is flatter (z ~ 0.04 vs macro 0.12, ~3x) with ~20x faster turnover, consistent with the empirical microbial taxa-area literature (Horner-Devine 2004; Bell 2005).</span>
             
           </summary>
           <div class="finding-drawer">
@@ -837,6 +862,12 @@ equilibrium turnover rate, and render the macro-vs-microbe overlay.
 <div class="overview-section" id="results-section">
   
   <div id="results-summary" data-study="microbial-island-biogeography" style="margin:0 0 16px"></div>
+
+  
+  <div id="gate-results-section" data-study="microbial-island-biogeography" style="margin:0 0 22px" hidden>
+    <h4>Gate results <span class="muted" style="font-size:0.8em;font-weight:normal">— each acceptance test's value, graded from run data</span></h4>
+    <div id="gate-results"></div>
+  </div>
 
   <h4>Latest run preview <span class="muted" style="font-size:0.8em;font-weight:normal">— downsampled sparkline + first/last/min/max per store</span></h4>
   <div id="results-preview" data-study="microbial-island-biogeography">
@@ -1201,7 +1232,18 @@ pass_if: {"op": "\u003e", "provenance": {"kind": "calibration", "note": "Measure
     
     <div class="decide-section" style="margin-top:18px">
       <h3 class="overview-label">Conclusion</h3>
-      <div class="conclusion-md" style="background:#f8fafc;padding:12px;border-left:3px solid #94a3b8;border-radius:3px;font-size:0.9em;line-height:1.5"><p>The taxa-area relationship holds for microbes and is markedly flatter than for
+      <div class="conclusion-md" style="background:#f8fafc;padding:12px;border-left:3px solid #94a3b8;border-radius:3px;font-size:0.9em;line-height:1.5" data-edit-kind="study" data-edit-field="conclusion" data-edit-value="The taxa-area relationship holds for microbes and is markedly flatter than for
+macro-organisms. Over an identical area gradient (6-seed ensemble), the
+microbial regime gives a positive slope z_micro = 0.043 — inside the observed
+microbial band z ~ 0.02-0.1 (Horner-Devine 2004; Bell 2005) — against a macro
+slope z_macro = 0.123, a ~2.9x flattening. Gross equilibrium turnover is ~20x
+higher in the microbial regime (25.99 vs 1.27 events per island per
+generation), the fast-turnover signature a large pool and high dispersal
+predict (Martiny 2006; Hanson 2012). The same equilibrium mechanism therefore
+reproduces both the microbial and macro regimes with no new process; the Earth
+Microbiome Project and tree-hole bacterial surveys are the next calibration
+targets.
+" data-edit-multiline data-edit-label="Conclusion"><p>The taxa-area relationship holds for microbes and is markedly flatter than for
 macro-organisms. Over an identical area gradient (6-seed ensemble), the
 microbial regime gives a positive slope z_micro = 0.043 — inside the observed
 microbial band z ~ 0.02-0.1 (Horner-Devine 2004; Bell 2005) — against a macro
@@ -1306,11 +1348,12 @@ the Earth Microbiome Project and tree-hole bacterial datasets.
 </section>
 
 </main>
-<script>window.__DASH_CONFIG__ = { mode: "snapshot", interactiveUrl: "https://github.com/vivarium-collective/viva-island-biogeography", basePath: "/viva-island-biogeography/workbench", inputsDownloadBase: "https://github.com/vivarium-collective/viva-island-biogeography/raw/main", provenance: {"repo_slug": "vivarium-collective/viva-island-biogeography", "repo_url": "https://github.com/vivarium-collective/viva-island-biogeography", "commit": "8d85544f6c4696187b70c1e1bf5e8491c79ddd1d", "commit_url": "https://github.com/vivarium-collective/viva-island-biogeography/commit/8d85544f6c4696187b70c1e1bf5e8491c79ddd1d", "branch": "main", "lockfile": "uv.lock@5b8c7a31b1fb", "generated_at": "2026-10-28 01:23 UTC"} };</script>
+<script>window.__DASH_CONFIG__ = { mode: "snapshot", interactiveUrl: "https://github.com/vivarium-collective/viva-island-biogeography", basePath: "/viva-island-biogeography/workbench", inputsDownloadBase: "https://github.com/vivarium-collective/viva-island-biogeography/raw/main", provenance: {"repo_slug": "vivarium-collective/viva-island-biogeography", "repo_url": "https://github.com/vivarium-collective/viva-island-biogeography", "commit": "6ea452d82d8431491a109ccab464382a02d41e0d", "commit_url": "https://github.com/vivarium-collective/viva-island-biogeography/commit/6ea452d82d8431491a109ccab464382a02d41e0d", "branch": "main", "lockfile": "uv.lock@c7d21bf47307", "generated_at": "2026-11-15 03:37 UTC"} };</script>
 <script src="/viva-island-biogeography/workbench/assets/data-source.js"></script>
 <script src="/viva-island-biogeography/workbench/assets/toast.js"></script>
 <script>
 window._studyName = "microbial-island-biogeography";
+window.__STUDY_INVESTIGATION__ = "island-biogeography";  // owning investigation (feedback save routing)
 window._study = null;  // populated by _bootstrapStudy() in study-detail.js
 
 // Save handler for the Conditions → Model settings editable rows.
@@ -1439,6 +1482,8 @@ window._seedFollowupProposal = _seedFollowupProposal;
 <script src="/viva-island-biogeography/workbench/assets/progress-track.js"></script>
 <script src="/viva-island-biogeography/workbench/assets/comparison-view.js"></script>
 <script src="/viva-island-biogeography/workbench/assets/study-detail.js"></script>
+<script src="/viva-island-biogeography/workbench/assets/study-feedback.js"></script>
+<script src="/viva-island-biogeography/workbench/assets/inline-edit.js"></script>
 <script>
 // Re-assert the refresh-aware seed handlers AFTER study-detail.js (which
 // defines its own navigate-away _seedFollowupStudy). The embedded

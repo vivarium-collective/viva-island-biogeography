@@ -20,7 +20,7 @@
   <div style="display:flex; align-items:center; gap:14px; justify-content:space-between;">
   <div style="display:flex; align-items:center; gap:12px; min-width:0; flex-wrap:wrap">
   <h1 class="study-title" style="margin:0">
-    <span class="study-name" id="study-name" data-slug="mw-equilibrium-reproduction" data-study-kind="computational" title="mw-equilibrium-reproduction">Reproducing the MacArthur-Wilson equilibrium: rate crossing + turnover</span>
+    <span class="study-name" id="study-name" data-slug="mw-equilibrium-reproduction" data-study-kind="computational" title="mw-equilibrium-reproduction" data-edit-kind="study" data-edit-field="title" data-edit-value="Reproducing the MacArthur-Wilson equilibrium: rate crossing + turnover" data-edit-label="Title">Reproducing the MacArthur-Wilson equilibrium: rate crossing + turnover</span>
     
   </h1>
     
@@ -50,13 +50,19 @@
 
 
 
-<p id="study-question-headline" class="study-question-headline"><span class="q-glyph">Q</span> Does a direct, phenomenological implementation of the original theory of
+<p id="study-question-headline" class="study-question-headline"><span class="q-glyph">Q</span> <span class="study-question-headline-text" data-edit-kind="study" data-edit-field="question" data-edit-value="Does a direct, phenomenological implementation of the original theory of
 island biogeography (MacArthur &amp; Wilson 1963, 1967) reproduce its three core
 claims — (1) species richness relaxes to the equilibrium S* where the
 immigration and extinction rate curves cross, (2) richness tracks the analytic
 S* = P*c/(c+e) across islands, and (3) species identity turns over while
 richness stays constant?
-</p>
+" data-edit-multiline data-edit-label="Question">Does a direct, phenomenological implementation of the original theory of
+island biogeography (MacArthur &amp; Wilson 1963, 1967) reproduce its three core
+claims — (1) species richness relaxes to the equilibrium S* where the
+immigration and extinction rate curves cross, (2) richness tracks the analytic
+S* = P*c/(c+e) across islands, and (3) species identity turns over while
+richness stays constant?
+</span></p>
 
 <nav class="study-tabs" aria-label="Study sections">
   
@@ -241,6 +247,9 @@ richness stays constant?
 /* findings */
 .findings-section{padding:14px 16px;background:#fafbff;border:1px solid #c7d2fe;border-radius:8px}
 .finding-card{padding:12px 14px;margin:10px 0;border:1px solid #e2e8f0;border-left:5px solid #6366f1;border-radius:6px;background:#fff}
+/* Brief highlight when an item is reached via a ?ev= evidence deep-link. */
+.ev-flash{animation:ev-flash-kf 1.9s ease-out;scroll-margin-top:12px}
+@keyframes ev-flash-kf{0%{box-shadow:0 0 0 3px #fbbf24}70%{box-shadow:0 0 0 3px rgba(251,191,36,0.45)}100%{box-shadow:0 0 0 0 rgba(251,191,36,0)}}
 .finding-card.finding-status-confirms{border-left-color:#10b981}
 .finding-card.finding-status-partial{border-left-color:#f59e0b}
 .finding-card.finding-status-contradicts{border-left-color:#dc2626}
@@ -549,7 +558,7 @@ richness stays constant?
 
     <div class="ctr-block">
       <h2 class="overview-label ctr-h">Claim</h2>
-      <p class="ctr-text">Does a direct, phenomenological implementation of the original theory of
+      <p class="ctr-text" data-edit-kind="study" data-edit-field="claim" data-edit-value="" data-edit-multiline data-edit-label="Claim">Does a direct, phenomenological implementation of the original theory of
 island biogeography (MacArthur &amp; Wilson 1963, 1967) reproduce its three core
 claims — (1) species richness relaxes to the equilibrium S* where the
 immigration and extinction rate curves cross, (2) richness tracks the analytic
@@ -563,14 +572,27 @@ richness stays constant?
     <div class="ctr-block">
       <h2 class="overview-label ctr-h">Background</h2>
       <div class="ctr-meta">
-        <div class="ctr-meta-row"><span class="ctr-meta-k">Question</span> <span class="ctr-meta-item">Does a direct, phenomenological implementation of the original theory of
+        <div class="ctr-meta-row"><span class="ctr-meta-k">Question</span> <span class="ctr-meta-item" data-edit-kind="study" data-edit-field="question" data-edit-value="Does a direct, phenomenological implementation of the original theory of
+island biogeography (MacArthur &amp; Wilson 1963, 1967) reproduce its three core
+claims — (1) species richness relaxes to the equilibrium S* where the
+immigration and extinction rate curves cross, (2) richness tracks the analytic
+S* = P*c/(c+e) across islands, and (3) species identity turns over while
+richness stays constant?
+" data-edit-multiline data-edit-label="Question">Does a direct, phenomenological implementation of the original theory of
 island biogeography (MacArthur &amp; Wilson 1963, 1967) reproduce its three core
 claims — (1) species richness relaxes to the equilibrium S* where the
 immigration and extinction rate curves cross, (2) richness tracks the analytic
 S* = P*c/(c+e) across islands, and (3) species identity turns over while
 richness stays constant?
 </span></div>
-        <div class="ctr-meta-row"><span class="ctr-meta-k">Hypothesis</span> <span class="ctr-meta-item">The mw_equilibrium composite colonizes each absent species at probability
+        <div class="ctr-meta-row"><span class="ctr-meta-k">Hypothesis</span> <span class="ctr-meta-item" data-edit-kind="study" data-edit-field="hypothesis" data-edit-value="The mw_equilibrium composite colonizes each absent species at probability
+c = colonization_base/(1+distance) and goes extinct each present species at
+e = extinction_base*(ref_area/area)^area_exponent. Immigration I(S)=(P-S)c
+falls with S, extinction E(S)=S*e rises with S, so richness must relax to and
+fluctuate about S* = P*c/(c+e). Because colonization and extinction never stop,
+the island keeps gaining and losing species at equilibrium (turnover), so gross
+colonization+extinction events over a window vastly exceed the net change in S.
+" data-edit-multiline data-edit-label="Hypothesis">The mw_equilibrium composite colonizes each absent species at probability
 c = colonization_base/(1+distance) and goes extinct each present species at
 e = extinction_base*(ref_area/area)^area_exponent. Immigration I(S)=(P-S)c
 falls with S, extinction E(S)=S*e rises with S, so richness must relax to and
@@ -584,7 +606,12 @@ colonization+extinction events over a window vastly exceed the net change in S.
 
     <div class="ctr-block">
       <h2 class="overview-label ctr-h">Model &amp; approach</h2>
-      <p class="ctr-text">Over a log-spaced area gradient (12 islands, isolation fixed) and an 8-seed
+      <p class="ctr-text" data-edit-kind="study" data-edit-field="objective" data-edit-value="Over a log-spaced area gradient (12 islands, isolation fixed) and an 8-seed
+ensemble, measure (a) the correlation between the ensemble-mean equilibrium
+richness and the analytic S*, and (b) the turnover ratio (gross events / net
+richness change) on a representative island, and render the rate-crossing
+diagram, the approach-to-equilibrium trajectories, and the turnover curves.
+" data-edit-multiline data-edit-label="Objective">Over a log-spaced area gradient (12 islands, isolation fixed) and an 8-seed
 ensemble, measure (a) the correlation between the ensemble-mean equilibrium
 richness and the analytic S*, and (b) the turnover ratio (gross events / net
 richness change) on a representative island, and render the rate-crossing
@@ -605,7 +632,8 @@ diagram, the approach-to-equilibrium trajectories, and the turnover curves.
 
     <div class="ctr-block">
       <h2 class="overview-label ctr-h">Result</h2>
-      <p class="ctr-text">The equilibrium model sits on MacArthur &amp; Wilson&#39;s crossing rate curves: ensemble-mean richness tracks the analytic S* = P*c/(c+e) across the area gradient (corr 0.992), and species identity turns over ~15x the net change while richness holds.</p>
+      
+      <p class="ctr-text" data-edit-kind="study" data-edit-field="result" data-edit-value="" data-edit-multiline data-edit-label="Result">The equilibrium model sits on MacArthur &amp; Wilson&#39;s crossing rate curves: ensemble-mean richness tracks the analytic S* = P*c/(c+e) across the area gradient (corr 0.992), and species identity turns over ~15x the net change while richness holds.</p>
       
       
       <div class="ov-metrics">
@@ -635,11 +663,11 @@ diagram, the approach-to-equilibrium trajectories, and the turnover curves.
       
       
       
-      <div class="finding-card finding-kind-computational finding-status-confirms">
+      <div class="finding-card finding-kind-computational finding-status-confirms" id="finding-equilibrium-reproduced">
         <details class="finding-details">
           <summary class="finding-row">
             <span class="finding-status-glyph">✓</span>
-            <span class="finding-claim finding-statement">The equilibrium model sits on MacArthur &amp; Wilson&#39;s crossing rate curves: ensemble-mean richness tracks the analytic S* = P*c/(c+e) across the area gradient (corr 0.992), and species identity turns over ~15x the net change while richness holds.</span>
+            <span class="finding-claim finding-statement" data-edit-kind="study" data-edit-field="findings[equilibrium-reproduced].statement" data-edit-value="The equilibrium model sits on MacArthur &amp; Wilson&#39;s crossing rate curves: ensemble-mean richness tracks the analytic S* = P*c/(c+e) across the area gradient (corr 0.992), and species identity turns over ~15x the net change while richness holds." data-edit-multiline data-edit-label="Finding equilibrium-reproduced">The equilibrium model sits on MacArthur &amp; Wilson&#39;s crossing rate curves: ensemble-mean richness tracks the analytic S* = P*c/(c+e) across the area gradient (corr 0.992), and species identity turns over ~15x the net change while richness holds.</span>
             
           </summary>
           <div class="finding-drawer">
@@ -843,6 +871,12 @@ diagram, the approach-to-equilibrium trajectories, and the turnover curves.
 <div class="overview-section" id="results-section">
   
   <div id="results-summary" data-study="mw-equilibrium-reproduction" style="margin:0 0 16px"></div>
+
+  
+  <div id="gate-results-section" data-study="mw-equilibrium-reproduction" style="margin:0 0 22px" hidden>
+    <h4>Gate results <span class="muted" style="font-size:0.8em;font-weight:normal">— each acceptance test's value, graded from run data</span></h4>
+    <div id="gate-results"></div>
+  </div>
 
   <h4>Latest run preview <span class="muted" style="font-size:0.8em;font-weight:normal">— downsampled sparkline + first/last/min/max per store</span></h4>
   <div id="results-preview" data-study="mw-equilibrium-reproduction">
@@ -1207,7 +1241,14 @@ pass_if: {"op": "\u003e", "provenance": {"kind": "calibration", "note": "Measure
     
     <div class="decide-section" style="margin-top:18px">
       <h3 class="overview-label">Conclusion</h3>
-      <div class="conclusion-md" style="background:#f8fafc;padding:12px;border-left:3px solid #94a3b8;border-radius:3px;font-size:0.9em;line-height:1.5"><p>The mw_equilibrium process reproduces the original theory: ensemble-mean
+      <div class="conclusion-md" style="background:#f8fafc;padding:12px;border-left:3px solid #94a3b8;border-radius:3px;font-size:0.9em;line-height:1.5" data-edit-kind="study" data-edit-field="conclusion" data-edit-value="The mw_equilibrium process reproduces the original theory: ensemble-mean
+equilibrium richness tracks the analytic S* = P*c/(c+e) across the area
+gradient (corr = 0.992), and species identity turns over strongly while
+richness holds (turnover ratio ~ 15x). The simulation sits on MacArthur and
+Wilson&#39;s crossing immigration/extinction curves. The emergent species-area
+slope on this gradient is z ~ 0.12, in the low end of the empirical 0.1-0.35
+band, partly because the large islands approach pool saturation.
+" data-edit-multiline data-edit-label="Conclusion"><p>The mw_equilibrium process reproduces the original theory: ensemble-mean
 equilibrium richness tracks the analytic S* = P*c/(c+e) across the area
 gradient (corr = 0.992), and species identity turns over strongly while
 richness holds (turnover ratio ~ 15x). The simulation sits on MacArthur and
@@ -1309,11 +1350,12 @@ isolation laws.
 </section>
 
 </main>
-<script>window.__DASH_CONFIG__ = { mode: "snapshot", interactiveUrl: "https://github.com/vivarium-collective/viva-island-biogeography", basePath: "/viva-island-biogeography/workbench", inputsDownloadBase: "https://github.com/vivarium-collective/viva-island-biogeography/raw/main", provenance: {"repo_slug": "vivarium-collective/viva-island-biogeography", "repo_url": "https://github.com/vivarium-collective/viva-island-biogeography", "commit": "8d85544f6c4696187b70c1e1bf5e8491c79ddd1d", "commit_url": "https://github.com/vivarium-collective/viva-island-biogeography/commit/8d85544f6c4696187b70c1e1bf5e8491c79ddd1d", "branch": "main", "lockfile": "uv.lock@5b8c7a31b1fb", "generated_at": "2026-10-28 01:23 UTC"} };</script>
+<script>window.__DASH_CONFIG__ = { mode: "snapshot", interactiveUrl: "https://github.com/vivarium-collective/viva-island-biogeography", basePath: "/viva-island-biogeography/workbench", inputsDownloadBase: "https://github.com/vivarium-collective/viva-island-biogeography/raw/main", provenance: {"repo_slug": "vivarium-collective/viva-island-biogeography", "repo_url": "https://github.com/vivarium-collective/viva-island-biogeography", "commit": "6ea452d82d8431491a109ccab464382a02d41e0d", "commit_url": "https://github.com/vivarium-collective/viva-island-biogeography/commit/6ea452d82d8431491a109ccab464382a02d41e0d", "branch": "main", "lockfile": "uv.lock@c7d21bf47307", "generated_at": "2026-11-15 03:37 UTC"} };</script>
 <script src="/viva-island-biogeography/workbench/assets/data-source.js"></script>
 <script src="/viva-island-biogeography/workbench/assets/toast.js"></script>
 <script>
 window._studyName = "mw-equilibrium-reproduction";
+window.__STUDY_INVESTIGATION__ = "island-biogeography";  // owning investigation (feedback save routing)
 window._study = null;  // populated by _bootstrapStudy() in study-detail.js
 
 // Save handler for the Conditions → Model settings editable rows.
@@ -1442,6 +1484,8 @@ window._seedFollowupProposal = _seedFollowupProposal;
 <script src="/viva-island-biogeography/workbench/assets/progress-track.js"></script>
 <script src="/viva-island-biogeography/workbench/assets/comparison-view.js"></script>
 <script src="/viva-island-biogeography/workbench/assets/study-detail.js"></script>
+<script src="/viva-island-biogeography/workbench/assets/study-feedback.js"></script>
+<script src="/viva-island-biogeography/workbench/assets/inline-edit.js"></script>
 <script>
 // Re-assert the refresh-aware seed handlers AFTER study-detail.js (which
 // defines its own navigate-away _seedFollowupStudy). The embedded

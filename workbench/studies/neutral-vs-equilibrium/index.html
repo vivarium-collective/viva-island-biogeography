@@ -20,7 +20,7 @@
   <div style="display:flex; align-items:center; gap:14px; justify-content:space-between;">
   <div style="display:flex; align-items:center; gap:12px; min-width:0; flex-wrap:wrap">
   <h1 class="study-title" style="margin:0">
-    <span class="study-name" id="study-name" data-slug="neutral-vs-equilibrium" data-study-kind="computational" title="neutral-vs-equilibrium">Neutral vs equilibrium: do dispersal-drift and colonization-extinction predict the same macroecology?</span>
+    <span class="study-name" id="study-name" data-slug="neutral-vs-equilibrium" data-study-kind="computational" title="neutral-vs-equilibrium" data-edit-kind="study" data-edit-field="title" data-edit-value="Neutral vs equilibrium: do dispersal-drift and colonization-extinction predict the same macroecology?" data-edit-label="Title">Neutral vs equilibrium: do dispersal-drift and colonization-extinction predict the same macroecology?</span>
     
   </h1>
     
@@ -50,7 +50,7 @@
 
 
 
-<p id="study-question-headline" class="study-question-headline"><span class="q-glyph">Q</span> Hubbell&#39;s (2001) neutral theory and MacArthur &amp; Wilson&#39;s (1967) equilibrium
+<p id="study-question-headline" class="study-question-headline"><span class="q-glyph">Q</span> <span class="study-question-headline-text" data-edit-kind="study" data-edit-field="question" data-edit-value="Hubbell&#39;s (2001) neutral theory and MacArthur &amp; Wilson&#39;s (1967) equilibrium
 theory derive island diversity from completely different mechanisms — neutral
 dispersal-drift among ecologically equivalent individuals in a fixed-size local
 community, versus per-species colonization/extinction rates set by area and
@@ -58,7 +58,15 @@ isolation. Do these two mechanisms nonetheless predict the SAME emergent
 macroecology — specifically, do both produce a positive species-area
 relationship S ∝ A^z, and what does the neutral local species-abundance
 distribution look like?
-</p>
+" data-edit-multiline data-edit-label="Question">Hubbell&#39;s (2001) neutral theory and MacArthur &amp; Wilson&#39;s (1967) equilibrium
+theory derive island diversity from completely different mechanisms — neutral
+dispersal-drift among ecologically equivalent individuals in a fixed-size local
+community, versus per-species colonization/extinction rates set by area and
+isolation. Do these two mechanisms nonetheless predict the SAME emergent
+macroecology — specifically, do both produce a positive species-area
+relationship S ∝ A^z, and what does the neutral local species-abundance
+distribution look like?
+</span></p>
 
 <nav class="study-tabs" aria-label="Study sections">
   
@@ -243,6 +251,9 @@ distribution look like?
 /* findings */
 .findings-section{padding:14px 16px;background:#fafbff;border:1px solid #c7d2fe;border-radius:8px}
 .finding-card{padding:12px 14px;margin:10px 0;border:1px solid #e2e8f0;border-left:5px solid #6366f1;border-radius:6px;background:#fff}
+/* Brief highlight when an item is reached via a ?ev= evidence deep-link. */
+.ev-flash{animation:ev-flash-kf 1.9s ease-out;scroll-margin-top:12px}
+@keyframes ev-flash-kf{0%{box-shadow:0 0 0 3px #fbbf24}70%{box-shadow:0 0 0 3px rgba(251,191,36,0.45)}100%{box-shadow:0 0 0 0 rgba(251,191,36,0)}}
 .finding-card.finding-status-confirms{border-left-color:#10b981}
 .finding-card.finding-status-partial{border-left-color:#f59e0b}
 .finding-card.finding-status-contradicts{border-left-color:#dc2626}
@@ -551,7 +562,7 @@ distribution look like?
 
     <div class="ctr-block">
       <h2 class="overview-label ctr-h">Claim</h2>
-      <p class="ctr-text">Hubbell&#39;s (2001) neutral theory and MacArthur &amp; Wilson&#39;s (1967) equilibrium
+      <p class="ctr-text" data-edit-kind="study" data-edit-field="claim" data-edit-value="" data-edit-multiline data-edit-label="Claim">Hubbell&#39;s (2001) neutral theory and MacArthur &amp; Wilson&#39;s (1967) equilibrium
 theory derive island diversity from completely different mechanisms — neutral
 dispersal-drift among ecologically equivalent individuals in a fixed-size local
 community, versus per-species colonization/extinction rates set by area and
@@ -567,7 +578,15 @@ distribution look like?
     <div class="ctr-block">
       <h2 class="overview-label ctr-h">Background</h2>
       <div class="ctr-meta">
-        <div class="ctr-meta-row"><span class="ctr-meta-k">Question</span> <span class="ctr-meta-item">Hubbell&#39;s (2001) neutral theory and MacArthur &amp; Wilson&#39;s (1967) equilibrium
+        <div class="ctr-meta-row"><span class="ctr-meta-k">Question</span> <span class="ctr-meta-item" data-edit-kind="study" data-edit-field="question" data-edit-value="Hubbell&#39;s (2001) neutral theory and MacArthur &amp; Wilson&#39;s (1967) equilibrium
+theory derive island diversity from completely different mechanisms — neutral
+dispersal-drift among ecologically equivalent individuals in a fixed-size local
+community, versus per-species colonization/extinction rates set by area and
+isolation. Do these two mechanisms nonetheless predict the SAME emergent
+macroecology — specifically, do both produce a positive species-area
+relationship S ∝ A^z, and what does the neutral local species-abundance
+distribution look like?
+" data-edit-multiline data-edit-label="Question">Hubbell&#39;s (2001) neutral theory and MacArthur &amp; Wilson&#39;s (1967) equilibrium
 theory derive island diversity from completely different mechanisms — neutral
 dispersal-drift among ecologically equivalent individuals in a fixed-size local
 community, versus per-species colonization/extinction rates set by area and
@@ -576,7 +595,18 @@ macroecology — specifically, do both produce a positive species-area
 relationship S ∝ A^z, and what does the neutral local species-abundance
 distribution look like?
 </span></div>
-        <div class="ctr-meta-row"><span class="ctr-meta-k">Hypothesis</span> <span class="ctr-meta-item">The neutral metacommunity (Hubbell 2001) holds a zero-sum local community of
+        <div class="ctr-meta-row"><span class="ctr-meta-k">Hypothesis</span> <span class="ctr-meta-item" data-edit-kind="study" data-edit-field="hypothesis" data-edit-value="The neutral metacommunity (Hubbell 2001) holds a zero-sum local community of
+J = area*density individuals evolving by J Moran death/replacement events per
+generation, with immigration probability m = immigration_base/(1+distance) from
+a shared pool of n_pool species. Larger islands sample and retain more species
+before drift erodes them, so a positive species-area relationship must emerge
+with NO colonization/extinction rate asymmetry at all — purely from drift plus
+dispersal. Run alongside the MacArthur-Wilson equilibrium composite over the
+same area gradient, both models should show a positive z, but by different
+mechanisms and (potentially) with different slopes. The neutral local community
+should also display the characteristic skewed, concave rank-abundance /
+zero-sum-multinomial species-abundance distribution from drift alone.
+" data-edit-multiline data-edit-label="Hypothesis">The neutral metacommunity (Hubbell 2001) holds a zero-sum local community of
 J = area*density individuals evolving by J Moran death/replacement events per
 generation, with immigration probability m = immigration_base/(1+distance) from
 a shared pool of n_pool species. Larger islands sample and retain more species
@@ -594,7 +624,13 @@ zero-sum-multinomial species-abundance distribution from drift alone.
 
     <div class="ctr-block">
       <h2 class="overview-label ctr-h">Model &amp; approach</h2>
-      <p class="ctr-text">Over a shared log-spaced area gradient (12 islands, isolation fixed) and an
+      <p class="ctr-text" data-edit-kind="study" data-edit-field="objective" data-edit-value="Over a shared log-spaced area gradient (12 islands, isolation fixed) and an
+8-seed ensemble, measure the emergent species-area slope z for BOTH the neutral
+(hubbell2001unified) and equilibrium (MacArthur-Wilson) composites, confirm both
+are positive, and render (a) the SAR overlay on log-log axes and (b) the neutral
+species-abundance distribution for a representative island (rank-abundance curve
++ Preston octaves).
+" data-edit-multiline data-edit-label="Objective">Over a shared log-spaced area gradient (12 islands, isolation fixed) and an
 8-seed ensemble, measure the emergent species-area slope z for BOTH the neutral
 (hubbell2001unified) and equilibrium (MacArthur-Wilson) composites, confirm both
 are positive, and render (a) the SAR overlay on log-log axes and (b) the neutral
@@ -616,7 +652,8 @@ species-abundance distribution for a representative island (rank-abundance curve
 
     <div class="ctr-block">
       <h2 class="overview-label ctr-h">Result</h2>
-      <p class="ctr-text">Hubbell neutral drift also produces a positive species-area relationship (z ~ 0.76 vs equilibrium z ~ 0.13), so the SAR alone cannot discriminate neutral drift from niche-based colonization/extinction - two unrelated mechanisms converge on the same qualitative law.</p>
+      
+      <p class="ctr-text" data-edit-kind="study" data-edit-field="result" data-edit-value="" data-edit-multiline data-edit-label="Result">Hubbell neutral drift also produces a positive species-area relationship (z ~ 0.76 vs equilibrium z ~ 0.13), so the SAR alone cannot discriminate neutral drift from niche-based colonization/extinction - two unrelated mechanisms converge on the same qualitative law.</p>
       
       
       <div class="ov-metrics">
@@ -646,11 +683,11 @@ species-abundance distribution for a representative island (rank-abundance curve
       
       
       
-      <div class="finding-card finding-kind-computational finding-status-novel">
+      <div class="finding-card finding-kind-computational finding-status-novel" id="finding-sar-mechanism-agnostic">
         <details class="finding-details">
           <summary class="finding-row">
             <span class="finding-status-glyph">◆</span>
-            <span class="finding-claim finding-statement">Hubbell neutral drift also produces a positive species-area relationship (z ~ 0.76 vs equilibrium z ~ 0.13), so the SAR alone cannot discriminate neutral drift from niche-based colonization/extinction - two unrelated mechanisms converge on the same qualitative law.</span>
+            <span class="finding-claim finding-statement" data-edit-kind="study" data-edit-field="findings[sar-mechanism-agnostic].statement" data-edit-value="Hubbell neutral drift also produces a positive species-area relationship (z ~ 0.76 vs equilibrium z ~ 0.13), so the SAR alone cannot discriminate neutral drift from niche-based colonization/extinction - two unrelated mechanisms converge on the same qualitative law." data-edit-multiline data-edit-label="Finding sar-mechanism-agnostic">Hubbell neutral drift also produces a positive species-area relationship (z ~ 0.76 vs equilibrium z ~ 0.13), so the SAR alone cannot discriminate neutral drift from niche-based colonization/extinction - two unrelated mechanisms converge on the same qualitative law.</span>
             
           </summary>
           <div class="finding-drawer">
@@ -854,6 +891,12 @@ species-abundance distribution for a representative island (rank-abundance curve
 <div class="overview-section" id="results-section">
   
   <div id="results-summary" data-study="neutral-vs-equilibrium" style="margin:0 0 16px"></div>
+
+  
+  <div id="gate-results-section" data-study="neutral-vs-equilibrium" style="margin:0 0 22px" hidden>
+    <h4>Gate results <span class="muted" style="font-size:0.8em;font-weight:normal">— each acceptance test's value, graded from run data</span></h4>
+    <div id="gate-results"></div>
+  </div>
 
   <h4>Latest run preview <span class="muted" style="font-size:0.8em;font-weight:normal">— downsampled sparkline + first/last/min/max per store</span></h4>
   <div id="results-preview" data-study="neutral-vs-equilibrium">
@@ -1218,7 +1261,23 @@ pass_if: {"op": "==", "provenance": {"kind": "calibration", "note": "Measured z_
     
     <div class="decide-section" style="margin-top:18px">
       <h3 class="overview-label">Conclusion</h3>
-      <div class="conclusion-md" style="background:#f8fafc;padding:12px;border-left:3px solid #94a3b8;border-radius:3px;font-size:0.9em;line-height:1.5"><p>Two mechanisms, one law. Hubbell's (2001) zero-sum neutral metacommunity
+      <div class="conclusion-md" style="background:#f8fafc;padding:12px;border-left:3px solid #94a3b8;border-radius:3px;font-size:0.9em;line-height:1.5" data-edit-kind="study" data-edit-field="conclusion" data-edit-value="Two mechanisms, one law. Hubbell&#39;s (2001) zero-sum neutral metacommunity
+(hubbell2001unified) produces a clear positive species-area relationship —
+fitted slope z_neutral = 0.763 over a log-spaced area gradient (J = 2-200
+individuals) — from dispersal-drift alone, with no colonization/extinction rate
+asymmetry. The already-reproduced MacArthur-Wilson equilibrium model over the
+identical gradient gives z_equilibrium = 0.126. Both are positive, so the SAR by
+itself cannot discriminate neutral from niche-based equilibrium explanations —
+the central caution of neutral theory as a null model. The two slopes do differ
+markedly: the neutral SAR is far steeper here because the smallest islands carry
+only J = 2-3 individuals and drift drives them nearly monospecific (S ≈ 1-2),
+while the equilibrium model keeps even the smallest islands richer; the neutral
+slope accordingly overshoots the empirical z ≈ 0.1-0.35 band at this density.
+The neutral local community reproduces the expected skewed, concave
+rank-abundance curve and an internal-mode Preston octave distribution on the
+largest island (~46 species of J = 200), the zero-sum-multinomial signature of
+drift under a uniform metacommunity.
+" data-edit-multiline data-edit-label="Conclusion"><p>Two mechanisms, one law. Hubbell's (2001) zero-sum neutral metacommunity
 (hubbell2001unified) produces a clear positive species-area relationship —
 fitted slope z_neutral = 0.763 over a log-spaced area gradient (J = 2-200
 individuals) — from dispersal-drift alone, with no colonization/extinction rate
@@ -1328,11 +1387,12 @@ neutral-vs-equilibrium comparison.
 </section>
 
 </main>
-<script>window.__DASH_CONFIG__ = { mode: "snapshot", interactiveUrl: "https://github.com/vivarium-collective/viva-island-biogeography", basePath: "/viva-island-biogeography/workbench", inputsDownloadBase: "https://github.com/vivarium-collective/viva-island-biogeography/raw/main", provenance: {"repo_slug": "vivarium-collective/viva-island-biogeography", "repo_url": "https://github.com/vivarium-collective/viva-island-biogeography", "commit": "8d85544f6c4696187b70c1e1bf5e8491c79ddd1d", "commit_url": "https://github.com/vivarium-collective/viva-island-biogeography/commit/8d85544f6c4696187b70c1e1bf5e8491c79ddd1d", "branch": "main", "lockfile": "uv.lock@5b8c7a31b1fb", "generated_at": "2026-10-28 01:23 UTC"} };</script>
+<script>window.__DASH_CONFIG__ = { mode: "snapshot", interactiveUrl: "https://github.com/vivarium-collective/viva-island-biogeography", basePath: "/viva-island-biogeography/workbench", inputsDownloadBase: "https://github.com/vivarium-collective/viva-island-biogeography/raw/main", provenance: {"repo_slug": "vivarium-collective/viva-island-biogeography", "repo_url": "https://github.com/vivarium-collective/viva-island-biogeography", "commit": "6ea452d82d8431491a109ccab464382a02d41e0d", "commit_url": "https://github.com/vivarium-collective/viva-island-biogeography/commit/6ea452d82d8431491a109ccab464382a02d41e0d", "branch": "main", "lockfile": "uv.lock@c7d21bf47307", "generated_at": "2026-11-15 03:37 UTC"} };</script>
 <script src="/viva-island-biogeography/workbench/assets/data-source.js"></script>
 <script src="/viva-island-biogeography/workbench/assets/toast.js"></script>
 <script>
 window._studyName = "neutral-vs-equilibrium";
+window.__STUDY_INVESTIGATION__ = "island-biogeography";  // owning investigation (feedback save routing)
 window._study = null;  // populated by _bootstrapStudy() in study-detail.js
 
 // Save handler for the Conditions → Model settings editable rows.
@@ -1461,6 +1521,8 @@ window._seedFollowupProposal = _seedFollowupProposal;
 <script src="/viva-island-biogeography/workbench/assets/progress-track.js"></script>
 <script src="/viva-island-biogeography/workbench/assets/comparison-view.js"></script>
 <script src="/viva-island-biogeography/workbench/assets/study-detail.js"></script>
+<script src="/viva-island-biogeography/workbench/assets/study-feedback.js"></script>
+<script src="/viva-island-biogeography/workbench/assets/inline-edit.js"></script>
 <script>
 // Re-assert the refresh-aware seed handlers AFTER study-detail.js (which
 // defines its own navigate-away _seedFollowupStudy). The embedded

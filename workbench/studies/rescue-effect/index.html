@@ -20,7 +20,7 @@
   <div style="display:flex; align-items:center; gap:14px; justify-content:space-between;">
   <div style="display:flex; align-items:center; gap:12px; min-width:0; flex-wrap:wrap">
   <h1 class="study-title" style="margin:0">
-    <span class="study-name" id="study-name" data-slug="rescue-effect" data-study-kind="biological" title="rescue-effect">The rescue effect: immigration lowers extinction (Brown &amp; Kodric-Brown 1977)</span>
+    <span class="study-name" id="study-name" data-slug="rescue-effect" data-study-kind="biological" title="rescue-effect" data-edit-kind="study" data-edit-field="title" data-edit-value="The rescue effect: immigration lowers extinction (Brown &amp; Kodric-Brown 1977)" data-edit-label="Title">The rescue effect: immigration lowers extinction (Brown &amp; Kodric-Brown 1977)</span>
     
   </h1>
     
@@ -50,14 +50,21 @@
 
 
 
-<p id="study-question-headline" class="study-question-headline"><span class="q-glyph">Q</span> In the canonical MacArthur-Wilson model the immigration curve I(S)=(P-S)c and
+<p id="study-question-headline" class="study-question-headline"><span class="q-glyph">Q</span> <span class="study-question-headline-text" data-edit-kind="study" data-edit-field="question" data-edit-value="In the canonical MacArthur-Wilson model the immigration curve I(S)=(P-S)c and
 the extinction curve E(S)=S*e are independent. Brown &amp; Kodric-Brown (1977;
 citekey brown1977turnover) argued they are not: a population fed by immigrant
 propagules is less likely to blink out, so immigration also *lowers*
 extinction — the rescue effect. How does coupling the two curves this way
 raise equilibrium richness and reduce turnover compared to the
 independent-curves baseline?
-</p>
+" data-edit-multiline data-edit-label="Question">In the canonical MacArthur-Wilson model the immigration curve I(S)=(P-S)c and
+the extinction curve E(S)=S*e are independent. Brown &amp; Kodric-Brown (1977;
+citekey brown1977turnover) argued they are not: a population fed by immigrant
+propagules is less likely to blink out, so immigration also *lowers*
+extinction — the rescue effect. How does coupling the two curves this way
+raise equilibrium richness and reduce turnover compared to the
+independent-curves baseline?
+</span></p>
 
 <nav class="study-tabs" aria-label="Study sections">
   
@@ -242,6 +249,9 @@ independent-curves baseline?
 /* findings */
 .findings-section{padding:14px 16px;background:#fafbff;border:1px solid #c7d2fe;border-radius:8px}
 .finding-card{padding:12px 14px;margin:10px 0;border:1px solid #e2e8f0;border-left:5px solid #6366f1;border-radius:6px;background:#fff}
+/* Brief highlight when an item is reached via a ?ev= evidence deep-link. */
+.ev-flash{animation:ev-flash-kf 1.9s ease-out;scroll-margin-top:12px}
+@keyframes ev-flash-kf{0%{box-shadow:0 0 0 3px #fbbf24}70%{box-shadow:0 0 0 3px rgba(251,191,36,0.45)}100%{box-shadow:0 0 0 0 rgba(251,191,36,0)}}
 .finding-card.finding-status-confirms{border-left-color:#10b981}
 .finding-card.finding-status-partial{border-left-color:#f59e0b}
 .finding-card.finding-status-contradicts{border-left-color:#dc2626}
@@ -550,7 +560,7 @@ independent-curves baseline?
 
     <div class="ctr-block">
       <h2 class="overview-label ctr-h">Claim</h2>
-      <p class="ctr-text">In the canonical MacArthur-Wilson model the immigration curve I(S)=(P-S)c and
+      <p class="ctr-text" data-edit-kind="study" data-edit-field="claim" data-edit-value="" data-edit-multiline data-edit-label="Claim">In the canonical MacArthur-Wilson model the immigration curve I(S)=(P-S)c and
 the extinction curve E(S)=S*e are independent. Brown &amp; Kodric-Brown (1977;
 citekey brown1977turnover) argued they are not: a population fed by immigrant
 propagules is less likely to blink out, so immigration also *lowers*
@@ -565,7 +575,14 @@ independent-curves baseline?
     <div class="ctr-block">
       <h2 class="overview-label ctr-h">Background</h2>
       <div class="ctr-meta">
-        <div class="ctr-meta-row"><span class="ctr-meta-k">Question</span> <span class="ctr-meta-item">In the canonical MacArthur-Wilson model the immigration curve I(S)=(P-S)c and
+        <div class="ctr-meta-row"><span class="ctr-meta-k">Question</span> <span class="ctr-meta-item" data-edit-kind="study" data-edit-field="question" data-edit-value="In the canonical MacArthur-Wilson model the immigration curve I(S)=(P-S)c and
+the extinction curve E(S)=S*e are independent. Brown &amp; Kodric-Brown (1977;
+citekey brown1977turnover) argued they are not: a population fed by immigrant
+propagules is less likely to blink out, so immigration also *lowers*
+extinction — the rescue effect. How does coupling the two curves this way
+raise equilibrium richness and reduce turnover compared to the
+independent-curves baseline?
+" data-edit-multiline data-edit-label="Question">In the canonical MacArthur-Wilson model the immigration curve I(S)=(P-S)c and
 the extinction curve E(S)=S*e are independent. Brown &amp; Kodric-Brown (1977;
 citekey brown1977turnover) argued they are not: a population fed by immigrant
 propagules is less likely to blink out, so immigration also *lowers*
@@ -573,7 +590,15 @@ extinction — the rescue effect. How does coupling the two curves this way
 raise equilibrium richness and reduce turnover compared to the
 independent-curves baseline?
 </span></div>
-        <div class="ctr-meta-row"><span class="ctr-meta-k">Hypothesis</span> <span class="ctr-meta-item">If the same colonization pressure c that fills empty niches also rescues
+        <div class="ctr-meta-row"><span class="ctr-meta-k">Hypothesis</span> <span class="ctr-meta-item" data-edit-kind="study" data-edit-field="hypothesis" data-edit-value="If the same colonization pressure c that fills empty niches also rescues
+present species (each present species rescued per tick with probability c, its
+extinction probability then cut to e*(1-rescue_strength)), the effective
+per-species extinction rate becomes e_eff = e*(1 - c*rescue_strength). The
+extinction curve is pulled down, so the rate crossing slides right: equilibrium
+richness rises to S* = P*c/(c + e*(1-c*rescue_strength)) and the equilibrium
+event flux S*·e_eff — the turnover — falls. With rescue_strength=0 the model
+reduces exactly to the independent-curves MacArthur-Wilson equilibrium.
+" data-edit-multiline data-edit-label="Hypothesis">If the same colonization pressure c that fills empty niches also rescues
 present species (each present species rescued per tick with probability c, its
 extinction probability then cut to e*(1-rescue_strength)), the effective
 per-species extinction rate becomes e_eff = e*(1 - c*rescue_strength). The
@@ -588,7 +613,15 @@ reduces exactly to the independent-curves MacArthur-Wilson equilibrium.
 
     <div class="ctr-block">
       <h2 class="overview-label ctr-h">Model &amp; approach</h2>
-      <p class="ctr-text">Over a rescue-strength gradient (9 islands, r = 0.0 .. 0.8, matched area and
+      <p class="ctr-text" data-edit-kind="study" data-edit-field="objective" data-edit-value="Over a rescue-strength gradient (9 islands, r = 0.0 .. 0.8, matched area and
+isolation) on an 8-seed ensemble, measure (a) the ensemble-mean equilibrium
+richness S at each rescue strength against the analytic S*(r), and (b) the
+equilibrium turnover (gross colonization+extinction events per generation) at
+each rescue strength; report the matched no-rescue (r=0) vs with-rescue (r=0.8)
+comparison, and verify that at r=0 the simulated S* matches the analytic
+MacArthur-Wilson S* = P*c/(c+e). Render the richness-rising, turnover-falling,
+and coupled rate-crossing figures.
+" data-edit-multiline data-edit-label="Objective">Over a rescue-strength gradient (9 islands, r = 0.0 .. 0.8, matched area and
 isolation) on an 8-seed ensemble, measure (a) the ensemble-mean equilibrium
 richness S at each rescue strength against the analytic S*(r), and (b) the
 equilibrium turnover (gross colonization+extinction events per generation) at
@@ -612,7 +645,8 @@ and coupled rate-crossing figures.
 
     <div class="ctr-block">
       <h2 class="overview-label ctr-h">Result</h2>
-      <p class="ctr-text">Coupling the curves via the rescue effect (immigration lowering extinction) raises equilibrium richness (30-&gt;37) and damps turnover (30-&gt;23 events/gen), reducing exactly to the independent-curves baseline at rescue=0 (Brown &amp; Kodric-Brown 1977).</p>
+      
+      <p class="ctr-text" data-edit-kind="study" data-edit-field="result" data-edit-value="" data-edit-multiline data-edit-label="Result">Coupling the curves via the rescue effect (immigration lowering extinction) raises equilibrium richness (30-&gt;37) and damps turnover (30-&gt;23 events/gen), reducing exactly to the independent-curves baseline at rescue=0 (Brown &amp; Kodric-Brown 1977).</p>
       
       
       <div class="ov-metrics">
@@ -647,11 +681,11 @@ and coupled rate-crossing figures.
       
       
       
-      <div class="finding-card finding-kind-biological finding-status-confirms">
+      <div class="finding-card finding-kind-biological finding-status-confirms" id="finding-rescue-lifts-and-damps">
         <details class="finding-details">
           <summary class="finding-row">
             <span class="finding-status-glyph">✓</span>
-            <span class="finding-claim finding-statement">Coupling the curves via the rescue effect (immigration lowering extinction) raises equilibrium richness (30-&gt;37) and damps turnover (30-&gt;23 events/gen), reducing exactly to the independent-curves baseline at rescue=0 (Brown &amp; Kodric-Brown 1977).</span>
+            <span class="finding-claim finding-statement" data-edit-kind="study" data-edit-field="findings[rescue-lifts-and-damps].statement" data-edit-value="Coupling the curves via the rescue effect (immigration lowering extinction) raises equilibrium richness (30-&gt;37) and damps turnover (30-&gt;23 events/gen), reducing exactly to the independent-curves baseline at rescue=0 (Brown &amp; Kodric-Brown 1977)." data-edit-multiline data-edit-label="Finding rescue-lifts-and-damps">Coupling the curves via the rescue effect (immigration lowering extinction) raises equilibrium richness (30-&gt;37) and damps turnover (30-&gt;23 events/gen), reducing exactly to the independent-curves baseline at rescue=0 (Brown &amp; Kodric-Brown 1977).</span>
             
           </summary>
           <div class="finding-drawer">
@@ -855,6 +889,12 @@ and coupled rate-crossing figures.
 <div class="overview-section" id="results-section">
   
   <div id="results-summary" data-study="rescue-effect" style="margin:0 0 16px"></div>
+
+  
+  <div id="gate-results-section" data-study="rescue-effect" style="margin:0 0 22px" hidden>
+    <h4>Gate results <span class="muted" style="font-size:0.8em;font-weight:normal">— each acceptance test's value, graded from run data</span></h4>
+    <div id="gate-results"></div>
+  </div>
 
   <h4>Latest run preview <span class="muted" style="font-size:0.8em;font-weight:normal">— downsampled sparkline + first/last/min/max per store</span></h4>
   <div id="results-preview" data-study="rescue-effect">
@@ -1270,7 +1310,17 @@ pass_if: {"op": "\u003c", "provenance": {"kind": "calibration", "note": "Measure
     
     <div class="decide-section" style="margin-top:18px">
       <h3 class="overview-label">Conclusion</h3>
-      <div class="conclusion-md" style="background:#f8fafc;padding:12px;border-left:3px solid #94a3b8;border-radius:3px;font-size:0.9em;line-height:1.5"><p>Coupling the two MacArthur-Wilson curves reproduces Brown &amp; Kodric-Brown's
+      <div class="conclusion-md" style="background:#f8fafc;padding:12px;border-left:3px solid #94a3b8;border-radius:3px;font-size:0.9em;line-height:1.5" data-edit-kind="study" data-edit-field="conclusion" data-edit-value="Coupling the two MacArthur-Wilson curves reproduces Brown &amp; Kodric-Brown&#39;s
+(1977) rescue effect. As rescue strength rises from 0 to 0.8, the ensemble-mean
+equilibrium richness climbs from 30.1 to 37.3 species (+7.2) while the
+equilibrium turnover falls from 30.0 to 22.6 gross events per generation
+(ratio 0.75) — richness up, turnover down, exactly as predicted. The simulated
+gradient sits on the analytic S*(r) = P*c/(c + e(1 - c*r)) at every level, and
+at r=0 it collapses onto the independent-curves MacArthur-Wilson S* = 30.0
+(|err| 0.10), confirming the model is a faithful extension of the baseline
+rather than a different model. Immigration lowering extinction is enough to
+raise equilibrium diversity and stabilize species identity.
+" data-edit-multiline data-edit-label="Conclusion"><p>Coupling the two MacArthur-Wilson curves reproduces Brown &amp; Kodric-Brown's
 (1977) rescue effect. As rescue strength rises from 0 to 0.8, the ensemble-mean
 equilibrium richness climbs from 30.1 to 37.3 species (+7.2) while the
 equilibrium turnover falls from 30.0 to 22.6 gross events per generation
@@ -1374,11 +1424,12 @@ flattening that Brown &amp; Kodric-Brown (1977) attributed to rescue.
 </section>
 
 </main>
-<script>window.__DASH_CONFIG__ = { mode: "snapshot", interactiveUrl: "https://github.com/vivarium-collective/viva-island-biogeography", basePath: "/viva-island-biogeography/workbench", inputsDownloadBase: "https://github.com/vivarium-collective/viva-island-biogeography/raw/main", provenance: {"repo_slug": "vivarium-collective/viva-island-biogeography", "repo_url": "https://github.com/vivarium-collective/viva-island-biogeography", "commit": "8d85544f6c4696187b70c1e1bf5e8491c79ddd1d", "commit_url": "https://github.com/vivarium-collective/viva-island-biogeography/commit/8d85544f6c4696187b70c1e1bf5e8491c79ddd1d", "branch": "main", "lockfile": "uv.lock@5b8c7a31b1fb", "generated_at": "2026-10-28 01:23 UTC"} };</script>
+<script>window.__DASH_CONFIG__ = { mode: "snapshot", interactiveUrl: "https://github.com/vivarium-collective/viva-island-biogeography", basePath: "/viva-island-biogeography/workbench", inputsDownloadBase: "https://github.com/vivarium-collective/viva-island-biogeography/raw/main", provenance: {"repo_slug": "vivarium-collective/viva-island-biogeography", "repo_url": "https://github.com/vivarium-collective/viva-island-biogeography", "commit": "6ea452d82d8431491a109ccab464382a02d41e0d", "commit_url": "https://github.com/vivarium-collective/viva-island-biogeography/commit/6ea452d82d8431491a109ccab464382a02d41e0d", "branch": "main", "lockfile": "uv.lock@c7d21bf47307", "generated_at": "2026-11-15 03:37 UTC"} };</script>
 <script src="/viva-island-biogeography/workbench/assets/data-source.js"></script>
 <script src="/viva-island-biogeography/workbench/assets/toast.js"></script>
 <script>
 window._studyName = "rescue-effect";
+window.__STUDY_INVESTIGATION__ = "island-biogeography";  // owning investigation (feedback save routing)
 window._study = null;  // populated by _bootstrapStudy() in study-detail.js
 
 // Save handler for the Conditions → Model settings editable rows.
@@ -1507,6 +1558,8 @@ window._seedFollowupProposal = _seedFollowupProposal;
 <script src="/viva-island-biogeography/workbench/assets/progress-track.js"></script>
 <script src="/viva-island-biogeography/workbench/assets/comparison-view.js"></script>
 <script src="/viva-island-biogeography/workbench/assets/study-detail.js"></script>
+<script src="/viva-island-biogeography/workbench/assets/study-feedback.js"></script>
+<script src="/viva-island-biogeography/workbench/assets/inline-edit.js"></script>
 <script>
 // Re-assert the refresh-aware seed handlers AFTER study-detail.js (which
 // defines its own navigate-away _seedFollowupStudy). The embedded
