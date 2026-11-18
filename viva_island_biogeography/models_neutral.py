@@ -114,7 +114,7 @@ class NeutralMetacommunityProcess(Process):
         self.species_list = [f"Species_{i}" for i in range(self.n_pool)]
         self.J = max(1, int(round(float(self.config["area"]) * float(self.config["density"]))))
         self.m = immigration_prob(self.config["distance"], self.config["immigration_base"])
-        self._rng = random.Random((self.config["seed"], self.config["name"]).__hash__())
+        self._rng = random.Random(str((self.config["seed"], self.config["name"])))
         self._prev_richness = 0
 
     def inputs(self):

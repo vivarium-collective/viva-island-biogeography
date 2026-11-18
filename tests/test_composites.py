@@ -2,11 +2,68 @@
 
 from __future__ import annotations
 
+import json
+import os
+import subprocess
+import sys
+
 import numpy as np
+import pytest
 
 from process_bigraph import Composite, gather_emitter_results
 
 from viva_island_biogeography.core import build_core
+
+# Runs one composite generator in a fresh interpreter and prints its emitter
+# output as canonical JSON. Each subprocess gets its own hash salt, so any
+# str-hash-based seeding shows up as a difference between the two runs.
+_DUMP_SCRIPT = """
+import json, sys
+from process_bigraph import Composite, gather_emitter_results
+import viva_island_biogeography.composites as gens
+from viva_island_biogeography.core import build_core
+
+name, kwargs = sys.argv[1], json.loads(sys.argv[2])
+core = build_core()
+doc = getattr(gens, name)(core, **kwargs)
+sim = Composite({"state": doc}, core=core)
+sim.run(10.0)
+results = {str(k): v for k, v in gather_emitter_results(sim).items()}
+print(json.dumps(results, sort_keys=True, default=str))
+"""
+
+_SEEDED_GENERATORS = [
+    ("island_archipelago", {"n_islands": 4, "n_species": 12, "seed": 2}),
+    ("mw_equilibrium", {"n_islands": 4, "n_pool": 12, "seed": 2}),
+    ("general_dynamic_model", {"n_islands": 3, "n_pool": 12, "seed": 2}),
+    ("neutral_metacommunity", {"n_islands": 4, "n_pool": 12, "seed": 2}),
+    ("rescue_effect", {"n_islands": 4, "n_pool": 12, "seed": 2}),
+]
+
+
+@pytest.mark.parametrize(
+    "generator,kwargs", _SEEDED_GENERATORS, ids=[g for g, _ in _SEEDED_GENERATORS]
+)
+def test_output_identical_across_interpreter_starts(generator, kwargs):
+    """Same seed must give the same run in every interpreter start.
+
+    Regression: per-process RNG seeds were built with ``hash((seed, name))``,
+    which Python salts per process (PYTHONHASHSEED), so runs differed between
+    interpreter starts even though the in-process reproducibility checks passed.
+    """
+    outputs = []
+    for hashseed in ("1", "2"):
+        proc = subprocess.run(
+            [sys.executable, "-c", _DUMP_SCRIPT, generator, json.dumps(kwargs)],
+            env={**os.environ, "PYTHONHASHSEED": hashseed},
+            capture_output=True,
+            text=True,
+            check=True,
+            timeout=300,
+        )
+        outputs.append(proc.stdout.strip().splitlines()[-1])
+    assert json.loads(outputs[0]), "generator produced no emitter output"
+    assert outputs[0] == outputs[1]
 
 
 def test_generators_are_registered():

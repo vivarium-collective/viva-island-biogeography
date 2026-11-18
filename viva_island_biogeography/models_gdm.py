@@ -138,7 +138,7 @@ class GeneralDynamicModelProcess(Process):
         self.area_exponent = float(self.config["area_exponent"])
         self.ref_area = float(self.config["ref_area"])
         self.extinction_base = float(self.config["extinction_base"])
-        self._rng = random.Random((self.config["seed"], self.config["name"]).__hash__())
+        self._rng = random.Random(str((self.config["seed"], self.config["name"])))
         self._tick = 0
         self._prev_richness = 0
         self._prev_area = 0.0

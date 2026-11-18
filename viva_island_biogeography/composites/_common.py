@@ -94,7 +94,7 @@ def build_archipelago_document(
 
     for idx, spec in enumerate(specs):
         name = spec["name"]
-        seed_rng = random.Random((seed, name).__hash__())
+        seed_rng = random.Random(str((seed, name)))
         capacity = spec["area"] * individuals_per_area
         islands_store[name] = seed_initial_abundance(
             species_list,
