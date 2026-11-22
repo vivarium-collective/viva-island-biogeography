@@ -1,7 +1,6 @@
 {
   "mode": "snapshot",
-  "smsApiBase": "",
   "repo": "https://github.com/vivarium-collective/viva-island-biogeography",
-  "commit": "6cde3389e2852e532f560321ee88abbb96a4b230",
+  "commit": "c1ba983e6381b06f4f36f7de89ebbd4943dea2ec",
   "generated_from_ref": "main"
 }
