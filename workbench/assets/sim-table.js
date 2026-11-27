@@ -236,7 +236,7 @@
     if (!url) return;
     var origLabel = btn.textContent;
     btn.disabled = true;
-    btn.textContent = "…";
+    btn.textContent = "Opening…";   // the launch can start the viewer's server: say so
     fetch(url).then(function (r) {
       return r.text().then(function (t) {
         var d = {};
@@ -376,6 +376,16 @@
         'title="Reproduce this run — replays its recorded manifest exactly, as a brand-new run">↻ Re-run simulation</button>' : "",
       "Replay this run's exact manifest");
 
+    // --- SHARE ---
+    // 🔓 Make public — a remote run whose backend lets its owner change who may read it (`visibility`: compose-api,
+    // where a signed-in person's runs are private to them by default). POST /api/remote-run-visibility; the
+    // delegated handler (_onMakePublicClick) reads the id from the <tr> and confirms first. Making it private again
+    // is the CLI's (`compose-api simulations visibility <id> private`); the route takes both.
+    add("SHARE", (isRemote && runHas("visibility") && !isSnapshot)
+      ? '<button type="button" class="action-btn js-authoring make-public-btn" ' +
+        'title="Let anyone read this run and its results on its backend">🔓 Make public</button>' : "",
+      "Let anyone read this run on its backend");
+
     return out;
   }
 
@@ -389,13 +399,31 @@
   // column stops wrapping into a crowded 7-button block. The menu is a native
   // <details> (no toggle JS); its <summary>/items are .action-btn, which the
   // row's click-to-open handler already ignores.
+  // The run's matched launcher tools (row.matched_tools, e.g. a package's Explorer)
+  // as VIEW entries of the global Runs page's Actions menu: that page folds the Tools
+  // column away, so this is where its rows reach them. Same button and delegated
+  // handler as toolsCell (_onToolLaunchClick). Kept out of _actionList so the
+  // per-study Simulations tab, which has its own Tools column, shows each once.
+  function _toolActions(row) {
+    var tools = (row && row.matched_tools) || [];
+    return tools.filter(function (t) { return t.kind === "launcher" && t.launch_url; }).map(function (t) {
+      var label = esc(t.label || t.id || "Tool");
+      return {
+        group: "VIEW",
+        html: '<button type="button" class="action-btn js-authoring tool-launch-btn" ' +
+          'data-launch-url="' + esc(t.launch_url) + '" title="Launch ' + label + '">' + label + " &#8599;</button>",
+        desc: "Open this run in " + (t.label || t.id || "this tool"),
+      };
+    });
+  }
+
   function _globalActions(row) {
-    var list = _actionList(row);
+    var list = _actionList(row).concat(_toolActions(row));
     if (!list.length) return '<span style="color:#9ca3af;">—</span>';
     // One "⌄ Actions" menu per row: ALL actions — including 📊 Viz (first in VIEW) —
     // live inside it, grouped VIEW / DOWNLOAD / RE-RUN with an inline description each.
     // (No standalone primary button pulled out front — one clean trigger per row.)
-    var GROUPS = [["VIEW", "View"], ["DOWNLOAD", "Download"], ["RERUN", "Re-run"]];
+    var GROUPS = [["VIEW", "View"], ["DOWNLOAD", "Download"], ["RERUN", "Re-run"], ["SHARE", "Share"]];
     var sections = GROUPS.map(function (g) {
       var items = list.filter(function (a) { return a.group === g[0]; });
       if (!items.length) return "";
@@ -595,6 +623,45 @@
     _landVivaRun(tr.getAttribute("data-study") || "", tr.getAttribute("data-remote-sim-id") || "", btn);
   }
   document.addEventListener("click", _onLandVivaClick, true);
+
+  // 🔓 Make public: the run's backend changes who may read it (POST /api/remote-run-visibility). Confirmed first,
+  // since it exposes the run, its files and the other runs of any comparison it is in; the server's error (not
+  // signed in, not the owner, 409 not-offered) is shown as it comes.
+  function _makePublic(simId, btn) {
+    if (simId == null || simId === "") return;
+    if (!window.confirm("Make run " + simId + " public? Anyone will be able to read it and its results, along " +
+                        "with the other runs of any comparison it is in.")) return;
+    var orig = btn ? btn.textContent : "";
+    if (btn) { btn.disabled = true; btn.textContent = "… sharing"; }
+    fetch((window.__BASE_PATH__ || "") + "/api/remote-run-visibility", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(Object.assign({ simulation_id: String(simId), visibility: "public" }, _rowWhere(btn))),
+    }).then(function (r) {
+      return r.json().then(function (j) { return { ok: r.ok, status: r.status, body: j }; })
+        .catch(function () { return { ok: r.ok, status: r.status, body: {} }; });
+    }).then(function (res) {
+      if (btn) { btn.disabled = false; btn.textContent = orig || "🔓 Make public"; }
+      if (!res.ok) { _toast("Could not make the run public: " + ((res.body || {}).error || res.status)); return; }
+      var changed = (res.body || {}).changed || [];
+      _toast("Run " + simId + " is public" + (changed.length > 1 ? " (with " + (changed.length - 1) +
+             " other run" + (changed.length > 2 ? "s" : "") + " of its comparisons)" : "") + ".");
+      if (typeof window._initSimulations === "function") window._initSimulations(true);
+      if (typeof window._loadStudySims === "function") window._loadStudySims(true);
+    }).catch(function (err) {
+      if (btn) { btn.disabled = false; btn.textContent = orig || "🔓 Make public"; }
+      _toast("Could not make the run public: network error — " + err);
+    });
+  }
+
+  function _onMakePublicClick(e) {
+    var btn = e.target.closest(".make-public-btn");
+    if (!btn) return;
+    e.stopPropagation();
+    var tr = btn.closest("tr[data-remote-sim-id]");
+    if (!tr) return;
+    _makePublic(tr.getAttribute("data-remote-sim-id") || "", btn);
+  }
+  document.addEventListener("click", _onMakePublicClick, true);
 
   function _onLandButtonClick(e) {
     var btn = e.target.closest(".land-remote-btn");
@@ -1103,5 +1170,6 @@
     investigation: investigation, composite: composite, sourceCell: sourceCell, toolsCell: toolsCell,
     renderRow: renderRow, renderTable: renderTable, dropEmptyColumns: dropEmptyColumns,
     rowWhere: _rowWhere, whereQuery: _whereQuery, actionList: _actionList,
+    globalActions: _globalActions,
   };
 })();
