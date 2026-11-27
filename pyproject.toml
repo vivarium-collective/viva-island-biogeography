@@ -4,8 +4,8 @@ build-backend = "hatchling.build"
 
 [project]
 name = "viva-island-biogeography"
-version = "0.1.0"
-description = "Process-bigraph port of the island-biogeography metacommunity model (Lotka-Volterra islands + distance-stochastic migration)"
+version = "0.2.0"
+description = "Island-biogeography investigation workspace (Lotka-Volterra islands + distance-stochastic migration). The simulator lives in viva-island-biogeography-sim, pinned per study for reproducibility."
 readme = "README.md"
 license = {text = "MIT"}
 requires-python = ">=3.11"
@@ -16,22 +16,23 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Bio-Informatics",
 ]
 dependencies = [
-    "bigraph-schema>=1.0",
-    "process-bigraph>=1.8",
-    "numpy>=1.24",
-    "plotly>=5.0",
+    # The simulator: processes, composites, evaluators, viz. Pinned by git tag
+    # (see [tool.uv.sources]) so every study runs against this exact version;
+    # each study.yaml also records the pin under `simulator:`. Brings the compute
+    # core (process-bigraph, bigraph-schema, numpy, plotly) transitively.
+    "viva-island-biogeography-sim",
+    # Study framework + report/dashboard tooling used by the WORKSPACE (not the
+    # simulator): workbench dashboards, discovery-engine grading/evaluators, and
+    # the report renderers. discovery-engine is pinned to git main below for the
+    # #83 run_readiness fix (merged, not yet in a tagged release).
+    "vivarium-workbench",
+    "viva-discovery-engine",
     "pyyaml",
     "jsonschema",
     "jinja2",
     "bigraph-viz>=2.0.3",
     "pypdf>=4.0",
     "matplotlib",
-    "vivarium-workbench",
-    # Imported directly by viva_island_biogeography.evaluators* and
-    # run_persistence (register_derived_scalars computers + register_run). Pinned
-    # to git main below for the #83 run_readiness fix (field-based derived
-    # measures), which is merged but not yet in a tagged release.
-    "viva-discovery-engine",
 ]
 
 [project.optional-dependencies]
@@ -41,10 +42,14 @@ dev = ["pytest", "matplotlib"]
 Homepage = "https://github.com/vivarium-collective/viva-island-biogeography"
 Issues = "https://github.com/vivarium-collective/viva-island-biogeography/issues"
 
+# Metadata-only wheel: the simulator package now lives in its own distribution
+# (viva-island-biogeography-sim). This repo is the investigation workspace and
+# ships no importable package of its own.
 [tool.hatch.build.targets.wheel]
-packages = ["viva_island_biogeography"]
+bypass-selection = true
 
 [tool.uv.sources]
+viva-island-biogeography-sim = { git = "https://github.com/vivarium-collective/viva-island-biogeography-sim.git", tag = "0.1.1" }
 vivarium-workbench = { git = "https://github.com/vivarium-collective/vivarium-workbench.git", branch = "main" }
 viva-discovery-engine = { git = "https://github.com/vivarium-collective/discovery-engine.git", branch = "main" }
 

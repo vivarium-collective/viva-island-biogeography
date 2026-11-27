@@ -1,5 +1,9 @@
 schema_version: 4
 name: distance-immigration
+simulator:
+  package: viva-island-biogeography-sim
+  ref: "0.1.1"
+  registry: git
 title: "Isolation reduces colonization; migration conserves individuals"
 created: '2026-10-11'
 status: planned
