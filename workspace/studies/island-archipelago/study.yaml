@@ -1,5 +1,9 @@
 schema_version: 4
 name: island-archipelago
+simulator:
+  package: viva-island-biogeography-sim
+  ref: "0.1.1"
+  registry: git
 title: "Carrying capacity sets abundance, not richness"
 created: '2026-10-11'
 status: planned

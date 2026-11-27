@@ -1,5 +1,9 @@
 schema_version: 4
 name: microbial-island-biogeography
+simulator:
+  package: viva-island-biogeography-sim
+  ref: "0.1.1"
+  registry: git
 title: "Does the taxa-area relationship hold for microbes — and flatten?"
 created: '2026-10-24'
 status: completed

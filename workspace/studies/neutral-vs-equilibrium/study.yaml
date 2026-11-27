@@ -1,5 +1,9 @@
 schema_version: 4
 name: neutral-vs-equilibrium
+simulator:
+  package: viva-island-biogeography-sim
+  ref: "0.1.1"
+  registry: git
 title: "Neutral vs equilibrium: do dispersal-drift and colonization-extinction predict the same macroecology?"
 created: '2026-10-24'
 status: completed
